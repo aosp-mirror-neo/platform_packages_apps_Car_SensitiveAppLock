@@ -1,0 +1,26 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_robolectric_test {
+    enabled: true,
+    name: "SensitiveAppLockRoboTests",
+    srcs: ["src/com/android/car/sensitiveapplock/data/*.kt"],
+    java_resource_dirs: ["config"],
+    libs: [
+        "android.car.testapi",
+        "android.car-system-stubs",
+        "androidx.test.core",
+        "androidx.test.runner",
+        "androidx.test.ext.junit",
+        "kotlinx_coroutines_test",
+        "hilt_android_testing",
+        "androidx.test.rules",
+        "flag-junit",
+        "truth",
+    ],
+    visibility: ["//visibility:public"],
+    instrumentation_for: "SensitiveAppLock",
+    test_suites: ["general-tests"],
+    upstream: true,
+}

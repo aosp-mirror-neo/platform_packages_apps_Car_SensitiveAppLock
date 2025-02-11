@@ -3,6 +3,15 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
+java_library {
+    name: "app_lock_data_proto_lite",
+    proto: {
+        type: "lite",
+    },
+    srcs: ["proto/*.proto"],
+    visibility: ["//visibility:private"],
+}
+
 android_app {
     name: "SensitiveAppLock",
 
@@ -31,6 +40,7 @@ android_app {
         "androidx.lifecycle_lifecycle-service",
         "androidx.lifecycle_lifecycle-viewmodel-ktx",
         "androidx.recyclerview_recyclerview",
+        "app_lock_data_proto_lite",
         "car-media-common",
         "car-ui-lib",
         "hilt_android",
