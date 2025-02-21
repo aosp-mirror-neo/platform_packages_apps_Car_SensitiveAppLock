@@ -18,6 +18,9 @@ android_robolectric_test {
         "androidx.test.rules",
         "flag-junit",
         "truth",
+        "Robolectric_all-target",
+        "mockito-robolectric-prebuilt", // mockito deps order matters!
+        "mockito-kotlin2",
     ],
     visibility: ["//visibility:public"],
     instrumentation_for: "SensitiveAppLock",
