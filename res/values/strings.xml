@@ -28,4 +28,8 @@
   <string name="create_pin_subtitle">PIN must be at least 4 digits</string>
   <string name="confirm_pin_title">Confirm your app PIN</string>
   <string name="confirm_pin_subtitle">Enter your PIN again</string>
+
+  <string name="suspend_dialog_title">This app is protected</string>
+  <string name="suspend_dialog_message">This app is protected by your app lock. To manage app protections, go to Settings > Privacy > App Protection.</string>
+  <string name="suspend_dialog_neutral_button_text">Unlock</string>
 </resources>

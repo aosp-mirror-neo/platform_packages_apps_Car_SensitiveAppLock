@@ -5,7 +5,10 @@ package {
 android_robolectric_test {
     enabled: true,
     name: "SensitiveAppLockRoboTests",
-    srcs: ["src/com/android/car/sensitiveapplock/data/*.kt"],
+    srcs: [
+        "src/com/android/car/sensitiveapplock/data/*.kt",
+        "src/com/android/car/sensitiveapplock/util/*.kt",
+    ],
     java_resource_dirs: ["config"],
     libs: [
         "android.car.testapi",
