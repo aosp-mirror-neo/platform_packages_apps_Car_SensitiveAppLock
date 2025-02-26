@@ -41,7 +41,6 @@ android_library {
         "android.car",
         "kotlin-annotations",
     ],
-
     static_libs: [
         "androidx.activity_activity-ktx",
         "androidx.appcompat_appcompat",

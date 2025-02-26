@@ -30,7 +30,14 @@ class SettingsActivity : Hilt_SettingsActivity() {
 
         setContentView(R.layout.activity_settings)
 
-        val toolbar = requireToolbar(this)
-        toolbar.apply { navButtonMode = NavButtonMode.BACK }
+        requireToolbar(this).navButtonMode = NavButtonMode.BACK
+
+        // Display the fragment as the main content
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.list, SettingsFragment())
+                .commitNow()
+        }
     }
 }

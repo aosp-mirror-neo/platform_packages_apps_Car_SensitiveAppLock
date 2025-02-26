@@ -2,12 +2,25 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
+android_app {
+    name: "SensitiveAppLockRoboTestStub",
+    platform_apis: true,
+    certificate: "platform",
+
+    static_libs: [
+        "SensitiveAppLock-core",
+        "androidx.fragment_fragment",
+        "androidx.fragment_fragment-testing",
+    ],
+}
+
 android_robolectric_test {
     enabled: true,
     name: "SensitiveAppLockRoboTests",
     srcs: [
         ":sensitive-app-lock-testing-srcs",
         "src/com/android/car/sensitiveapplock/data/*.kt",
+        "src/com/android/car/sensitiveapplock/settings/*.kt",
         "src/com/android/car/sensitiveapplock/suspension/*.kt",
         "src/com/android/car/sensitiveapplock/testing/*.kt",
         "src/com/android/car/sensitiveapplock/util/*.kt",
@@ -20,6 +33,7 @@ android_robolectric_test {
         "androidx.test.runner",
         "androidx.test.ext.junit",
         "kotlinx_coroutines_test",
+        "hilt_android",
         "hilt_android_testing",
         "androidx.test.rules",
         "flag-junit",
@@ -29,7 +43,7 @@ android_robolectric_test {
         "mockito-kotlin2",
     ],
     visibility: ["//visibility:public"],
-    instrumentation_for: "SensitiveAppLock",
+    instrumentation_for: "SensitiveAppLockRoboTestStub",
     test_suites: ["general-tests"],
     upstream: true,
 }
@@ -56,6 +70,6 @@ android_test {
         "device-tests",
         "automotive-tests",
     ],
-    manifest: "AndroidManifest.xml",
+    manifest: "AndroidDeviceTestManifest.xml",
     certificate: "platform",
 }

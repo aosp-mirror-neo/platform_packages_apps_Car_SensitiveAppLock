@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (C) 2025 Google Inc.
+  ~ Copyright 2025 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
   ~ limitations under the License.
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.car.sensitiveapplock">
-
-    <uses-permission android:name="android.permission.SUSPEND_APPS" />
+    package="com.android.car.sensitiveapplock.test">
 
     <application android:debuggable="true">
-        <activity
-            android:name=".testing.HiltTestActivity"
-            android:exported="false" />
+        <uses-library android:name="android.test.runner" />
     </application>
+
+    <instrumentation android:name="com.android.car.sensitiveapplock.HiltTestRunner"
+        android:targetPackage="com.android.car.sensitiveapplock.test"
+        android:label="Tests for SensitiveAppLock"/>
 </manifest>

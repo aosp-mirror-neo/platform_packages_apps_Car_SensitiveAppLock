@@ -23,19 +23,15 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
-import com.android.car.sensitiveapplock.di.BackgroundContextModule
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -49,7 +45,6 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowPackageManager
 
-@UninstallModules(BackgroundContextModule::class)
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -58,22 +53,19 @@ import org.robolectric.shadows.ShadowPackageManager
 class BootReceiverTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val shadowPackageManager = shadowOf(context.packageManager)
 
     private lateinit var receiver: BootReceiver
 
-    private val context = ApplicationProvider.getApplicationContext<Application>()
-    private val shadowPackageManager = shadowOf(context.packageManager)
-    private val mainTestDispatcher: TestDispatcher = UnconfinedTestDispatcher()
-
-    // BootReceiver will now bind to the mainTestDispatcher which can be controlled.
-    @BindValue @BackgroundContext val backgroundContext: CoroutineContext = mainTestDispatcher
+    @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject @BackgroundContext lateinit var backgroundContext: CoroutineContext
 
     @Before
     fun setUp() {
         hiltRule.inject()
-
-        Dispatchers.setMain(mainTestDispatcher)
+        // BootReceiver will now bind to the mainTestDispatcher which can be controlled.
+        Dispatchers.setMain(backgroundContext as CoroutineDispatcher)
         shadowPackageManager.installPackage(PACKAGE_INFO)
         receiver = BootReceiver()
         context.registerReceiver(receiver, IntentFilter(Intent.ACTION_LOCKED_BOOT_COMPLETED))
@@ -96,9 +88,7 @@ class BootReceiverTest {
     }
 
     private fun sendBroadcast() {
-        Intent(Intent.ACTION_LOCKED_BOOT_COMPLETED).also { intent ->
-            context.sendBroadcast(intent)
-        }
+        Intent(Intent.ACTION_LOCKED_BOOT_COMPLETED).also { intent -> context.sendBroadcast(intent) }
         // Wait for all main thread operations to complete
         Robolectric.flushForegroundThreadScheduler()
     }
