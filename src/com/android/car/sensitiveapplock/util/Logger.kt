@@ -47,6 +47,12 @@ class Logger(cls: Class<*>) {
         }
     }
 
+    fun v(message: String, throwable: Throwable? = null) {
+        if (Log.isLoggable(TAG, Log.VERBOSE)) {
+            Log.v(TAG, prefix + message, throwable)
+        }
+    }
+
     fun w(message: String, throwable: Throwable? = null) {
         if (Log.isLoggable(TAG, Log.WARN)) {
             Log.w(TAG, prefix + message, throwable)

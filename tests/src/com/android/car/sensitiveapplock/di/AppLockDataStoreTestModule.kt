@@ -24,19 +24,22 @@ import com.android.car.sensitiveapplock.data.ProtoSerializer
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import java.io.File
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 
-/** A dagger module to provide a [DataStore] for AppLockData. */
+/** A test dagger module to provide a [DataStore] for AppLockData. */
 @Module
-@InstallIn(SingletonComponent::class)
-object AppLockDataStoreModule {
-    private const val APP_LOCK_DATA = "app_lock_data.pb"
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [AppLockDataStoreModule::class]
+)
+internal object AppLockDataStoreTestModule {
+    private const val APP_LOCK_DATA = "app_lock_data_test"
 
     @Provides
     @Singleton
@@ -44,11 +47,16 @@ object AppLockDataStoreModule {
         @ApplicationContext context: Context,
         @BackgroundContext backgroundContext: CoroutineContext,
     ): DataStore<AppLockData> {
+        val preferenceFile = File.createTempFile(
+            APP_LOCK_DATA,
+            null, // suffix
+            context.filesDir
+        ).also { it.deleteOnExit() }
         return DataStoreFactory.create(
             serializer = ProtoSerializer(AppLockData.getDefaultInstance()),
             corruptionHandler = ReplaceFileCorruptionHandler { AppLockData.getDefaultInstance() },
             scope = CoroutineScope(backgroundContext),
-            produceFile = { File(context.filesDir, APP_LOCK_DATA) }
+            produceFile = { preferenceFile }
         )
     }
 }

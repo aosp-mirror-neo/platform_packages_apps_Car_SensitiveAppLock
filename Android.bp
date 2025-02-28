@@ -21,22 +21,13 @@ genrule {
     out: ["com/android/car/sensitiveapplock/metrics/SensitiveAppLockStatsLog.java"],
 }
 
-android_app {
-    name: "SensitiveAppLock",
-
+android_library {
+    name: "SensitiveAppLock-core",
     srcs: [
         "src/**/*.kt",
         ":statslog-sensitiveapplock-java-gen",
     ],
-
-    resource_dirs: [
-        "res",
-    ],
-
-    platform_apis: true,
-
-    certificate: "platform",
-
+    resource_dirs: ["res"],
     libs: [
         "android.car",
         "kotlin-annotations",
@@ -63,8 +54,32 @@ android_app {
         "androidx.navigation_navigation-runtime-ktx",
         "androidx.navigation_navigation-ui-ktx",
         "androidx.annotation_annotation",
-        "androidx.lifecycle_lifecycle-extensions",
         "androidx.datastore_datastore",
+        "androidx.datastore_datastore-preferences",
+        "androidx.lifecycle_lifecycle-extensions",
         "libprotobuf-java-lite",
+        "tink-java",
+    ],
+    manifest: "AndroidManifest.xml",
+}
+
+android_app {
+    name: "SensitiveAppLock",
+
+    srcs: [],
+
+    resource_dirs: [],
+
+    platform_apis: true,
+
+    certificate: "platform",
+
+    libs: [
+        "android.car",
+        "kotlin-annotations",
+    ],
+
+    static_libs: [
+        "SensitiveAppLock-core",
     ],
 }

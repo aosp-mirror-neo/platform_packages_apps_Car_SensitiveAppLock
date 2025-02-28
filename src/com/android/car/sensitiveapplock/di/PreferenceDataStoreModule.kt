@@ -17,38 +17,34 @@ package com.android.car.sensitiveapplock.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import com.android.car.sensitiveapplock.AppLockData
-import com.android.car.sensitiveapplock.data.ProtoSerializer
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.io.File
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 
-/** A dagger module to provide a [DataStore] for AppLockData. */
+/** Module to provide shared [Preferences] [DataStore]. */
 @Module
 @InstallIn(SingletonComponent::class)
-object AppLockDataStoreModule {
-    private const val APP_LOCK_DATA = "app_lock_data.pb"
+object PreferenceDataStoreModule {
+    private const val PREF_FILE_NAME = "app_lock_pref"
 
     @Provides
     @Singleton
-    fun provideAppLockDataStore(
+    fun providePreferenceDataStore(
         @ApplicationContext context: Context,
         @BackgroundContext backgroundContext: CoroutineContext,
-    ): DataStore<AppLockData> {
-        return DataStoreFactory.create(
-            serializer = ProtoSerializer(AppLockData.getDefaultInstance()),
-            corruptionHandler = ReplaceFileCorruptionHandler { AppLockData.getDefaultInstance() },
-            scope = CoroutineScope(backgroundContext),
-            produceFile = { File(context.filesDir, APP_LOCK_DATA) }
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile(PREF_FILE_NAME) },
+            scope = CoroutineScope(backgroundContext)
         )
     }
 }

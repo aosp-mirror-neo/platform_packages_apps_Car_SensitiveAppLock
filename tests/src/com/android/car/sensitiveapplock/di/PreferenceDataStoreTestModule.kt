@@ -17,38 +17,42 @@ package com.android.car.sensitiveapplock.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import com.android.car.sensitiveapplock.AppLockData
-import com.android.car.sensitiveapplock.data.ProtoSerializer
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import java.io.File
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 
-/** A dagger module to provide a [DataStore] for AppLockData. */
+/** Test Module to provide shared [Preferences] [DataStore]. */
 @Module
-@InstallIn(SingletonComponent::class)
-object AppLockDataStoreModule {
-    private const val APP_LOCK_DATA = "app_lock_data.pb"
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [PreferenceDataStoreModule::class]
+)
+internal object PreferenceDataStoreTestModule {
+    private const val PREF_FILE_NAME = "app_lock_pref_test"
 
     @Provides
     @Singleton
-    fun provideAppLockDataStore(
+    fun providePreferenceDataStore(
         @ApplicationContext context: Context,
         @BackgroundContext backgroundContext: CoroutineContext,
-    ): DataStore<AppLockData> {
-        return DataStoreFactory.create(
-            serializer = ProtoSerializer(AppLockData.getDefaultInstance()),
-            corruptionHandler = ReplaceFileCorruptionHandler { AppLockData.getDefaultInstance() },
-            scope = CoroutineScope(backgroundContext),
-            produceFile = { File(context.filesDir, APP_LOCK_DATA) }
+    ): DataStore<Preferences> {
+        val preferenceFile = File.createTempFile(
+            PREF_FILE_NAME,
+            ".preferences_pb", // suffix
+            context.filesDir
+        ).also { it.deleteOnExit() }
+        return PreferenceDataStoreFactory.create(
+            produceFile = { preferenceFile },
+            scope = CoroutineScope(backgroundContext)
         )
     }
 }

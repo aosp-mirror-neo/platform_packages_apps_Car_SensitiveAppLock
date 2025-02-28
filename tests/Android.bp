@@ -30,3 +30,28 @@ android_robolectric_test {
     test_suites: ["general-tests"],
     upstream: true,
 }
+
+android_test {
+    name: "SensitiveAppLockTests",
+    srcs: [
+        "src/com/android/car/sensitiveapplock/HiltTestRunner.kt",
+        "src/com/android/car/sensitiveapplock/auth/*.kt",
+        "src/com/android/car/sensitiveapplock/di/*.kt",
+    ],
+    static_libs: [
+        "SensitiveAppLock-core",
+        "androidx.test.runner",
+        "androidx.test.ext.junit",
+        "hilt_android_testing",
+        "kotlinx_coroutines_test",
+        "truth",
+    ],
+    instrumentation_for: "SensitiveAppLock",
+    test_suites: [
+        "general-tests",
+        "device-tests",
+        "automotive-tests",
+    ],
+    manifest: "AndroidManifest.xml",
+    certificate: "platform",
+}
