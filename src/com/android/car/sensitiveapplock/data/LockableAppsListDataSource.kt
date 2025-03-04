@@ -37,9 +37,7 @@ import javax.inject.Singleton
  */
 @SuppressLint("MissingPermission")
 @Singleton
-class LockableAppsListDataSource
-@Inject
-internal constructor(@ApplicationContext context: Context) {
+class LockableAppsListDataSource @Inject constructor(@ApplicationContext context: Context) {
     private val unsuspendablePackages =
         mutableSetOf(*context.resources.getStringArray(R.array.unsuspendable_packages))
     private val packageManager = context.packageManager

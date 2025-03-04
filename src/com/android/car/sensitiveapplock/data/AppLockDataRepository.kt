@@ -24,9 +24,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 
 /** A repository for accessing a user's App Lock data. */
-class AppLockDataRepository
-@Inject
-internal constructor(private val dataStore: DataStore<AppLockData>) {
+class AppLockDataRepository @Inject constructor(private val dataStore: DataStore<AppLockData>) {
     /** A [Flow] of the current value of the data store. */
     val appLockDataFlow: Flow<AppLockData> =
         dataStore.data.catch { exception ->

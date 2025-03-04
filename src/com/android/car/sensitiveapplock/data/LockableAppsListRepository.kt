@@ -24,7 +24,7 @@ import javax.inject.Inject
  */
 class LockableAppsListRepository
 @Inject
-internal constructor(private val lockableAppsListDataSource: LockableAppsListDataSource) {
+constructor(private val lockableAppsListDataSource: LockableAppsListDataSource) {
     /** Gets the list of lockable apps. */
     fun getLockableApps(): List<AppInfo> = lockableAppsListDataSource.getLockableApps()
 }

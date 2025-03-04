@@ -25,9 +25,7 @@ import javax.inject.Singleton
 
 /** A manager for controlling app suspension state. */
 @Singleton
-class AppSuspensionManager
-@Inject
-internal constructor(@ApplicationContext applicationContext: Context) {
+class AppSuspensionManager @Inject constructor(@ApplicationContext applicationContext: Context) {
     private val packageManager = applicationContext.packageManager
 
     /**

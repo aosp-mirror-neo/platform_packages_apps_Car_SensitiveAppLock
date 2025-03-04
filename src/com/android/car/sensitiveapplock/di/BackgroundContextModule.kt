@@ -28,7 +28,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 /** Module to provide a background [CoroutineContext]. */
 @Module
 @InstallIn(SingletonComponent::class)
-internal object BackgroundContextModule {
+object BackgroundContextModule {
     private const val BACKGROUND_POOL_SIZE = 4
 
     /** Provides a background-thread [CoroutineContext]. */
