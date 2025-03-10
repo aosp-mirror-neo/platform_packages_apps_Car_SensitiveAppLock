@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Default dimensions for PIN pad view -->
+  <dimen name="pin_pad_title_text_size">44dp</dimen>
+  <dimen name="pin_pad_subtitle_text_size">32dp</dimen>
+  <dimen name="pin_pad_key_width">64dp</dimen>
+  <dimen name="pin_pad_key_height">64dp</dimen>
+  <dimen name="pin_pad_key_text_size">14sp</dimen>
+  <dimen name="pin_pad_key_padding">4dp</dimen>
+  <dimen name="pin_pad_spacing">16dp</dimen>
+</resources>
