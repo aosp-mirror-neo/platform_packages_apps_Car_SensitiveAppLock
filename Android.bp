@@ -12,11 +12,21 @@ java_library {
     visibility: ["//visibility:private"],
 }
 
+genrule {
+    name: "statslog-sensitiveapplock-java-gen",
+    tools: ["stats-log-api-gen"],
+    cmd: "$(location stats-log-api-gen) --java $(out) --module sensitiveapplock" +
+        " --javaPackage com.android.car.sensitiveapplock.metrics" +
+        " --javaClass SensitiveAppLockStatsLog",
+    out: ["com/android/car/sensitiveapplock/metrics/SensitiveAppLockStatsLog.java"],
+}
+
 android_app {
     name: "SensitiveAppLock",
 
     srcs: [
         "src/**/*.kt",
+        ":statslog-sensitiveapplock-java-gen",
     ],
 
     resource_dirs: [
