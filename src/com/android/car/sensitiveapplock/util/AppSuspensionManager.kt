@@ -67,6 +67,6 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
     }
 
     private companion object {
-        val logger = Logger(AppSuspensionManager.javaClass)
+        val logger = Logger(AppSuspensionManager::class.java)
     }
 }

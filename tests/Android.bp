@@ -7,6 +7,7 @@ android_robolectric_test {
     name: "SensitiveAppLockRoboTests",
     srcs: [
         "src/com/android/car/sensitiveapplock/data/*.kt",
+        "src/com/android/car/sensitiveapplock/suspension/*.kt",
         "src/com/android/car/sensitiveapplock/util/*.kt",
     ],
     java_resource_dirs: ["config"],
