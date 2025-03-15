@@ -44,6 +44,12 @@ interface PinManager {
     /** Resets and removes all pin encryption data. This method should be used sparingly. */
     suspend fun reset()
 
+    /**
+     * Returns whether the entered PIN is in a valid format. The PIN must be numerical with a
+     * minimum of 4 digits and a maximum of 16 digits.
+     */
+    fun doesPinHaveValidFormat(pin: String): Boolean
+
     /** The status of the AppLock PIN. */
     enum class PinState {
         UNKNOWN,

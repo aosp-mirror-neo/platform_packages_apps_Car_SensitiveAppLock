@@ -133,6 +133,16 @@ constructor(
         clearAppLockPin()
     }
 
+    override fun doesPinHaveValidFormat(pin: String): Boolean {
+        if (pin.length < MIN_PIN_LENGTH) {
+            return false
+        }
+        if (pin.length > MAX_PIN_LENGTH) {
+            return false
+        }
+        return pin.toIntOrNull() != null
+    }
+
     private suspend fun maybeInitializeKeysetHandleAndAeadKeyset(): Boolean {
         try {
             TinkConfig.register()
@@ -209,19 +219,5 @@ constructor(
         val TINK_KEYSET_NAME = stringPreferencesKey("app_lock_keyset")
         val TINK_KEYSET_ASSOCIATED_DATA = ByteArray(0)
         val logger = Logger(PinManager::class.java)
-
-        /**
-         * Returns whether the entered PIN is in a valid format. The PIN must be numerical with a
-         * minimum of 4 digits and a maximum of 16 digits.
-         */
-        fun doesPinHaveValidFormat(pin: String): Boolean {
-            if (pin.length < MIN_PIN_LENGTH) {
-                return false
-            }
-            if (pin.length > MAX_PIN_LENGTH) {
-                return false
-            }
-            return pin.toIntOrNull() != null
-        }
     }
 }

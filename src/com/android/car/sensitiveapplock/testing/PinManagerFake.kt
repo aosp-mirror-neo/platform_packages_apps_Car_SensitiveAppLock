@@ -66,17 +66,18 @@ class PinManagerFake : PinManager {
         clearAppLockPin()
     }
 
+    override fun doesPinHaveValidFormat(pin: String): Boolean {
+        if (pin.length < MIN_PIN_LENGTH) {
+            return false
+        }
+        if (pin.length > MAX_PIN_LENGTH) {
+            return false
+        }
+        return pin.toIntOrNull() != null
+    }
+
     private companion object {
         const val MIN_PIN_LENGTH = 4
         const val MAX_PIN_LENGTH = 16
-        fun doesPinHaveValidFormat(pin: String): Boolean {
-            if (pin.length < MIN_PIN_LENGTH) {
-                return false
-            }
-            if (pin.length > MAX_PIN_LENGTH) {
-                return false
-            }
-            return pin.toIntOrNull() != null
-        }
     }
 }
