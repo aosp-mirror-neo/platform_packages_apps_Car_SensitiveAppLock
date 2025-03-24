@@ -21,12 +21,21 @@ genrule {
     out: ["com/android/car/sensitiveapplock/metrics/SensitiveAppLockStatsLog.java"],
 }
 
+filegroup {
+    name: "sensitive-app-lock-testing-srcs",
+    srcs: [
+        "src/com/android/car/sensitiveapplock/testing/**/*.kt",
+    ],
+    visibility: ["//vendor/auto/embedded/apps/SensitiveAppLock/tests"],
+}
+
 android_library {
     name: "SensitiveAppLock-core",
     srcs: [
         "src/**/*.kt",
         ":statslog-sensitiveapplock-java-gen",
     ],
+    exclude_srcs: [":sensitive-app-lock-testing-srcs"],
     resource_dirs: ["res"],
     libs: [
         "android.car",

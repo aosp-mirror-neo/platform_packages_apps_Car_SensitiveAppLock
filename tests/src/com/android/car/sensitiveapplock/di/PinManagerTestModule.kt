@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.car.sensitiveapplock.di
 
 import com.android.car.sensitiveapplock.auth.PinManager
-import com.android.car.sensitiveapplock.auth.PinManagerImpl
+import com.android.car.sensitiveapplock.testing.PinManagerFake
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
 
-/** Module to provide a [PinManager]. */
+/** Test Module to provide a fake implementation of [PinManager]. */
 @Module
-@InstallIn(SingletonComponent::class)
-object PinManagerModule {
-
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [PinManagerModule::class]
+)
+internal object PinManagerTestModule {
     @Provides
     @Singleton
-    fun providePinManager(pinManagerImpl: PinManagerImpl): PinManager = pinManagerImpl
+    fun providePinManagerFake(): PinManager = PinManagerFake()
 }

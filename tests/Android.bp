@@ -6,8 +6,10 @@ android_robolectric_test {
     enabled: true,
     name: "SensitiveAppLockRoboTests",
     srcs: [
+        ":sensitive-app-lock-testing-srcs",
         "src/com/android/car/sensitiveapplock/data/*.kt",
         "src/com/android/car/sensitiveapplock/suspension/*.kt",
+        "src/com/android/car/sensitiveapplock/testing/*.kt",
         "src/com/android/car/sensitiveapplock/util/*.kt",
     ],
     java_resource_dirs: ["config"],
@@ -35,6 +37,7 @@ android_robolectric_test {
 android_test {
     name: "SensitiveAppLockTests",
     srcs: [
+        ":sensitive-app-lock-testing-srcs",
         "src/com/android/car/sensitiveapplock/HiltTestRunner.kt",
         "src/com/android/car/sensitiveapplock/auth/*.kt",
         "src/com/android/car/sensitiveapplock/di/*.kt",
