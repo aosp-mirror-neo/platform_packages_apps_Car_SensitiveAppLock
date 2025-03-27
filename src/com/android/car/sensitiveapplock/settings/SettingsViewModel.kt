@@ -17,6 +17,7 @@ package com.android.car.sensitiveapplock.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppInfo
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListRepository
@@ -26,34 +27,39 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
 /** A data class containing info regarding a lockable app. */
 data class LockableApp(val appInfo: AppInfo, val isLocked: Boolean)
 
-/** A data class representing the UI state for the settings screen. */
+/** A data class representing the UI state for the Settings screen. */
 data class SettingsUiState(
+    val settingsLockStatus: SettingsLockStatus = SettingsLockStatus.UNSET,
     val appLockEnabled: Boolean = false,
     val appList: List<LockableApp> = emptyList(),
 )
 
-/** A [ViewModel] for [SettingsFragment]. */
+/** A [ViewModel] for the Settings screen. */
 @HiltViewModel
-class SettingsFragmentViewModel
+class SettingsViewModel
 @Inject
 constructor(
     private val appLockDataRepository: AppLockDataRepository,
     private val lockableAppsListDataRepository: LockableAppsListRepository,
     private val appSuspensionManager: AppSuspensionManager,
+    private val settingsLockManager: SettingsLockManager,
+    private val pinManager: PinManager,
 ) : ViewModel() {
     val uiState: SharedFlow<SettingsUiState> =
-        appLockDataRepository.appLockDataFlow
-            .map { appLockData ->
+        combine(appLockDataRepository.appLockDataFlow, settingsLockManager.lockStatusFlow) {
+                appLockData,
+                lockStatus ->
                 val lockedAppsSet = appLockData.lockedAppsList.toSet()
                 val lockableApps = lockableAppsListDataRepository.getLockableApps()
                 SettingsUiState(
+                    settingsLockStatus = lockStatus,
                     appLockEnabled = appLockData.password.isNotEmpty(),
                     appList =
                         lockableApps.map { appInfo ->
@@ -61,7 +67,11 @@ constructor(
                         },
                 )
             }
-            .shareIn(viewModelScope, replay = 1, started = SharingStarted.WhileSubscribed(5000L))
+            .shareIn(
+                viewModelScope,
+                replay = 1,
+                started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT_MILLIS),
+            )
 
     /**
      * Disables the App Lock feature.
@@ -73,7 +83,6 @@ constructor(
             val lockedApps = appLockDataRepository.getLockedApps().toTypedArray()
             appSuspensionManager.setAppSuspensionState(packageNames = lockedApps, state = false)
             appLockDataRepository.clearData()
-            // TODO: Use PinManager to clear the stored pin.
         }
     }
 
@@ -96,7 +105,18 @@ constructor(
         }
     }
 
+    /** Checks if the user has a PIN set. */
+    suspend fun isPinSet(): Boolean {
+        return pinManager.getAppLockPinState() == PinManager.PinState.SET
+    }
+
+    /** Sets the lock state for the Settings screen. */
+    fun setSettingsLockStatus(status: SettingsLockStatus) =
+        settingsLockManager.setLockStatus(status)
+
     private companion object {
-        private val logger = Logger(SettingsFragmentViewModel::class.java)
+        val logger = Logger(SettingsViewModel::class.java)
+
+        val FLOW_STOP_TIMEOUT_MILLIS = 5000L
     }
 }

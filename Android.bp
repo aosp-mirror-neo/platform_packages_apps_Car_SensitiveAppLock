@@ -69,6 +69,7 @@ android_library {
         "tink-java",
     ],
     manifest: "AndroidManifest.xml",
+    min_sdk_version: "34",
 }
 
 android_app {
@@ -90,4 +91,6 @@ android_app {
     static_libs: [
         "SensitiveAppLock-core",
     ],
+
+    min_sdk_version: "34",
 }

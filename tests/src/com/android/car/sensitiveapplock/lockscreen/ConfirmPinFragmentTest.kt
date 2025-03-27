@@ -16,6 +16,7 @@
 package com.android.car.sensitiveapplock.lockscreen
 
 import android.app.Application
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -68,7 +69,7 @@ class ConfirmPinFragmentTest {
             ) { requestKey, bundle ->
                 actualResult = bundle.getString(PinLockActivity.USER_PIN_BUNDLE_KEY)
             }
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             pinPadEnterKey.performClick()
 
@@ -87,7 +88,7 @@ class ConfirmPinFragmentTest {
                 actualResult = bundle.getString(PinLockActivity.USER_PIN_BUNDLE_KEY)
             }
             val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             pinPadZeroKey
                 .performClick() // Viewmodel PIN is empty so adding digit will make it not match

@@ -63,7 +63,6 @@ class PinLockActivity : Hilt_PinLockActivity() {
             val userPin = bundle.getString(USER_PIN_BUNDLE_KEY)
             if (userPin.isNullOrEmpty()) {
                 logger.e("Tried to save empty PIN, aborting.")
-                setResult(RESULT_CANCELED)
                 finish()
                 return@setFragmentResultListener
             }
@@ -72,13 +71,11 @@ class PinLockActivity : Hilt_PinLockActivity() {
                 viewModel.savePin(userPin).also { status ->
                     if (!status) {
                         logger.e("Failed to save PIN, aborting.")
-                        setResult(RESULT_CANCELED)
                         finish()
                         return@launch
                     }
                 }
 
-                setResult(RESULT_OK)
                 finish()
             }
         }
@@ -91,27 +88,32 @@ class PinLockActivity : Hilt_PinLockActivity() {
             VALIDATE_PIN_REQUEST_KEY,
             this,
         ) { _, _ ->
-            logger.d("Validate PIN request result received!")
-
-            // Result is only received on valid pin since ValidatePinFragment will do the
-            // verification.
-            setResult(RESULT_OK)
+            logger.d("Validate PIN request result received with valid PIN!")
 
             val packageName = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME)
             if (packageName == null) {
-                logger.d("Called from Settings, PIN Valid.")
-                finish()
+                logger.d("Called from Settings. Unlocking Settings.")
+                lifecycleScope.launch {
+                    viewModel.unlockSettings()
+                    finish()
+                }
                 return@setFragmentResultListener
             }
 
-            logger.d(
-                "Called from Suspend Dialog, PIN Valid. Unlocking apps and launching $packageName."
-            )
+            logger.d("Called from Suspend Dialog. Unlocking apps and launching $packageName.")
             lifecycleScope.launch {
                 viewModel.unlockApps()
                 startActivity(packageManager.getLaunchIntentForPackage(packageName))
                 finish()
             }
+            // TODO: b/415382369 - Handle media apps launch intent.
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isFinishing) {
+            lifecycleScope.launch { viewModel.setCanceledIfNotValid() }
         }
     }
 

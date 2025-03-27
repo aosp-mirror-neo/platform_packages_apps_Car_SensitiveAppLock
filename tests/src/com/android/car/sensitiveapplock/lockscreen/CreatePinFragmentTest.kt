@@ -16,6 +16,7 @@
 package com.android.car.sensitiveapplock.lockscreen
 
 import android.app.Application
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -66,7 +67,7 @@ class CreatePinFragmentTest {
         launchFragmentInHiltContainer<CreatePinFragment>() { fragment ->
             Navigation.setViewNavController(fragment.requireView(), navController)
             val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             // 4 digit pin before hitting enter
             for (i in 0..3) {
@@ -86,7 +87,7 @@ class CreatePinFragmentTest {
 
         launchFragmentInHiltContainer<CreatePinFragment>() { fragment ->
             Navigation.setViewNavController(fragment.requireView(), navController)
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             // Pin currently empty so invalid
             pinPadEnterKey.performClick()

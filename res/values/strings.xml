@@ -16,22 +16,26 @@
 <resources>
   <string name="app_name">Sensitive App Lock</string>
 
-  <string name="setting_title">App Lock</string>
-  <string name="setting_summary">Protect apps with a pin when you\'re away</string>
+  <string name="setting_title">App lock</string>
+  <string name="setting_summary">Lock apps to stop other people opening them</string>
 
-  <string name="app_lock_switch">Enable App Lock</string>
-  <string name="app_lock_switch_summary">Protect apps with a PIN when you\’re away</string>
-  <string name="protected_apps_category">Protected apps</string>
+  <string name="app_lock_switch">Use app lock</string>
+  <string name="app_lock_switch_summary">Keep some apps locked with a pin</string>
+  <string name="protected_apps_category">My apps</string>
 
-  <string name="validate_pin_title">Enter your app PIN</string>
-  <string name="create_pin_title">Choose your app PIN</string>
+  <string name="validate_pin_title">Enter your PIN</string>
+  <string name="create_pin_title">Set a PIN for locked apps</string>
   <string name="create_pin_subtitle">PIN must be at least 4 digits</string>
   <string name="confirm_pin_title">Confirm your app PIN</string>
   <string name="confirm_pin_subtitle">Enter your PIN again</string>
 
-  <string name="suspend_dialog_title">This app is protected</string>
-  <string name="suspend_dialog_message">This app is protected by your app lock. To manage app protections, go to Settings > Privacy > App Protection.</string>
-  <string name="suspend_dialog_neutral_button_text">Unlock</string>
+  <string name="suspend_dialog_title">You’re unlocking apps you protected</string>
+  <string name="suspend_dialog_message">Make sure you’re comfortable with others in the car seeing any private content in these apps</string>
+  <string name="suspend_dialog_neutral_button_text">Unlock now</string>
+
+  <string name="pin_error">Wrong PIN</string>
+
+  <string name="pin_screen_next_button_label">Next</string>
 
   <!-- Digits on the PIN pad -->
   <string name="one">1</string>

@@ -39,7 +39,12 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.base_pin_screen) {
         view.findViewById<TextView>(R.id.title).text = getString(R.string.validate_pin_title)
 
         pinPad = view.findViewById(R.id.pin_pad)
-        pinPad.onConfirmClick = { validatePin() }
+
+        PinFragmentUi.setupPinFragmentUi(
+            pinFragmentView = view,
+            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
+            onConfirmClicked = { validatePin() },
+        )
     }
 
     private fun validatePin() {

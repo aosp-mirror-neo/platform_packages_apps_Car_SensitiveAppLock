@@ -15,6 +15,7 @@
  */
 package com.android.car.sensitiveapplock.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -26,6 +27,7 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.ui.preference.PreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,7 +35,7 @@ import kotlinx.coroutines.launch
 /** A [PreferenceFragment] that shows the main content for the Settings screen. */
 @AndroidEntryPoint(PreferenceFragment::class)
 class SettingsFragment : Hilt_SettingsFragment() {
-    private val viewModel: SettingsFragmentViewModel by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceScreen =
@@ -107,7 +109,15 @@ class SettingsFragment : Hilt_SettingsFragment() {
     private fun enableAppLockFeature(enable: Boolean) {
         if (!enable) {
             viewModel.disableAppLockFeature()
+            return
         }
+
+        val pinScreenIntent =
+            Intent(context, PinLockActivity::class.java).apply {
+                action = PinLockActivity.ACTION_CREATE_PIN
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        startActivity(pinScreenIntent)
     }
 
     private companion object {

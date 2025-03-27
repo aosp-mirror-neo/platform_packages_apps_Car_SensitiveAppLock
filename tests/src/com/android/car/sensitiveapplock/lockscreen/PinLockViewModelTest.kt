@@ -22,6 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -50,12 +51,20 @@ class PinLockViewModelTest {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
 
+    @Inject lateinit var settingsLockManager: SettingsLockManager
+
     @Inject lateinit var pinManager: PinManager
 
     @Before
     fun init() {
         hiltRule.inject()
-        pinLockViewModel = PinLockViewModel(appLockDataRepository, appSuspensionManager, pinManager)
+        pinLockViewModel =
+            PinLockViewModel(
+                appLockDataRepository,
+                appSuspensionManager,
+                pinManager,
+                settingsLockManager,
+            )
     }
 
     @Test

@@ -17,6 +17,7 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.app.Application
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -71,7 +72,7 @@ class ValidatePinFragmentTest {
                 receivedBundle = bundle
             }
             val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             // 4 digit pin before hitting enter
             for (i in 0..3) {
@@ -95,7 +96,7 @@ class ValidatePinFragmentTest {
             ) { requestKey, bundle ->
                 receivedBundle = bundle
             }
-            val pinPadEnterKey = fragment.requireView().findViewById<TextView>(R.id.key_confirm)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             pinPadEnterKey.performClick()
 

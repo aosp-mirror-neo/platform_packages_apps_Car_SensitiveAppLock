@@ -54,12 +54,18 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.base_pin_screen) {
         }
 
         pinPad = view.findViewById(R.id.pin_pad)
-        pinPad.onConfirmClick = { confirmPin() }
+
+        PinFragmentUi.setupPinFragmentUi(
+            pinFragmentView = view,
+            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
+            onConfirmClicked = { confirmPin() },
+        )
     }
 
     private fun confirmPin() {
         if (pinPad.getPin() != viewModel.enteredPin.value) {
             logger.w("Pin did not match!")
+            PinFragmentUi.setErrorMessage(requireView(), getString(R.string.pin_error))
             return
         }
 

@@ -23,7 +23,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,14 +45,19 @@ class CreatePinFragment : Hilt_CreatePinFragment(R.layout.base_pin_screen) {
         }
 
         pinPad = view.findViewById(R.id.pin_pad)
-        pinPad.onConfirmClick = {
-            if (!viewModel.doesPinHaveValidFormat(pinPad.getPin())) {
-                logger.w("Entered PIN is not in valid format.")
-            } else {
+
+        PinFragmentUi.setupPinFragmentUi(
+            pinFragmentView = view,
+            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
+            onConfirmClicked = {
+                if (!viewModel.doesPinHaveValidFormat(pinPad.getPin())) {
+                    logger.w("Pin does not have valid format!")
+                    return@setupPinFragmentUi
+                }
                 viewModel.setEnteredPin(pinPad.getPin())
-                view.findNavController().navigate(R.id.action_create_pin_to_confirm_pin)
-            }
-        }
+                findNavController().navigate(R.id.action_create_pin_to_confirm_pin)
+            },
+        )
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

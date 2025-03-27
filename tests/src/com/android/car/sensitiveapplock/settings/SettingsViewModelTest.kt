@@ -23,6 +23,7 @@ import android.os.Process
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListRepository
 import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfoFromPackageName
@@ -48,7 +49,7 @@ import org.robolectric.shadows.ShadowPackageManager
 @Config(
     shadows = [ShadowPackageManager::class, ShadowLauncherApps::class, ShadowContextWrapper::class]
 )
-class SettingsFragmentViewModelTest {
+class SettingsViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
@@ -59,8 +60,10 @@ class SettingsFragmentViewModelTest {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var lockableAppsListRepository: LockableAppsListRepository
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
+    @Inject lateinit var settingsLockManager: SettingsLockManager
+    @Inject lateinit var pinManager: PinManager
 
-    private lateinit var viewModel: SettingsFragmentViewModel
+    private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun init() {
@@ -69,10 +72,12 @@ class SettingsFragmentViewModelTest {
 
         // Can't inject a [HiltViewModel]
         viewModel =
-            SettingsFragmentViewModel(
+            SettingsViewModel(
                 appLockDataRepository,
                 lockableAppsListRepository,
                 appSuspensionManager,
+                settingsLockManager,
+                pinManager
             )
 
         installTestLauncherApps()

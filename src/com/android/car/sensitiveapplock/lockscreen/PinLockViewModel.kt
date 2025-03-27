@@ -18,22 +18,16 @@ package com.android.car.sensitiveapplock.lockscreen
 import androidx.lifecycle.ViewModel
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.settings.SettingsLockManager
+import com.android.car.sensitiveapplock.settings.SettingsLockStatus
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-
-/**
- * Data class that represents the UI state for a Pin Fragment.
- *
- * @see CreatePinFragment
- * @see ConfirmPinFragment
- * @See ValidatePinFragment
- */
-data class PinFragmentUiState(val enteredPin: String = "")
 
 /** Viewmodel for the Pin Lock screen. */
 @HiltViewModel
@@ -43,6 +37,7 @@ constructor(
     private val appLockDataRepository: AppLockDataRepository,
     private val appSuspensionManager: AppSuspensionManager,
     private val pinManager: PinManager,
+    private val settingsLockManager: SettingsLockManager,
 ) : ViewModel() {
     private val _enteredPin = MutableStateFlow("")
     val enteredPin: StateFlow<String> = _enteredPin.asStateFlow()
@@ -71,5 +66,21 @@ constructor(
     suspend fun unlockApps() {
         val lockedApps = appLockDataRepository.getLockedApps().toTypedArray()
         appSuspensionManager.setAppSuspensionState(packageNames = lockedApps, state = false)
+    }
+
+    /**
+     * Unlocks the Settings page by setting the Settings Lock Status to
+     * [SettingsLockStatus.VALID_PIN].
+     */
+    fun unlockSettings() = settingsLockManager.setLockStatus(SettingsLockStatus.VALID_PIN)
+
+    /**
+     * Sets the Settings Lock Status to [SettingsLockStatus.CANCELED_PIN] if a valid status was not
+     * already set.
+     */
+    suspend fun setCanceledIfNotValid() {
+        if (settingsLockManager.lockStatusFlow.first() != SettingsLockStatus.VALID_PIN) {
+            settingsLockManager.setLockStatus(SettingsLockStatus.CANCELED_PIN)
+        }
     }
 }

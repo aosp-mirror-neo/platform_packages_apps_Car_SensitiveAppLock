@@ -14,28 +14,10 @@
   ~ limitations under the License.
   -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <EditText
-        android:id="@+id/entered_pin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:clickable="false"
-        android:contextClickable="false"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:gravity="center"
-        android:inputType="numberPassword" />
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/pin_pad_spacing"/>
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/pin_pad_spacing"
-        android:columnCount="3"
-        android:useDefaultMargins="true">
+        android:columnCount="3" >
         <!--  Row 1  -->
         <TextView
             android:id="@+id/key_1"
@@ -76,19 +58,23 @@
             style="@style/PinPadKey"
             android:text="@string/nine" />
         <!--  Row 4  -->
-        <TextView
+        <ImageButton
             android:id="@+id/key_backspace"
             style="@style/PinPadKey"
-            android:background="@drawable/outline_backspace_24"
+            android:tint="@color/pin_pad_key_tint"
+            android:scaleType="centerInside"
+            android:src="@drawable/outline_backspace_24"
             android:contentDescription="@string/backspace_key_content_description" />
         <TextView
             android:id="@+id/key_0"
             style="@style/PinPadKey"
             android:text="@string/zero" />
-        <TextView
+        <ImageButton
             android:id="@+id/key_confirm"
             style="@style/PinPadKey"
-            android:background="@drawable/outline_check_24"
+            android:tint="@color/pin_pad_key_tint"
+            android:scaleType="centerInside"
+            android:src="@drawable/outline_check_24"
             android:contentDescription="@string/confirm_key_content_description" />
     </GridLayout>
 </merge>
