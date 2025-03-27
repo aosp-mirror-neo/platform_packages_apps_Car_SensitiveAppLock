@@ -1,0 +1,133 @@
+/*
+ * Copyright 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.car.sensitiveapplock.lockscreen
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.util.Logger
+import com.android.car.ui.core.CarUi.requireToolbar
+import com.android.car.ui.toolbar.NavButtonMode
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
+/** Activity that presents a Pin Lock screen to users. */
+@AndroidEntryPoint(AppCompatActivity::class)
+class PinLockActivity : Hilt_PinLockActivity() {
+    private val viewModel: PinLockViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_pin_lock)
+        requireToolbar(this).navButtonMode = NavButtonMode.BACK
+
+        when (intent.action) {
+            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS,
+            ACTION_VALIDATE_PIN -> {
+                findNavController().navigate(R.id.action_create_pin_to_validate_pin)
+                setValidatePinResultListener()
+            }
+            ACTION_CREATE_PIN -> setCreatePinResultListener()
+            else -> finish()
+        }
+    }
+
+    private fun setCreatePinResultListener() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment.childFragmentManager.setFragmentResultListener(
+            USER_PIN_REQUEST_KEY,
+            this,
+        ) { _, bundle ->
+            logger.d("User PIN request result received!")
+
+            val userPin = bundle.getString(USER_PIN_BUNDLE_KEY)
+            if (userPin.isNullOrEmpty()) {
+                logger.e("Tried to save empty PIN, aborting.")
+                setResult(RESULT_CANCELED)
+                finish()
+                return@setFragmentResultListener
+            }
+
+            lifecycleScope.launch {
+                viewModel.savePin(userPin).also { status ->
+                    if (!status) {
+                        logger.e("Failed to save PIN, aborting.")
+                        setResult(RESULT_CANCELED)
+                        finish()
+                        return@launch
+                    }
+                }
+
+                setResult(RESULT_OK)
+                finish()
+            }
+        }
+    }
+
+    private fun setValidatePinResultListener() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment.childFragmentManager.setFragmentResultListener(
+            VALIDATE_PIN_REQUEST_KEY,
+            this,
+        ) { _, _ ->
+            logger.d("Validate PIN request result received!")
+
+            // Result is only received on valid pin since ValidatePinFragment will do the
+            // verification.
+            setResult(RESULT_OK)
+
+            val packageName = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME)
+            if (packageName == null) {
+                logger.d("Called from Settings, PIN Valid.")
+                finish()
+                return@setFragmentResultListener
+            }
+
+            logger.d(
+                "Called from Suspend Dialog, PIN Valid. Unlocking apps and launching $packageName."
+            )
+            lifecycleScope.launch {
+                viewModel.unlockApps()
+                startActivity(packageManager.getLaunchIntentForPackage(packageName))
+                finish()
+            }
+        }
+    }
+
+    private fun findNavController(): NavController {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
+    }
+
+    companion object {
+        private val logger = Logger(PinLockActivity::class.java)
+
+        const val USER_PIN_REQUEST_KEY = "user_pin_request_key"
+        const val USER_PIN_BUNDLE_KEY = "user_pin_bundle_key"
+        const val VALIDATE_PIN_REQUEST_KEY = "validate_pin_request_key"
+        const val ACTION_CREATE_PIN = "com.android.car.sensitiveapplock.action.CREATE_PIN"
+        const val ACTION_VALIDATE_PIN = "com.android.car.sensitiveapplock.action.VALIDATE_PIN"
+    }
+}
