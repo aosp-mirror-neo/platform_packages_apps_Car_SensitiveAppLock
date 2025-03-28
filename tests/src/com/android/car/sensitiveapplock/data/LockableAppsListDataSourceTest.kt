@@ -17,15 +17,19 @@ package com.android.car.sensitiveapplock.data
 
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
+import android.content.ComponentName
 import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.os.Process
+import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -39,18 +43,18 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLauncherApps
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowLauncherApps::class])
+@Config(shadows = [ShadowResources::class])
 class LockableAppsListDataSourceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
     private val shadowLauncherApps =
         shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
+    private val shadowPackageManager = shadowOf(context.packageManager)
 
     @Inject lateinit var lockableAppsListDataSource: LockableAppsListDataSource
 
@@ -58,6 +62,7 @@ class LockableAppsListDataSourceTest {
     fun init() {
         hiltRule.inject()
         shadowOf(context).grantPermissions(SUSPEND_APPS)
+        ShadowResources.reset()
     }
 
     @Test
@@ -67,6 +72,25 @@ class LockableAppsListDataSourceTest {
 
         val unsuspendablePackages = context.resources.getStringArray(R.array.unsuspendable_packages)
         assertThat(lockableApps).containsNoneIn(unsuspendablePackages)
+    }
+
+    @Test
+    fun getLockableApps_whenMediaAppsLockingEnabled_containsMediaApps() = runTest {
+        addMediaLauncherActivities()
+
+        val lockableApps = lockableAppsListDataSource.getLockableApps()
+
+        assertThat(lockableApps).hasSize(2)
+    }
+
+    @Test
+    fun getLockableApps_whenMediaAppsLockingDisabled_doesNotContainMediaApps() = runTest {
+        ShadowResources.setBoolean(R.bool.config_enableMediaAppsLocking, false)
+        addMediaLauncherActivities()
+
+        val lockableApps = lockableAppsListDataSource.getLockableApps()
+
+        assertThat(lockableApps).isEmpty()
     }
 
     private fun addLauncherActivities() {
@@ -82,6 +106,20 @@ class LockableAppsListDataSourceTest {
         }
     }
 
+    private fun addMediaLauncherActivities() {
+        for (mediaPackage in TEST_MEDIA_PACKAGES) {
+            addMediaApps(mediaPackage)
+        }
+    }
+
+    private fun addMediaApps(packageName: String) {
+        val classComponentName = "MediaBrowserService"
+        val cmpName = ComponentName(packageName, classComponentName)
+        val intentFilter = IntentFilter(MediaBrowserService.SERVICE_INTERFACE)
+        shadowPackageManager.addServiceIfNotPresent(cmpName)
+        shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
+    }
+
     private fun buildLauncherActivityInfo(packageName: String): LauncherActivityInfo {
         val applicationInfo =
             ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
@@ -94,5 +132,6 @@ class LockableAppsListDataSourceTest {
 
     private companion object {
         val TEST_ACTIVITIES = listOf("com.package.1", "com.package.2")
+        val TEST_MEDIA_PACKAGES = listOf("com.package.media.1", "com.package.media.2")
     }
 }

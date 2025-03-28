@@ -17,6 +17,10 @@ package com.android.car.sensitiveapplock.util
 
 import android.app.Application
 import android.content.pm.PackageInfo
+import android.media.session.MediaController
+import android.media.session.MediaSession
+import android.media.session.MediaSessionManager
+import android.media.session.PlaybackState
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -29,18 +33,17 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowPackageManager
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowPackageManager::class])
 class AppSuspensionManagerTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
     private val shadowPackageManager = shadowOf(context.packageManager)
+    private val shadowMediaSessionManager =
+        shadowOf(context.getSystemService(MediaSessionManager::class.java))
 
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
 
@@ -69,7 +72,41 @@ class AppSuspensionManagerTest {
             .isFalse()
     }
 
+    @Test
+    fun suspendApp_whenUnsuspendingMediaApps_doesNotPauseMediaSession() {
+        val mediaController = addMediaController(MEDIA_PACKAGE_INFO)
+        val shadowTransportControls = shadowOf(mediaController.transportControls)
+        shadowPackageManager.installPackage(MEDIA_PACKAGE_INFO)
+
+        mediaController.transportControls.stop()
+        appSuspensionManager.setAppSuspensionState(MEDIA_PACKAGE_INFO.packageName, false)
+
+        assertThat(shadowTransportControls.lastPerformedAction)
+            .isEqualTo(PlaybackState.ACTION_STOP)
+    }
+
+    @Test
+    fun suspendApp_whenSuspendingMediaApps_pausesMediaSession() {
+        val mediaController = addMediaController(MEDIA_PACKAGE_INFO)
+        val shadowTransportControls = shadowOf(mediaController.transportControls)
+        shadowPackageManager.installPackage(MEDIA_PACKAGE_INFO)
+
+        mediaController.transportControls.play()
+        appSuspensionManager.setAppSuspensionState(MEDIA_PACKAGE_INFO.packageName, true)
+
+        assertThat(shadowTransportControls.lastPerformedAction)
+            .isEqualTo(PlaybackState.ACTION_PAUSE)
+    }
+
+    private fun addMediaController(packageInfo: PackageInfo): MediaController {
+        val mediaController = MediaController(context, MediaSession(context, "tag").sessionToken)
+        shadowOf(mediaController).apply { setPackageName(packageInfo.packageName) }
+        shadowMediaSessionManager.addController(mediaController)
+        return mediaController
+    }
+
     private companion object {
         val PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.package" }
+        val MEDIA_PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.media.package" }
     }
 }
