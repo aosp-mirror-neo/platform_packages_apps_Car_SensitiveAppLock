@@ -62,7 +62,9 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
                 suspendDialogInfo,
             )
             .also { errorPackages ->
-                logger.e("Failed to suspend: ${errorPackages.contentToString()}")
+                if (errorPackages != null && errorPackages.size > 0) {
+                    logger.e("Failed to suspend: ${errorPackages.contentToString()}")
+                }
             }
     }
 
