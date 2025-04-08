@@ -20,6 +20,8 @@ android_robolectric_test {
     srcs: [
         ":sensitive-app-lock-testing-srcs",
         "src/com/android/car/sensitiveapplock/data/*.kt",
+        "src/com/android/car/sensitiveapplock/di/*.kt",
+        "src/com/android/car/sensitiveapplock/lockscreen/*.kt",
         "src/com/android/car/sensitiveapplock/settings/*.kt",
         "src/com/android/car/sensitiveapplock/suspension/*.kt",
         "src/com/android/car/sensitiveapplock/testing/*.kt",
@@ -32,6 +34,7 @@ android_robolectric_test {
         "androidx.test.core",
         "androidx.test.runner",
         "androidx.test.ext.junit",
+        "androidx.navigation_navigation-testing",
         "kotlinx_coroutines_test",
         "hilt_android",
         "hilt_android_testing",

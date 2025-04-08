@@ -32,6 +32,7 @@
         android:label="@string/app_name"
         android:allowClearUserData="false"
         android:theme="@style/Theme.CarUi.WithToolbar">
+
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="true">
@@ -55,6 +56,16 @@
             <meta-data android:name="com.android.settings.icon_tintable"
                 android:value="true" />
         </activity>
+
+        <activity
+            android:name=".lockscreen.PinLockActivity"
+            android:exported="true"
+            android:permission="android.permission.SEND_SHOW_SUSPENDED_APP_DETAILS">
+            <intent-filter>
+                <action android:name="android.intent.action.SHOW_SUSPENDED_APP_DETAILS" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".suspension.BootReceiver"
             android:directBootAware="true"
@@ -66,5 +77,4 @@
             </intent-filter>
         </receiver>
     </application>
-
 </manifest>
