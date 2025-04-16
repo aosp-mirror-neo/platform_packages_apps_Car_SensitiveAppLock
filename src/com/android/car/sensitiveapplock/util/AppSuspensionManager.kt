@@ -18,6 +18,7 @@ package com.android.car.sensitiveapplock.util
 import android.content.Context
 import android.content.pm.SuspendDialogInfo
 import android.content.pm.SuspendDialogInfo.BUTTON_ACTION_MORE_DETAILS
+import android.media.session.MediaSessionManager
 import com.android.car.sensitiveapplock.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -27,6 +28,8 @@ import javax.inject.Singleton
 @Singleton
 class AppSuspensionManager @Inject constructor(@ApplicationContext applicationContext: Context) {
     private val packageManager = applicationContext.packageManager
+    private val mediaSessionManager =
+        applicationContext.getSystemService(MediaSessionManager::class.java)
 
     /**
      * Sets the suspension state of an app.
@@ -66,6 +69,21 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
                     logger.e("Failed to suspend: ${errorPackages.contentToString()}")
                 }
             }
+
+        // Only pause media session when packages are being suspended.
+        if (state) {
+            pauseMediaSessions(packageNames.toHashSet())
+        }
+    }
+
+    private fun pauseMediaSessions(packageNames: HashSet<String>) {
+        val mediaSessions = mediaSessionManager
+            .getActiveSessions(null) // notificationListener
+        for (session in mediaSessions) {
+            if (packageNames.contains(session.packageName)) {
+                session.transportControls.pause()
+            }
+        }
     }
 
     private companion object {

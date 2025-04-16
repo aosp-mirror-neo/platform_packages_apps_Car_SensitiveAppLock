@@ -17,10 +17,14 @@ package com.android.car.sensitiveapplock.data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.Process
+import android.service.media.MediaBrowserService
+import com.android.car.media.common.source.MediaSource
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,7 +41,9 @@ import javax.inject.Singleton
  */
 @SuppressLint("MissingPermission")
 @Singleton
-class LockableAppsListDataSource @Inject constructor(@ApplicationContext context: Context) {
+class LockableAppsListDataSource
+@Inject
+constructor(@ApplicationContext private val context: Context) {
     private val unsuspendablePackages =
         mutableSetOf(*context.resources.getStringArray(R.array.unsuspendable_packages))
     private val packageManager = context.packageManager
@@ -46,7 +52,7 @@ class LockableAppsListDataSource @Inject constructor(@ApplicationContext context
     private val logger = Logger(this.javaClass)
 
     fun getLockableApps(): List<AppInfo> {
-        val allApps = getLauncherApps()
+        val allApps = (getLauncherApps() + getMediaApps()).distinctBy { it.packageName }
 
         val allAppPackageNames = allApps.map(AppInfo::packageName).toTypedArray()
         unsuspendablePackages.addAll(packageManager.getUnsuspendablePackages(allAppPackageNames))
@@ -66,12 +72,36 @@ class LockableAppsListDataSource @Inject constructor(@ApplicationContext context
             .map { it.toAppInfo(packageManager) }
     }
 
+    private fun getMediaApps(): List<AppInfo> {
+        if (!context.resources.getBoolean(R.bool.config_enableMediaAppsLocking)) {
+            logger.v("Media apps locking is not enabled")
+            return emptyList()
+        }
+        return context.packageManager
+            .queryIntentServices(
+                Intent(MediaBrowserService.SERVICE_INTERFACE),
+                PackageManager.GET_RESOLVED_FILTER,
+            )
+            .filter { MediaSource.isAudioMediaSource(context, it.serviceInfo.componentName) }
+            .map { it.toAppInfo(context.packageManager) }
+    }
+
     private fun LauncherActivityInfo.toAppInfo(packageManager: PackageManager): AppInfo {
         return AppInfo(
             packageName = applicationInfo.packageName,
             packageUid = applicationInfo.uid,
             label = applicationInfo.loadLabel(packageManager).toString(),
             icon = applicationInfo.loadIcon(packageManager),
+        )
+    }
+
+    /** Converts a [ResolveInfo] to an [AppInfo]. */
+    private fun ResolveInfo.toAppInfo(packageManager: PackageManager): AppInfo {
+        return AppInfo(
+            packageName = serviceInfo.packageName,
+            packageUid = serviceInfo.applicationInfo.uid,
+            label = serviceInfo.applicationInfo.loadLabel(packageManager).toString(),
+            icon = loadIcon(packageManager),
         )
     }
 }

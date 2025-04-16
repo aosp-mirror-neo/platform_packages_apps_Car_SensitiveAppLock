@@ -23,6 +23,7 @@ android_robolectric_test {
         "src/com/android/car/sensitiveapplock/di/*.kt",
         "src/com/android/car/sensitiveapplock/lockscreen/*.kt",
         "src/com/android/car/sensitiveapplock/settings/*.kt",
+        "src/com/android/car/sensitiveapplock/shadows/*.kt",
         "src/com/android/car/sensitiveapplock/suspension/*.kt",
         "src/com/android/car/sensitiveapplock/testing/*.kt",
         "src/com/android/car/sensitiveapplock/util/*.kt",
