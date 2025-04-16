@@ -18,4 +18,9 @@
 <resources>
     <!-- Config for allowing locking of media apps. -->
     <bool name="config_enableMediaAppsLocking">true</bool>
+
+    <!--A customizable list of unsuspendable packages that should not show up in the App Lock settings. -->
+    <string-array name="unsuspendable_packages">
+        <item>com.android.car.settings</item>
+    </string-array>
 </resources>
