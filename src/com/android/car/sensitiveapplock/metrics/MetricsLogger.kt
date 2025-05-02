@@ -15,12 +15,12 @@
  */
 package com.android.car.sensitiveapplock.metrics
 
-import android.os.Process
-import android.os.UserHandle
+import android.app.KeyguardManager
+import android.content.Context
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.internal.widget.LockPatternUtils
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
@@ -31,11 +31,14 @@ import kotlinx.coroutines.withContext
 class MetricsLogger
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     private val appLockDataRepository: AppLockDataRepository,
     private val lockableAppsListRepository: LockableAppsListRepository,
-    private val lockPatternUtils: LockPatternUtils,
     @BackgroundContext private val backgroundContext: CoroutineContext
 ) {
+    private val keyguardManager =
+        context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+
     /** Logs the user's current app lock state. */
     suspend fun logState() = withContext(backgroundContext) {
         val lockedApps = appLockDataRepository.getLockedApps().toSet()
@@ -43,12 +46,13 @@ constructor(
             lockedApps.contains(it.packageName)
         }.map { it.packageUid }
         val pinSet = appLockDataRepository.getPin().isNotEmpty()
-        val profileLockSet = lockPatternUtils.isSecure(UserHandle.getUserId(Process.myUid()))
+        val profileLockSet = keyguardManager.isDeviceSecure
         SensitiveAppLockStatsLog.write(
             SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED,
             pinSet,
             packageUids.toIntArray(),
             profileLockSet
         )
+        // TODO: b/416017684 - Add ATS test for logging metrics.
     }
 }
