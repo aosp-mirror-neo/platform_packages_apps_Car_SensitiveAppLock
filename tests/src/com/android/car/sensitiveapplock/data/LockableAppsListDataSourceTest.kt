@@ -76,6 +76,7 @@ class LockableAppsListDataSourceTest {
 
     @Test
     fun getLockableApps_whenMediaAppsLockingEnabled_containsMediaApps() = runTest {
+        ShadowResources.setBoolean(R.bool.config_enableMediaAppsLocking, true)
         addMediaLauncherActivities()
 
         val lockableApps = lockableAppsListDataSource.getLockableApps()
