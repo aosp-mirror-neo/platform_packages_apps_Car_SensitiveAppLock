@@ -16,6 +16,7 @@
 package com.android.car.sensitiveapplock.data
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherActivityInfo
@@ -82,16 +83,21 @@ constructor(@ApplicationContext private val context: Context) {
                 Intent(MediaBrowserService.SERVICE_INTERFACE),
                 PackageManager.GET_RESOLVED_FILTER,
             )
-            .filter { MediaSource.isAudioMediaSource(context, it.serviceInfo.componentName) }
+            .filter {
+                val componentName = ComponentName(it.serviceInfo.packageName, it.serviceInfo.name)
+                MediaSource.isAudioMediaSource(context, componentName)
+            }
             .map { it.toAppInfo(context.packageManager) }
     }
 
     private fun LauncherActivityInfo.toAppInfo(packageManager: PackageManager): AppInfo {
         return AppInfo(
             packageName = applicationInfo.packageName,
+            name = applicationInfo.name ?: "",
             packageUid = applicationInfo.uid,
             label = applicationInfo.loadLabel(packageManager).toString(),
             icon = applicationInfo.loadIcon(packageManager),
+            isTemplateMediaApp = false
         )
     }
 
@@ -99,9 +105,11 @@ constructor(@ApplicationContext private val context: Context) {
     private fun ResolveInfo.toAppInfo(packageManager: PackageManager): AppInfo {
         return AppInfo(
             packageName = serviceInfo.packageName,
+            name = serviceInfo.name ?: "",
             packageUid = serviceInfo.applicationInfo.uid,
             label = serviceInfo.applicationInfo.loadLabel(packageManager).toString(),
             icon = loadIcon(packageManager),
+            isTemplateMediaApp = true
         )
     }
 }

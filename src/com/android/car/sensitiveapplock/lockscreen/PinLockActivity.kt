@@ -103,10 +103,9 @@ class PinLockActivity : Hilt_PinLockActivity() {
             logger.d("Called from Suspend Dialog. Unlocking apps and launching $packageName.")
             lifecycleScope.launch {
                 viewModel.unlockApps()
-                startActivity(packageManager.getLaunchIntentForPackage(packageName))
+                startActivity(viewModel.getLaunchIntentForPackage(packageManager, packageName))
                 finish()
             }
-            // TODO: b/415382369 - Handle media apps launch intent.
         }
     }
 

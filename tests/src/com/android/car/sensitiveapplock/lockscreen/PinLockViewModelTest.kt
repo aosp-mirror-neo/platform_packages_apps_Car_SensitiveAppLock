@@ -15,13 +15,20 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
+import android.car.media.CarMediaIntents
+import android.content.ComponentName
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageInfo
+import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
@@ -45,8 +52,9 @@ class PinLockViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val shadowPackageManager = shadowOf(context.packageManager)
 
-    lateinit var pinLockViewModel: PinLockViewModel
+    private lateinit var pinLockViewModel: PinLockViewModel
 
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
@@ -55,15 +63,19 @@ class PinLockViewModelTest {
 
     @Inject lateinit var pinManager: PinManager
 
+    @Inject lateinit var lockableAppsListDataSource: LockableAppsListDataSource
+
     @Before
     fun init() {
         hiltRule.inject()
+        shadowOf(context).grantPermissions(SUSPEND_APPS)
         pinLockViewModel =
             PinLockViewModel(
                 appLockDataRepository,
                 appSuspensionManager,
                 pinManager,
                 settingsLockManager,
+                lockableAppsListDataSource
             )
     }
 
@@ -95,7 +107,6 @@ class PinLockViewModelTest {
 
     @Test
     fun unlockApps_unsuspendsAllApps() = runTest {
-        val shadowPackageManager = shadowOf(context.packageManager)
         for (packageName in TEST_PACKAGE_NAMES) {
             shadowPackageManager.installPackage(
                 PackageInfo().apply { this.packageName = packageName }
@@ -111,8 +122,38 @@ class PinLockViewModelTest {
         }
     }
 
+    @Test
+    fun getLaunchIntentForPackage_standardApp_returnsIntentWithActionMain() {
+        val packageName = TEST_PACKAGE_NAMES[0]
+        val cmpName = ComponentName(packageName, "TestActivity")
+        val intentFilter = IntentFilter(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+        shadowPackageManager.addActivityIfNotPresent(cmpName)
+        shadowPackageManager.addIntentFilterForActivity(cmpName, intentFilter)
+
+        val intent = pinLockViewModel
+            .getLaunchIntentForPackage(context.packageManager, packageName)
+
+        assertThat(intent?.action).isEqualTo(Intent.ACTION_MAIN)
+    }
+
+    @Test
+    fun getLaunchIntentForPackage_templateMediaApp_returnsIntentWithActionMediaTemplate() {
+        val cmpName = ComponentName(TEST_TEMPLATE_MEDIA_PACKAGE, "MediaBrowserService")
+        val intentFilter = IntentFilter(MediaBrowserService.SERVICE_INTERFACE)
+        shadowPackageManager.addServiceIfNotPresent(cmpName)
+        shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
+
+        val intent = pinLockViewModel
+            .getLaunchIntentForPackage(context.packageManager, TEST_TEMPLATE_MEDIA_PACKAGE)
+
+        assertThat(intent?.action).isEqualTo(CarMediaIntents.ACTION_MEDIA_TEMPLATE)
+    }
+
     private companion object {
         const val USER_PIN = "1111"
+        const val TEST_TEMPLATE_MEDIA_PACKAGE = "com.template.1"
 
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
     }

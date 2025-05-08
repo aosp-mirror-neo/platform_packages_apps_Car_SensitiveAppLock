@@ -20,7 +20,9 @@ import android.graphics.drawable.Drawable
 /** Data class for application info. */
 data class AppInfo(
     val packageName: String,
+    val name: String, // Public "android:name" attribute
     val packageUid: Int,
     val label: String,
     val icon: Drawable,
+    val isTemplateMediaApp: Boolean
 )

@@ -15,9 +15,14 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.car.media.CarMediaIntents
+import android.content.ComponentName
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
@@ -38,6 +43,7 @@ constructor(
     private val appSuspensionManager: AppSuspensionManager,
     private val pinManager: PinManager,
     private val settingsLockManager: SettingsLockManager,
+    private val lockableAppsListDataSource: LockableAppsListDataSource,
 ) : ViewModel() {
     private val _enteredPin = MutableStateFlow("")
     val enteredPin: StateFlow<String> = _enteredPin.asStateFlow()
@@ -82,5 +88,22 @@ constructor(
         if (settingsLockManager.lockStatusFlow.first() != SettingsLockStatus.VALID_PIN) {
             settingsLockManager.setLockStatus(SettingsLockStatus.CANCELED_PIN)
         }
+    }
+
+    /**
+     * Returns an [Intent] to launch the action [Intent.ACTION_MAIN] for standard launcher
+     * app or action [CarMediaIntents.ACTION_MEDIA_TEMPLATE] for templated media apps.
+     */
+    fun getLaunchIntentForPackage(packageManager: PackageManager, packageName: String): Intent? {
+        val templateMediaApps = lockableAppsListDataSource.getLockableApps()
+            .filter { it.isTemplateMediaApp }
+        val mediaApp = templateMediaApps.find { it.packageName == packageName }
+        if (mediaApp == null) {
+            return packageManager.getLaunchIntentForPackage(packageName)
+        }
+        val component = ComponentName(packageName, mediaApp.name)
+        val intent = Intent(CarMediaIntents.ACTION_MEDIA_TEMPLATE)
+            .putExtra(CarMediaIntents.EXTRA_MEDIA_COMPONENT, component.flattenToString())
+        return intent
     }
 }
