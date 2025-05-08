@@ -21,7 +21,6 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
 import android.os.Process
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
@@ -29,6 +28,7 @@ import com.android.car.sensitiveapplock.data.LockableAppsListRepository
 import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfoFromPackageName
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
+import com.google.testing.junit.testparameterinjector.TestParameter
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -37,18 +37,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestParameterInjector
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowContextWrapper
-import org.robolectric.shadows.ShadowLauncherApps
-import org.robolectric.shadows.ShadowPackageManager
 
 @HiltAndroidTest
 @SmallTest
-@RunWith(AndroidJUnit4::class)
-@Config(
-    shadows = [ShadowPackageManager::class, ShadowLauncherApps::class, ShadowContextWrapper::class]
-)
+@RunWith(RobolectricTestParameterInjector::class)
 class SettingsViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -65,6 +59,11 @@ class SettingsViewModelTest {
 
     private lateinit var viewModel: SettingsViewModel
 
+    enum class PinSetTestCase(val pin: String, val isSet: Boolean) {
+        PIN_SET("1111", true),
+        PIN_UNSET("", false),
+    }
+
     @Before
     fun init() {
         shadowOf(context).grantPermissions("android.permission.SUSPEND_APPS")
@@ -77,14 +76,14 @@ class SettingsViewModelTest {
                 lockableAppsListRepository,
                 appSuspensionManager,
                 settingsLockManager,
-                pinManager
+                pinManager,
             )
 
         installTestLauncherApps()
     }
 
     @Test
-    fun disabledAppLockFeature_unlocksAllLockedApps() {
+    fun disableAppLockFeature_unlocksAllLockedApps() {
         for (packageName in TEST_PACKAGE_NAMES) {
             viewModel.setAppLockForApp(packageName, true)
         }
@@ -97,7 +96,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun disabledAppLockFeature_clearsData() = runTest {
+    fun disableAppLockFeature_clearsData() = runTest {
         for (packageName in TEST_PACKAGE_NAMES) {
             viewModel.setAppLockForApp(packageName, true)
         }
@@ -106,6 +105,7 @@ class SettingsViewModelTest {
 
         assertThat(appLockDataRepository.getLockedApps()).isEmpty()
         assertThat(appLockDataRepository.getPin()).isEmpty()
+        assertThat(pinManager.getAppLockPinState() == PinManager.PinState.UNSET)
     }
 
     @Test
@@ -123,6 +123,27 @@ class SettingsViewModelTest {
         viewModel.setAppLockForApp(packageName, false)
 
         assertThat(shadowPackageManager.getPackageSetting(packageName).isSuspended).isFalse()
+    }
+
+    @Test
+    fun isPinSet_returnsPinSet(@TestParameter pinSetTestCase: PinSetTestCase) = runTest {
+        pinManager.setAppLockPin(pinSetTestCase.pin)
+
+        assertThat(viewModel.isPinSet()).isEqualTo(pinSetTestCase.isSet)
+    }
+
+    @Test
+    fun unlockSettings_setsLockStatusValid() {
+        viewModel.unlockSettings()
+
+        assertThat(settingsLockManager.lockStatusFlow.value).isEqualTo(SettingsLockStatus.VALID_PIN)
+    }
+
+    @Test
+    fun lockSettings_setsLockStatusUnset() {
+        viewModel.lockSettings()
+
+        assertThat(settingsLockManager.lockStatusFlow.value).isEqualTo(SettingsLockStatus.UNSET)
     }
 
     private fun installTestLauncherApps() {

@@ -52,20 +52,23 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
             }
         lifecycleScope.launch {
             when (viewModel.isPinSet()) {
-                true -> startActivity(pinLockIntent)
-                false -> viewModel.setSettingsLockStatus(VALID_PIN)
+                true -> {
+                    viewModel.lockSettings()
+                    startActivity(pinLockIntent)
+                }
+                false -> viewModel.unlockSettings()
             }
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     when (uiState.settingsLockStatus) {
                         VALID_PIN -> {
-                            logger.d("Initializing UI")
                             // Display the fragment as the main content if not already there
                             if (
                                 savedInstanceState == null &&
                                     supportFragmentManager.fragments.isEmpty()
                             ) {
+                                logger.d("Initializing UI")
                                 supportFragmentManager
                                     .beginTransaction()
                                     .replace(android.R.id.content, SettingsFragment())

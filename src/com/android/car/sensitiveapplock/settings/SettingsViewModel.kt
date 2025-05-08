@@ -83,6 +83,7 @@ constructor(
             val lockedApps = appLockDataRepository.getLockedApps().toTypedArray()
             appSuspensionManager.setAppSuspensionState(packageNames = lockedApps, state = false)
             appLockDataRepository.clearData()
+            pinManager.clearAppLockPin()
         }
     }
 
@@ -110,9 +111,11 @@ constructor(
         return pinManager.getAppLockPinState() == PinManager.PinState.SET
     }
 
-    /** Sets the lock state for the Settings screen. */
-    fun setSettingsLockStatus(status: SettingsLockStatus) =
-        settingsLockManager.setLockStatus(status)
+    /** Unlocks the Settings screen. */
+    fun unlockSettings() = settingsLockManager.setLockStatus(SettingsLockStatus.VALID_PIN)
+
+    /** Locks the Settings screen. */
+    fun lockSettings() = settingsLockManager.setLockStatus(SettingsLockStatus.UNSET)
 
     private companion object {
         val logger = Logger(SettingsViewModel::class.java)
