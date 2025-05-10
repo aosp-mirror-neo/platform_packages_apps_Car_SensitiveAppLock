@@ -41,7 +41,7 @@ constructor(
 
     /** Logs the user's current app lock state. */
     suspend fun logState() = withContext(backgroundContext) {
-        val lockedApps = appLockDataRepository.getLockedApps().toSet()
+        val lockedApps = appLockDataRepository.getLockedApps().toHashSet()
         val packageUids = lockableAppsListRepository.getLockableApps().filter {
             lockedApps.contains(it.packageName)
         }.map { it.packageUid }
