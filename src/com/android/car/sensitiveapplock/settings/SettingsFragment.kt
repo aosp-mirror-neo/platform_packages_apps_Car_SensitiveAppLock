@@ -28,14 +28,18 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.ui.preference.PreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /** A [PreferenceFragment] that shows the main content for the Settings screen. */
 @AndroidEntryPoint(PreferenceFragment::class)
 class SettingsFragment : Hilt_SettingsFragment() {
     private val viewModel: SettingsViewModel by viewModels()
+
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceScreen =
@@ -99,6 +103,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 isPersistent = false
                 onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
                     viewModel.setAppLockForApp(preference.key, newValue as Boolean)
+                    lifecycleScope.launch { metricsLogger.logState() }
                     true
                 }
             }
@@ -118,6 +123,8 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         startActivity(pinScreenIntent)
+
+        lifecycleScope.launch { metricsLogger.logState() }
     }
 
     private companion object {
