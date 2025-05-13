@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
+import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfoFromPackageName
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
@@ -50,6 +51,7 @@ import org.robolectric.shadows.ShadowStatsLog
 @Config(shadows = [ShadowPackageManager::class, ShadowLauncherApps::class])
 class SettingsFragmentTest {
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1) val hiltTestActivityRule = HiltTestActivityRule()
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
     private val shadowLauncherApps =
