@@ -2,18 +2,6 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-android_app {
-    name: "SensitiveAppLockRoboTestStub",
-    platform_apis: true,
-    certificate: "platform",
-
-    static_libs: [
-        "SensitiveAppLock-core",
-        "androidx.fragment_fragment",
-        "androidx.fragment_fragment-testing",
-    ],
-}
-
 android_robolectric_test {
     enabled: true,
     name: "SensitiveAppLockRoboTests",
@@ -48,7 +36,7 @@ android_robolectric_test {
         "mockito-kotlin2",
     ],
     visibility: ["//visibility:public"],
-    instrumentation_for: "SensitiveAppLockRoboTestStub",
+    instrumentation_for: "SensitiveAppLock",
     test_suites: ["general-tests"],
     upstream: true,
 }
