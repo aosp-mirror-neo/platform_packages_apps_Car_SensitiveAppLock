@@ -45,7 +45,7 @@ android_test {
     name: "SensitiveAppLockTests",
     srcs: [
         ":sensitive-app-lock-testing-srcs",
-        "src/com/android/car/sensitiveapplock/HiltTestRunner.kt",
+        "src/com/android/car/sensitiveapplock/instrumentation/*.kt",
         "src/com/android/car/sensitiveapplock/auth/*.kt",
         "src/com/android/car/sensitiveapplock/di/*.kt",
     ],
