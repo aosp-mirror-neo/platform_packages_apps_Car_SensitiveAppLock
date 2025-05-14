@@ -38,7 +38,7 @@ android_library {
     exclude_srcs: [":sensitive-app-lock-testing-srcs"],
     resource_dirs: ["res"],
     libs: [
-        "android.car",
+        "android.car-system-stubs",
         "kotlin-annotations",
     ],
     static_libs: [
@@ -70,6 +70,7 @@ android_library {
     ],
     manifest: "AndroidManifest.xml",
     min_sdk_version: "34",
+    sdk_version: "system_current",
 }
 
 android_app {
@@ -79,12 +80,12 @@ android_app {
 
     resource_dirs: [],
 
-    platform_apis: true,
+    sdk_version: "system_current",
 
     certificate: "platform",
 
     libs: [
-        "android.car",
+        "android.car-system-stubs",
         "kotlin-annotations",
     ],
 

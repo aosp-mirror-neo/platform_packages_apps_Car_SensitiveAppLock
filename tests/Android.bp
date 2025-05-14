@@ -19,7 +19,6 @@ android_robolectric_test {
     ],
     java_resource_dirs: ["config"],
     libs: [
-        "android.car.testapi",
         "android.car-system-stubs",
         "androidx.test.core",
         "androidx.test.runner",
