@@ -21,7 +21,7 @@
         <uses-library android:name="android.test.runner" />
     </application>
 
-    <instrumentation android:name="com.android.car.sensitiveapplock.HiltTestRunner"
+    <instrumentation android:name="com.android.car.sensitiveapplock.instrumentation.HiltTestRunner"
         android:targetPackage="com.android.car.sensitiveapplock.test"
         android:label="Tests for SensitiveAppLock"/>
 </manifest>
