@@ -16,8 +16,8 @@
 
 package com.android.car.sensitiveapplock.shadows
 
-import android.annotation.BoolRes
 import android.content.res.Resources
+import androidx.annotation.BoolRes
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.annotation.RealObject
@@ -34,11 +34,11 @@ class ShadowResources : org.robolectric.shadows.ShadowResources() {
         if (booleanResourceMap.containsKey(id)) {
             return booleanResourceMap.getOrDefault(id, false)
         }
-         return Shadow.directlyOn(
+        return Shadow.directlyOn(
             realResources,
             Resources::class.qualifiedName,
             "getBoolean",
-            ReflectionHelpers.ClassParameter.from(Int::class.javaPrimitiveType, id)
+            ReflectionHelpers.ClassParameter.from(Int::class.javaPrimitiveType, id),
         )
     }
 
