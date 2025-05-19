@@ -16,9 +16,12 @@
 package com.android.car.sensitiveapplock.suspension
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInfo
+import android.os.Looper
+import android.os.UserManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -40,21 +43,23 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowPackageManager
+import org.robolectric.shadows.ShadowUserManager
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowPackageManager::class])
 @OptIn(ExperimentalCoroutinesApi::class)
 class BootReceiverTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
     private val shadowPackageManager = shadowOf(context.packageManager)
+    private val shadowUserManager =
+        shadowOf(context.getSystemService(Context.USER_SERVICE) as UserManager).apply {
+            setSupportsMultipleUsers(true)
+            addUser(ShadowUserManager.DEFAULT_SECONDARY_USER_ID, "secondary_user", 0)
+        }
 
     private lateinit var receiver: BootReceiver
 
@@ -78,7 +83,8 @@ class BootReceiverTest {
     }
 
     @Test
-    fun onReceive_shouldSuspendUserLockedApps() = runTest {
+    fun onReceive_onSecondaryUser_shouldSuspendUserLockedApps() = runTest {
+        shadowUserManager.switchUser(ShadowUserManager.DEFAULT_SECONDARY_USER_ID)
         appLockDataRepository.addLockedApp(PACKAGE_INFO.packageName)
 
         sendBroadcast()
@@ -87,13 +93,26 @@ class BootReceiverTest {
             .isTrue()
     }
 
+    @Test
+    fun onReceive_onSystemUser_shouldNotSuspendUserLockedApps() = runTest {
+        shadowUserManager.switchUser(SYSTEM_USER_ID)
+        appLockDataRepository.addLockedApp(PACKAGE_INFO.packageName)
+
+        sendBroadcast()
+
+        assertThat(shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).isSuspended)
+            .isFalse()
+    }
+
     private fun sendBroadcast() {
         Intent(Intent.ACTION_LOCKED_BOOT_COMPLETED).also { intent -> context.sendBroadcast(intent) }
         // Wait for all main thread operations to complete
-        Robolectric.flushForegroundThreadScheduler()
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
     }
 
     private companion object {
+        const val SYSTEM_USER_ID = 0
+
         val PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.package" }
     }
 }

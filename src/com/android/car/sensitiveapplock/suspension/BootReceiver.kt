@@ -18,6 +18,8 @@ package com.android.car.sensitiveapplock.suspension
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Process
+import android.os.UserHandle
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
@@ -30,8 +32,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 /**
- * A [BroadcastReceiver] that relocks user apps when the device boots or when the user switches
- * back to their profile.
+ * A [BroadcastReceiver] that relocks user apps when the device boots or when the user switches back
+ * to their profile.
  */
 @AndroidEntryPoint(BroadcastReceiver::class)
 class BootReceiver : Hilt_BootReceiver() {
@@ -42,13 +44,16 @@ class BootReceiver : Hilt_BootReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
+        if (UserHandle.SYSTEM == Process.myUserHandle()) {
+            logger.v("Skip relocking apps for system user")
+            return
+        }
+
         // Broadcast receivers are launched on the main thread by default.
         val pendingResult = goAsync()
-        CoroutineScope(backgroundContext + SupervisorJob()).launch {
-            lockApps()
-        }.invokeOnCompletion {
-            pendingResult.finish()
-        }
+        CoroutineScope(backgroundContext + SupervisorJob())
+            .launch { lockApps() }
+            .invokeOnCompletion { pendingResult.finish() }
     }
 
     private suspend fun lockApps() {
