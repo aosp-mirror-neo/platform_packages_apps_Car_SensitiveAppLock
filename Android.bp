@@ -23,8 +23,8 @@ filegroup {
 android_library {
     name: "SensitiveAppLock-core",
     srcs: [
-        ":statslog-sensitiveapplock-java-gen",
         "src/**/*.kt",
+        "src/com/android/car/sensitiveapplock/metrics/SensitiveAppLockStatsLog.java",
     ],
     exclude_srcs: [":sensitive-app-lock-testing-srcs"],
     resource_dirs: ["res"],
