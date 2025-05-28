@@ -39,6 +39,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PinManagerImplTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     @Inject lateinit var pinManager: PinManagerImpl
     @Inject lateinit var sharedPreferences: DataStore<Preferences>
 
@@ -77,9 +78,7 @@ class PinManagerImplTest {
     fun getAppLockPinState_whenEncryptedKeysetDoesNotExist_returnsResetStatus() = runTest {
         pinManager.setAppLockPin(USER_PIN)
 
-        sharedPreferences.edit { preferences ->
-            preferences.remove(TINK_KEYSET_NAME)
-        }
+        sharedPreferences.edit { preferences -> preferences.remove(TINK_KEYSET_NAME) }
 
         assertThat(pinManager.getAppLockPinState()).isEqualTo(PinState.RESET_REQUIRED)
     }
@@ -122,9 +121,7 @@ class PinManagerImplTest {
 
     @Test
     fun verifyAppLockPin_whenOnlyEncryptedKeySetExistsInPreferences_returnsResetFalse() = runTest {
-        sharedPreferences.edit { preferences ->
-            preferences[TINK_KEYSET_NAME] = "ENCRYPTED_KEYSET"
-        }
+        sharedPreferences.edit { preferences -> preferences[TINK_KEYSET_NAME] = "ENCRYPTED_KEYSET" }
 
         assertThat(pinManager.verifyAppLockPin(USER_PIN)).isFalse()
     }
@@ -155,9 +152,8 @@ class PinManagerImplTest {
 
         pinManager.reset()
 
-        val encryptedKeysetEmpty = sharedPreferences.data.map {
-            it[TINK_KEYSET_NAME] ?: ""
-        }.first().isEmpty()
+        val encryptedKeysetEmpty =
+            sharedPreferences.data.map { it[TINK_KEYSET_NAME] ?: "" }.first().isEmpty()
         val masterKeyEmpty = !AndroidKeystore.hasKey(MASTER_KEY_ALIAS)
 
         assertThat(masterKeyEmpty).isTrue()
@@ -166,7 +162,7 @@ class PinManagerImplTest {
     }
 
     private companion object {
-        const val USER_PIN = "7354"
+        const val USER_PIN = "7354012345678912"
         const val ALPHANUMERIC_PIN = "s345a"
         const val THREE_DIGIT_USER_PIN = "984"
         const val SEVENTEEN_DIGIT_USER_PIN = "15987456321546987"
