@@ -10,26 +10,12 @@ import com.android.car.sensitiveapplock.R
 
 /** A custom view for a Pin Pad. */
 class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-    lateinit var enteredPin: EditText
-
-    /** Action to take on confirm button click. */
-    var onConfirmClick: () -> Unit = {}
 
     init {
         inflate(context, R.layout.pin_pad, this)
-        setupButtons()
         // Adding an onClickListener automatically enables the button so disable it after
         setConfirmEnabled(false)
     }
-
-    /** Sets the entered PIN. */
-    fun setPin(pin: String) {
-        enteredPin.setText(pin)
-        enteredPin.setSelection(enteredPin.text.length)
-    }
-
-    /** Gets the entered PIN. */
-    fun getPin() = enteredPin.text.toString()
 
     /** Sets the enabled state of the confirm button. */
     fun setConfirmEnabled(enabled: Boolean) {
@@ -39,7 +25,8 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
         }
     }
 
-    private fun setupButtons() {
+    /** Sets up Pin Pad buttons. */
+    fun setupButtons(enteredPin: EditText, onConfirmClick: () -> Unit = {}) {
         for ((id, value) in DIGIT_KEY_ID_VALUE_MAP) {
             val pinKey = findViewById<TextView>(id)
             pinKey.setOnClickListener { enteredPin.append(value) }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2025 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,76 +13,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:baselineAligned="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/start_column"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="116dp"
-            android:labelFor="@id/entered_pin"
-            android:textSize="44sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <TextView
-            android:id="@+id/subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
-        <EditText
-            android:id="@+id/entered_pin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:autofillHints=""
-            android:clickable="false"
-            android:contextClickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:gravity="center"
-            android:inputType="numberPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/subtitle"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle" />
-        <Button
-            android:id="@+id/button_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:enabled="false"
-            android:text="@string/pin_screen_next_button_label"
-            app:layout_constraintStart_toStartOf="@+id/entered_pin"
-            app:layout_constraintTop_toBottomOf="@+id/entered_pin" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/end_column"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    android:layout_height="match_parent">
 
-        <com.android.car.sensitiveapplock.lockscreen.PinPadView
-            android:id="@+id/pin_pad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="142dp"
-            android:layout_marginEnd="226dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+    <com.android.car.sensitiveapplock.lockscreen.PinLockView
+        android:id="@+id/pin_lock_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

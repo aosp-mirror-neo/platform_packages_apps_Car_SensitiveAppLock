@@ -31,30 +31,31 @@ import kotlinx.coroutines.launch
 class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.base_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
-    private lateinit var pinPad: PinPadView
+    private lateinit var pinLockView: PinLockView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<TextView>(R.id.title).text = getString(R.string.validate_pin_title)
 
-        pinPad = view.findViewById(R.id.pin_pad)
-
-        PinFragmentUi.setupPinFragmentUi(
-            pinFragmentView = view,
-            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
-            onConfirmClicked = { validatePin() },
-        )
+        pinLockView =
+            view.findViewById<PinLockView>(R.id.pin_lock_view).apply {
+                setTitle(R.string.validate_pin_title)
+                setupUi { validatePin() }
+            }
     }
 
     private fun validatePin() {
         lifecycleScope.launch {
-            if (viewModel.isSavedPin(pinPad.getPin())) {
+            if (viewModel.isSavedPin(pinLockView.getPin())) {
                 logger.d("User entered the correct pin.")
                 parentFragmentManager.setFragmentResult(
                     PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
                     Bundle(),
                 )
+            } else {
+                logger.d("User entered the wrong pin.")
+                pinLockView.setError(R.string.pin_error)
             }
         }
     }
