@@ -23,6 +23,10 @@
   <string name="app_lock_switch_summary">Keep some apps locked with a pin</string>
   <string name="protected_apps_category">My apps</string>
 
+  <string name="legal_notice_summary">
+    Unlocked apps might still use data from your locked apps. For example, a social media app might upload photos or files from a locked app.\n\nAnyone that installs a new app that shares an account with a locked app, like a messaging app linked to your social media account, may be automatically signed in. This could potentially expose your data in the car.
+  </string>
+
   <string name="validate_pin_title">Enter your PIN</string>
   <string name="create_pin_title">Set a PIN for locked apps</string>
   <string name="create_pin_subtitle">PIN must be at least 4 digits</string>

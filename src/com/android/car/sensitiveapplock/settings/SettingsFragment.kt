@@ -29,6 +29,7 @@ import androidx.preference.SwitchPreference
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.ui.preference.CarUiFooterPreference
 import com.android.car.ui.preference.PreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -62,8 +63,16 @@ class SettingsFragment : Hilt_SettingsFragment() {
                     PreferenceCategory(requireContext()).apply {
                         setTitle(R.string.protected_apps_category)
                     }
+
+                val legalNotices =
+                    CarUiFooterPreference(requireContext()).apply {
+                        setSummary(R.string.legal_notice_summary)
+                        setIcon(R.drawable.ic_info)
+                    }
+
                 addPreference(appLockSwitch)
                 addPreference(lockedAppsCategory)
+                addPreference(legalNotices)
             }
     }
 
