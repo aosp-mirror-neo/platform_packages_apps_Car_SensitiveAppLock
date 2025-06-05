@@ -62,7 +62,7 @@ class CreatePinFragmentTest {
     }
 
     @Test
-    fun onEnterKeyClick_ifValidPinFormat_navigatesToConfirmPinScreen() {
+    fun onEnterKeyClick_navigatesToConfirmPinScreen() {
         val navController =
             TestNavHostController(context).apply { setGraph(R.navigation.pin_nav_graph) }
 
@@ -79,23 +79,6 @@ class CreatePinFragmentTest {
 
             assertThat(fragment.findNavController().currentDestination?.id)
                 .isEqualTo(R.id.confirm_pin)
-        }
-    }
-
-    @Test
-    fun onEnterKeyClick_ifInvalidPinFormat_doesNotNavigateToConfirmPinScreen() {
-        val navController =
-            TestNavHostController(context).apply { setGraph(R.navigation.pin_nav_graph) }
-
-        launchFragmentInHiltContainer<CreatePinFragment>() { fragment ->
-            Navigation.setViewNavController(fragment.requireView(), navController)
-            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
-
-            // Pin currently empty so invalid
-            pinPadEnterKey.performClick()
-
-            assertThat(fragment.findNavController().currentDestination?.id)
-                .isEqualTo(R.id.create_pin)
         }
     }
 }

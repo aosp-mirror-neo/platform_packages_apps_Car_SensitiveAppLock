@@ -17,7 +17,6 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -34,36 +33,28 @@ import kotlinx.coroutines.launch
 class CreatePinFragment : Hilt_CreatePinFragment(R.layout.base_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
-    private lateinit var pinPad: PinPadView
+    private lateinit var pinLockView: PinLockView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-            findViewById<TextView>(R.id.title).text = getString(R.string.create_pin_title)
-            findViewById<TextView>(R.id.subtitle).text = getString(R.string.create_pin_subtitle)
-        }
-
-        pinPad = view.findViewById(R.id.pin_pad)
-
-        PinFragmentUi.setupPinFragmentUi(
-            pinFragmentView = view,
-            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
-            onConfirmClicked = {
-                if (!viewModel.doesPinHaveValidFormat(pinPad.getPin())) {
-                    logger.w("Pin does not have valid format!")
-                    return@setupPinFragmentUi
+        pinLockView =
+            view.findViewById<PinLockView>(R.id.pin_lock_view).apply {
+                setTitle(R.string.create_pin_title)
+                setSubtitle(R.string.create_pin_subtitle)
+                setupUi {
+                    logger.d("Moving to confirm pin and temporarily saving entered pin.")
+                    viewModel.setEnteredPin(getPin())
+                    findNavController().navigate(R.id.action_create_pin_to_confirm_pin)
                 }
-                viewModel.setEnteredPin(pinPad.getPin())
-                findNavController().navigate(R.id.action_create_pin_to_confirm_pin)
-            },
-        )
+            }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.enteredPin.collect { pin ->
                     if (pin.isNotEmpty()) {
-                        pinPad.setPin(pin)
+                        logger.d("Temporary pin was not empty so displaying it.")
+                        pinLockView.setPin(pin)
                     }
                 }
             }

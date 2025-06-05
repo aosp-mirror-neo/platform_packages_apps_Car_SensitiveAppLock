@@ -17,7 +17,6 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -30,9 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 /** A fragment that displays the Confirm Pin screen used for confirming a created PIN. */
 @AndroidEntryPoint(Fragment::class)
 class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.base_pin_screen) {
-    val viewModel: PinLockViewModel by activityViewModels()
+    private val viewModel: PinLockViewModel by activityViewModels()
 
-    lateinit var pinPad: PinPadView
+    private lateinit var pinLockView: PinLockView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,24 +47,19 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.base_pin_screen) {
             isEnabled = true
         }
 
-        view.apply {
-            findViewById<TextView>(R.id.title).text = getString(R.string.confirm_pin_title)
-            findViewById<TextView>(R.id.subtitle).text = getString(R.string.confirm_pin_subtitle)
-        }
+        pinLockView =
+            view.findViewById<PinLockView>(R.id.pin_lock_view).apply {
+                setTitle(R.string.confirm_pin_title)
+                setSubtitle(R.string.confirm_pin_subtitle)
 
-        pinPad = view.findViewById(R.id.pin_pad)
-
-        PinFragmentUi.setupPinFragmentUi(
-            pinFragmentView = view,
-            doesPinHaveValidFormat = { pin -> viewModel.doesPinHaveValidFormat(pin) },
-            onConfirmClicked = { confirmPin() },
-        )
+                setupUi { confirmPin() }
+            }
     }
 
     private fun confirmPin() {
-        if (pinPad.getPin() != viewModel.enteredPin.value) {
+        if (pinLockView.getPin() != viewModel.enteredPin.value) {
             logger.w("Pin did not match!")
-            PinFragmentUi.setErrorMessage(requireView(), getString(R.string.pin_error))
+            pinLockView.setError(R.string.pin_error)
             return
         }
 
