@@ -13,20 +13,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="3" >
+        android:columnCount="3">
         <!--  Row 1  -->
         <TextView
             android:id="@+id/key_1"
             style="@style/PinPadKey"
             android:text="@string/one" />
+
         <TextView
             android:id="@+id/key_2"
             style="@style/PinPadKey"
             android:text="@string/two" />
+
         <TextView
             android:id="@+id/key_3"
             style="@style/PinPadKey"
@@ -36,10 +40,12 @@
             android:id="@+id/key_4"
             style="@style/PinPadKey"
             android:text="@string/four" />
+
         <TextView
             android:id="@+id/key_5"
             style="@style/PinPadKey"
             android:text="@string/five" />
+
         <TextView
             android:id="@+id/key_6"
             style="@style/PinPadKey"
@@ -49,10 +55,12 @@
             android:id="@+id/key_7"
             style="@style/PinPadKey"
             android:text="@string/seven" />
+
         <TextView
             android:id="@+id/key_8"
             style="@style/PinPadKey"
             android:text="@string/eight" />
+
         <TextView
             android:id="@+id/key_9"
             style="@style/PinPadKey"
@@ -61,20 +69,22 @@
         <ImageButton
             android:id="@+id/key_backspace"
             style="@style/PinPadKey"
-            android:tint="@color/pin_pad_key_tint"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:src="@drawable/outline_backspace_24"
-            android:contentDescription="@string/backspace_key_content_description" />
+            android:contentDescription="@string/backspace_key_content_description"
+            app:tint="@color/pin_pad_key_tint" />
+
         <TextView
             android:id="@+id/key_0"
             style="@style/PinPadKey"
             android:text="@string/zero" />
+
         <ImageButton
             android:id="@+id/key_confirm"
             style="@style/PinPadKey"
-            android:tint="@color/pin_pad_key_tint"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:src="@drawable/outline_check_24"
-            android:contentDescription="@string/confirm_key_content_description" />
+            android:contentDescription="@string/confirm_key_content_description"
+            app:tint="@color/pin_pad_key_tint" />
     </GridLayout>
 </merge>
