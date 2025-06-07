@@ -72,7 +72,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/outline_backspace_24"
             android:contentDescription="@string/backspace_key_content_description"
-            app:tint="@color/pin_pad_key_tint" />
+            app:tint="?android:attr/textColorPrimary" />
 
         <TextView
             android:id="@+id/key_0"
@@ -85,6 +85,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/outline_check_24"
             android:contentDescription="@string/confirm_key_content_description"
-            app:tint="@color/pin_pad_key_tint" />
+            app:tint="?android:attr/textColorPrimary" />
     </GridLayout>
 </merge>
