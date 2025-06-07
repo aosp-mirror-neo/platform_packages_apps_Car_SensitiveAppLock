@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 /** A fragment that displays the Validate Pin screen used for unlocking. */
 @AndroidEntryPoint(Fragment::class)
-class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.base_pin_screen) {
+class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
     private lateinit var pinLockView: PinLockView

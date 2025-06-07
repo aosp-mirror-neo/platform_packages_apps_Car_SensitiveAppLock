@@ -15,6 +15,7 @@
  */
 package com.android.car.sensitiveapplock.testing
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +31,7 @@ import androidx.test.core.app.ApplicationProvider
 inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     fragmentArgs: Bundle? = null,
     crossinline action: Fragment.() -> Unit = {},
+    crossinline onActivity: (Activity) -> Unit = {},
     crossinline onFragment: (Fragment) -> Unit = {},
 ) {
     val startActivityIntent =
@@ -37,6 +39,7 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
             ComponentName(ApplicationProvider.getApplicationContext(), HiltTestActivity::class.java)
         )
     ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
+        onActivity(activity)
         activity.launchFragment<T>(fragmentArgs, onFragment).action()
     }
 }

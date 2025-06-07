@@ -16,7 +16,20 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/pin_nav_graph"
-    app:startDestination="@id/create_pin">
+    app:startDestination="@id/start">
+    <fragment
+        android:id="@+id/start"
+        android:name="androidx.fragment.app.Fragment"
+        android:label="Start">
+        <!-- Action to navigate from the empty Start screen to Create Pin. -->
+        <action
+            android:id="@+id/action_start_to_create_pin"
+            app:destination="@id/create_pin" />
+        <!-- Action to navigate from the empty Start screen to Validate Pin. -->
+        <action
+            android:id="@+id/action_start_to_validate_pin"
+            app:destination="@id/validate_pin" />
+    </fragment>
     <fragment
         android:id="@+id/validate_pin"
         android:name="com.android.car.sensitiveapplock.lockscreen.ValidatePinFragment"
@@ -30,10 +43,6 @@
         <action
             android:id="@+id/action_create_pin_to_confirm_pin"
             app:destination="@id/confirm_pin" />
-        <!-- Action to navigate from Create Pin to Validate Pin. -->
-        <action
-            android:id="@+id/action_create_pin_to_validate_pin"
-            app:destination="@id/validate_pin" />
     </fragment>
     <fragment
         android:id="@+id/confirm_pin"

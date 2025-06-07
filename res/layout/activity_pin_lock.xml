@@ -25,5 +25,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:navGraph="@navigation/pin_nav_graph"
-        tools:layout="@layout/base_pin_screen" />
+        tools:layout="@layout/fragment_pin_screen" />
 </FrameLayout>

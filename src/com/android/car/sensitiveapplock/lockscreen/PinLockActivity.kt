@@ -24,7 +24,9 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.util.Logger
+import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi.requireToolbar
+import com.android.car.ui.toolbar.MenuItem
 import com.android.car.ui.toolbar.NavButtonMode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,12 +45,24 @@ class PinLockActivity : Hilt_PinLockActivity() {
         when (intent.action) {
             Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS,
             ACTION_VALIDATE_PIN -> {
-                findNavController().navigate(R.id.action_create_pin_to_validate_pin)
                 setValidatePinResultListener()
+                findNavController().navigate(R.id.action_start_to_validate_pin)
             }
-            ACTION_CREATE_PIN -> setCreatePinResultListener()
+            ACTION_CREATE_PIN -> {
+                if (isPortrait(this)) {
+                    createToolbarNextButton()
+                }
+                setCreatePinResultListener()
+                findNavController().navigate(R.id.action_start_to_create_pin)
+            }
             else -> finish()
         }
+    }
+
+    private fun createToolbarNextButton() {
+        val menuButton =
+            MenuItem.builder(this).setTitle(R.string.pin_screen_next_button_label).build()
+        requireToolbar(this).setMenuItems(listOf(menuButton))
     }
 
     private fun setCreatePinResultListener() {

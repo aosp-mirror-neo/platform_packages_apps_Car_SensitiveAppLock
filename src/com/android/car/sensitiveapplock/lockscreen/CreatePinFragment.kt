@@ -17,6 +17,7 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -25,12 +26,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.util.Logger
+import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
+import com.android.car.ui.core.CarUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /** A fragment that displays the Create Pin screen used for creating a PIN. */
 @AndroidEntryPoint(Fragment::class)
-class CreatePinFragment : Hilt_CreatePinFragment(R.layout.base_pin_screen) {
+class CreatePinFragment : Hilt_CreatePinFragment(R.layout.fragment_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
     private lateinit var pinLockView: PinLockView
@@ -42,7 +45,8 @@ class CreatePinFragment : Hilt_CreatePinFragment(R.layout.base_pin_screen) {
             view.findViewById<PinLockView>(R.id.pin_lock_view).apply {
                 setTitle(R.string.create_pin_title)
                 setSubtitle(R.string.create_pin_subtitle)
-                setupUi {
+
+                setupUi(getNextButton()) {
                     logger.d("Moving to confirm pin and temporarily saving entered pin.")
                     viewModel.setEnteredPin(getPin())
                     findNavController().navigate(R.id.action_create_pin_to_confirm_pin)
@@ -59,6 +63,15 @@ class CreatePinFragment : Hilt_CreatePinFragment(R.layout.base_pin_screen) {
                 }
             }
         }
+    }
+
+    private fun getNextButton(): PinLockView.NextButton {
+        if (isPortrait(requireContext())) {
+            // TODO: b/425684326 - Investigate better design for handling the toolbar next button
+            return CarUi.requireToolbar(requireActivity()).menuItems.first().asNextButton()
+        }
+
+        return requireView().findViewById<Button>(R.id.button_next).asNextButton()
     }
 
     private companion object {

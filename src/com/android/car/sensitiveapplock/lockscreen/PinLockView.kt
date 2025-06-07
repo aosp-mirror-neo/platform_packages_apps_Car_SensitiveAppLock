@@ -22,31 +22,36 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
+import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** A custom view for PinLock screens. */
-@AndroidEntryPoint(LinearLayout::class)
+@AndroidEntryPoint(FrameLayout::class)
 class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     Hilt_PinLockView(context, attrs) {
 
     @Inject lateinit var pinManager: PinManager
 
     private var subtitleResId: Int = Resources.ID_NULL
+    private var prevPinHasValidFormat = false
 
     private val enteredPin: EditText
     private val subtitle: TextView
 
     init {
-        inflate(context, R.layout.pin_lock_screen, this)
+        if (isPortrait(context)) {
+            inflate(context, R.layout.pin_lock_screen_portrait, this)
+        } else {
+            inflate(context, R.layout.pin_lock_screen, this)
+        }
         enteredPin = findViewById<EditText>(R.id.entered_pin)
         subtitle = findViewById<TextView>(R.id.subtitle)
     }
@@ -87,9 +92,8 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
                 typedValue.resourceId
             }
         subtitle.apply {
-            if (subtitleResId != Resources.ID_NULL) {
-                text = context.getString(subtitleResId)
-            }
+            text = if (subtitleResId != Resources.ID_NULL) context.getString(subtitleResId) else ""
+
             setTextAppearance(defaultTextAppearance)
         }
 
@@ -112,10 +116,9 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     fun getPin() = enteredPin.text.toString()
 
     /** Sets up the UI button actions. */
-    fun setupUi(
-        nextButton: Button = findViewById(R.id.button_next),
-        onConfirmClick: () -> Unit = {},
-    ) {
+    fun setupUi(nextButton: NextButton? = null, onConfirmClick: () -> Unit = {}) {
+        nextButton?.setVisible(true)
+
         val pinPad = findViewById<PinPadView>(R.id.pin_pad)
 
         // Disable buttons until a valid format PIN is entered
@@ -131,16 +134,38 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
-                    val hasValidFormat = pinManager.doesPinHaveValidFormat(s.toString())
-                    nextButton.isEnabled = hasValidFormat
-                    pinPad.setConfirmEnabled(hasValidFormat)
+                    val currHasValidFormat = pinManager.doesPinHaveValidFormat(s.toString())
 
-                    resetError()
+                    // Only change button states if there was a change
+                    if (currHasValidFormat != prevPinHasValidFormat) {
+                        nextButton?.setEnabled(currHasValidFormat)
+                        pinPad.setConfirmEnabled(currHasValidFormat)
+
+                        prevPinHasValidFormat = currHasValidFormat
+                    }
+
+                    // Only reset error if currently showing it
+                    if (subtitle.text == context.getString(R.string.pin_error)) {
+                        resetError()
+                    }
                 }
             }
         )
 
         pinPad.setupButtons(enteredPin, onConfirmClick)
-        nextButton.setOnClickListener { onConfirmClick() }
+        nextButton?.setEnabled(false)
+        nextButton?.setOnClickListener { onConfirmClick() }
+    }
+
+    /** An interface for the Next button on pin screens. */
+    interface NextButton {
+        /** Sets the enabled state of the button. */
+        fun setEnabled(enabled: Boolean)
+
+        /** Sets an onClickListener for the button. */
+        fun setOnClickListener(listener: () -> Unit)
+
+        /** Sets the visibility of the button. */
+        fun setVisible(visible: Boolean)
     }
 }

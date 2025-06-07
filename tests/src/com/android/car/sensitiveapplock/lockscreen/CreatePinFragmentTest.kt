@@ -15,6 +15,7 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.app.Activity
 import android.app.Application
 import android.widget.ImageButton
 import android.widget.TextView
@@ -27,6 +28,9 @@ import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
+import com.android.car.ui.core.CarUi.requireToolbar
+import com.android.car.ui.core.CarUiInstaller
+import com.android.car.ui.toolbar.MenuItem
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -46,12 +50,15 @@ class CreatePinFragmentTest {
 
     @Before
     fun init() {
+        CarUiInstaller.register(context)
         hiltRule.inject()
     }
 
     @Test
     fun onViewCreated_titlesSet() {
-        launchFragmentInHiltContainer<CreatePinFragment>() { fragment ->
+        launchFragmentInHiltContainer<CreatePinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
             val title = fragment.requireView().findViewById<TextView>(R.id.title).text.toString()
             val subtitle =
                 fragment.requireView().findViewById<TextView>(R.id.subtitle).text.toString()
@@ -64,9 +71,14 @@ class CreatePinFragmentTest {
     @Test
     fun onEnterKeyClick_navigatesToConfirmPinScreen() {
         val navController =
-            TestNavHostController(context).apply { setGraph(R.navigation.pin_nav_graph) }
+            TestNavHostController(context).apply {
+                setGraph(R.navigation.pin_nav_graph)
+                setCurrentDestination(R.id.create_pin)
+            }
 
-        launchFragmentInHiltContainer<CreatePinFragment>() { fragment ->
+        launchFragmentInHiltContainer<CreatePinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
             Navigation.setViewNavController(fragment.requireView(), navController)
             val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
             val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
@@ -80,5 +92,11 @@ class CreatePinFragmentTest {
             assertThat(fragment.findNavController().currentDestination?.id)
                 .isEqualTo(R.id.confirm_pin)
         }
+    }
+
+    private fun setupToolbar(activity: Activity) {
+        val menuButton =
+            MenuItem.builder(context).setTitle(R.string.pin_screen_next_button_label).build()
+        requireToolbar(activity).setMenuItems(listOf(menuButton))
     }
 }
