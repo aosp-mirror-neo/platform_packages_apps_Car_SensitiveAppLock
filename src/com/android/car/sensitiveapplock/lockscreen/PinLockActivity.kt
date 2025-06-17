@@ -23,18 +23,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.util.Logger
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi.requireToolbar
 import com.android.car.ui.toolbar.MenuItem
 import com.android.car.ui.toolbar.NavButtonMode
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /** Activity that presents a Pin Lock screen to users. */
 @AndroidEntryPoint(AppCompatActivity::class)
 class PinLockActivity : Hilt_PinLockActivity() {
     private val viewModel: PinLockViewModel by viewModels()
+
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +93,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
                         return@launch
                     }
                 }
-
+                metricsLogger.logState()
                 finish()
             }
         }

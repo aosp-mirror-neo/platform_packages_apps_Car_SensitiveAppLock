@@ -34,6 +34,7 @@ import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
@@ -51,6 +52,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowStatsLog
 
 @HiltAndroidTest
 @SmallTest
@@ -69,6 +71,7 @@ class PinLockActivityTest {
 
     @Before
     fun init() {
+        shadowOf(context).grantPermissions(SUSPEND_APPS)
         hiltRule.inject()
         CarUiInstaller.register(context)
     }
@@ -205,6 +208,7 @@ class PinLockActivityTest {
     @Test
     fun onValidatePinRequestResult_calledFromSettings_unlocksSettings() {
         createActivityScenarioWithAction(PinLockActivity.ACTION_VALIDATE_PIN)
+
         activityScenario.onActivity { activity ->
             val navHostFragment =
                 activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
@@ -220,8 +224,6 @@ class PinLockActivityTest {
 
     @Test
     fun onValidatePinRequestResult_calledFromSuspendDialog_unlocksApps() = runTest {
-        // Grant permission and suspend apps
-        shadowOf(context).grantPermissions(SUSPEND_APPS)
         val shadowPackageManager = shadowOf(context.packageManager)
         for (packageName in TEST_PACKAGE_NAMES) {
             shadowPackageManager.installPackage(
@@ -258,6 +260,27 @@ class PinLockActivityTest {
         for (packageName in TEST_PACKAGE_NAMES) {
             assertThat(shadowPackageManager.getPackageSetting(packageName).isSuspended).isFalse()
         }
+    }
+
+    @Test
+    fun onUserPinRequestResult_logsMetric() {
+        createActivityScenarioWithAction(PinLockActivity.ACTION_CREATE_PIN)
+
+        activityScenario.onActivity { activity ->
+            val navHostFragment =
+                activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
+
+            navHostFragment.childFragmentManager.fragments
+                .first()
+                .setFragmentResult(
+                    PinLockActivity.USER_PIN_REQUEST_KEY,
+                    bundleOf(PinLockActivity.USER_PIN_BUNDLE_KEY to USER_PIN),
+                )
+        }
+
+        // Pin created and feature enabled
+        assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
+            .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
     }
 
     private fun createActivityScenarioWithAction(action: String) {

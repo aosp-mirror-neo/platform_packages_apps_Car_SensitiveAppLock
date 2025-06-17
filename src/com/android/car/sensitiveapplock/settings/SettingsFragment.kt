@@ -123,6 +123,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
     private fun enableAppLockFeature(enable: Boolean) {
         if (!enable) {
             viewModel.disableAppLockFeature()
+            lifecycleScope.launch { metricsLogger.logState() }
             return
         }
 
@@ -132,8 +133,6 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         startActivity(pinScreenIntent)
-
-        lifecycleScope.launch { metricsLogger.logState() }
     }
 
     private companion object {

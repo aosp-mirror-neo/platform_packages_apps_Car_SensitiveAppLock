@@ -219,14 +219,17 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun appLockFeatureToggled_logsMetric() {
+    fun appLockFeatureToggledOff_logsMetric() = runTest {
+        appLockDataRepository.setPin(TEST_PIN)
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val enableAppLockSwitch =
                 (fragment as SettingsFragment)
                     .preferenceScreen
                     .getPreference(ENABLE_APP_LOCK_SWITCH_INDEX) as SwitchPreference
 
-            enableAppLockSwitch.performClick()
+            enableAppLockSwitch.performClick() // Feature turned off
         }
 
         assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
