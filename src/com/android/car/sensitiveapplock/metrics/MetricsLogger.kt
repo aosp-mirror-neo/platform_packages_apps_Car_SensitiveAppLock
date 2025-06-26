@@ -17,6 +17,7 @@ package com.android.car.sensitiveapplock.metrics
 
 import android.app.KeyguardManager
 import android.content.Context
+import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
@@ -34,25 +35,29 @@ constructor(
     @ApplicationContext context: Context,
     private val appLockDataRepository: AppLockDataRepository,
     private val lockableAppsListRepository: LockableAppsListRepository,
-    @BackgroundContext private val backgroundContext: CoroutineContext
+    private val pinManager: PinManager,
+    @BackgroundContext private val backgroundContext: CoroutineContext,
 ) {
     private val keyguardManager =
         context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
     /** Logs the user's current app lock state. */
-    suspend fun logState() = withContext(backgroundContext) {
-        val lockedApps = appLockDataRepository.getLockedApps().toHashSet()
-        val packageUids = lockableAppsListRepository.getLockableApps().filter {
-            lockedApps.contains(it.packageName)
-        }.map { it.packageUid }
-        val pinSet = appLockDataRepository.getPin().isNotEmpty()
-        val profileLockSet = keyguardManager.isDeviceSecure
-        SensitiveAppLockStatsLog.write(
-            SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED,
-            pinSet,
-            packageUids.toIntArray(),
-            profileLockSet
-        )
-        // TODO: b/416017684 - Add ATS test for logging metrics.
-    }
+    suspend fun logState() =
+        withContext(backgroundContext) {
+            val lockedApps = appLockDataRepository.getLockedApps().toHashSet()
+            val packageUids =
+                lockableAppsListRepository
+                    .getLockableApps()
+                    .filter { lockedApps.contains(it.packageName) }
+                    .map { it.packageUid }
+            val pinSet = pinManager.getAppLockPinState() == PinManager.PinState.SET
+            val profileLockSet = keyguardManager.isDeviceSecure
+            SensitiveAppLockStatsLog.write(
+                SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED,
+                pinSet,
+                packageUids.toIntArray(),
+                profileLockSet,
+            )
+            // TODO: b/416017684 - Add ATS test for logging metrics.
+        }
 }

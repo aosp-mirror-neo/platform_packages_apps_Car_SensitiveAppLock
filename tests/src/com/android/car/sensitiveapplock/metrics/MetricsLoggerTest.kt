@@ -26,14 +26,12 @@ import android.os.Process
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
-import com.google.common.truth.Truth.assertThat
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import javax.inject.Inject
-import kotlin.experimental.and
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -44,7 +42,6 @@ import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowKeyguardManager
 import org.robolectric.shadows.ShadowStatsLog
-import org.robolectric.shadows.ShadowStatsLog.StatsLogItem
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -58,6 +55,7 @@ class MetricsLoggerTest {
         shadowOf(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
 
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject lateinit var pinManager: PinManager
 
     @Inject lateinit var metricsLogger: MetricsLogger
 
@@ -74,85 +72,29 @@ class MetricsLoggerTest {
         metricsLogger.logState()
 
         val atoms = ShadowStatsLog.getStatsLogs()
-        atoms.last().assertSensitiveAppLockAtom(
+        assertSensitiveAppLockAtom(
+            statsLogItem = atoms.last(),
             pinSet = false,
             lockedPackages = emptyList(),
-            profileLocked = false
+            profileLocked = false,
         )
     }
 
     @Test
     fun logState_whenAppsLocked_producesAtomWithPackageUids() = runTest {
         addLauncherActivities()
-        appLockDataRepository.setPin(USER_PIN)
+        pinManager.setAppLockPin(USER_PIN)
         shadowKeyguardManager.setIsDeviceSecure(true)
 
         metricsLogger.logState()
 
         val atoms = ShadowStatsLog.getStatsLogs()
-        atoms.last().assertSensitiveAppLockAtom(
+        assertSensitiveAppLockAtom(
+            statsLogItem = atoms.last(),
             pinSet = true,
             lockedPackages = TEST_ACTIVITIES_UID,
-            profileLocked = true
+            profileLocked = true,
         )
-    }
-
-    private fun StatsLogItem.assertSensitiveAppLockAtom(
-        pinSet: Boolean,
-        lockedPackages: List<Int>,
-        profileLocked: Boolean
-    ) {
-        assertThat(atomId()).isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
-        val atomBytes = getByteBuffer(this)
-
-        // skip header
-        atomBytes.position(HEADER)
-
-        // pin set
-        var field = parseFieldMetaData(atomBytes)
-        assertThat(field.type).isEqualTo(TYPE_BOOLEAN)
-        assertThat(atomBytes.get()).isEqualTo(pinSet.toByte())
-        skipAnnotations(atomBytes, field.annotationCount)
-
-        // locked packages
-        field = parseFieldMetaData(atomBytes)
-        assertThat(field.type).isEqualTo(TYPE_LIST)
-        assertThat(atomBytes.get()).isEqualTo(lockedPackages.size.toByte())
-        assertThat(atomBytes.get()).isEqualTo(TYPE_INT) // Element type
-        for (pkg in lockedPackages) {
-            assertThat(atomBytes.getInt()).isEqualTo(pkg)
-        }
-        skipAnnotations(atomBytes, field.annotationCount)
-
-        // profile lock
-        field = parseFieldMetaData(atomBytes)
-        assertThat(field.type).isEqualTo(TYPE_BOOLEAN)
-        assertThat(atomBytes.get()).isEqualTo(profileLocked.toByte())
-        skipAnnotations(atomBytes, field.annotationCount)
-    }
-
-    private fun skipAnnotations(buffer: ByteBuffer, annotationCount: Int) {
-        repeat(annotationCount) {
-            buffer.get() // read annotation id
-            val annotationType = buffer.get()
-            when (annotationType) {
-                TYPE_INT -> buffer.getInt()
-                TYPE_BOOLEAN -> buffer.get()
-            }
-        }
-    }
-
-    private fun parseFieldMetaData(buffer: ByteBuffer): FieldMetaData {
-        val typeWithAnnotation = buffer.get()
-        val annotationCount = typeWithAnnotation.toInt() shr 4
-        return FieldMetaData(
-            type = typeWithAnnotation and MASK,
-            annotationCount
-        )
-    }
-
-    private fun getByteBuffer(item: StatsLogItem): ByteBuffer {
-        return ByteBuffer.wrap(item.bytes()).order(ByteOrder.LITTLE_ENDIAN)
     }
 
     private suspend fun addLauncherActivities() {
@@ -165,25 +107,7 @@ class MetricsLoggerTest {
         }
     }
 
-    private fun Boolean.toByte(): Byte {
-        if (this) {
-            return 1.toByte()
-        }
-        return 0.toByte()
-    }
-
-    private data class FieldMetaData(
-        val type: Byte,
-        val annotationCount: Int
-    )
-
     private companion object {
-        // This is borrowed from android.util.StatsEvent
-        const val TYPE_INT: Byte = 0x00
-        const val TYPE_LIST: Byte = 0x03
-        const val TYPE_BOOLEAN: Byte = 0x05
-        const val MASK: Byte = 0x0F
-        const val HEADER = 16
         const val USER_PIN = "1234"
 
         val TEST_ACTIVITIES = listOf("com.package.1", "com.package.2")

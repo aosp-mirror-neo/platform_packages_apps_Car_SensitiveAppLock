@@ -60,7 +60,7 @@ constructor(
                 val lockableApps = lockableAppsListDataRepository.getLockableApps()
                 SettingsUiState(
                     settingsLockStatus = lockStatus,
-                    appLockEnabled = appLockData.password.isNotEmpty(),
+                    appLockEnabled = pinManager.getAppLockPinState() == PinManager.PinState.SET,
                     appList =
                         lockableApps.map { appInfo ->
                             LockableApp(appInfo, lockedAppsSet.contains(appInfo.packageName))
@@ -88,22 +88,20 @@ constructor(
     }
 
     /** Enables or disables the App Lock for an app. */
-    fun setAppLockForApp(packageName: String, lock: Boolean) {
+    suspend fun setAppLockForApp(packageName: String, lock: Boolean) {
         logger.d("Setting lock state for $packageName to $lock.")
 
-        viewModelScope.launch {
-            if (lock) {
-                if (appLockDataRepository.getLockedApps().contains(packageName)) {
-                    logger.w("$packageName is already locked!")
-                    return@launch
-                }
-                appLockDataRepository.addLockedApp(packageName)
-            } else {
-                appLockDataRepository.removeLockedApp(packageName)
+        if (lock) {
+            if (appLockDataRepository.getLockedApps().contains(packageName)) {
+                logger.w("$packageName is already locked!")
+                return
             }
-
-            appSuspensionManager.setAppSuspensionState(packageName, lock)
+            appLockDataRepository.addLockedApp(packageName)
+        } else {
+            appLockDataRepository.removeLockedApp(packageName)
         }
+
+        appSuspensionManager.setAppSuspensionState(packageName, lock)
     }
 
     /** Checks if the user has a PIN set. */

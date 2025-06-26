@@ -37,6 +37,7 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.ui.core.CarUi
 import com.android.car.ui.core.CarUiInstaller
@@ -281,6 +282,12 @@ class PinLockActivityTest {
         // Pin created and feature enabled
         assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
             .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
+        assertSensitiveAppLockAtom(
+            statsLogItem = ShadowStatsLog.getStatsLogs().last(),
+            pinSet = true,
+            lockedPackages = emptyList(),
+            profileLocked = false,
+        )
     }
 
     private fun createActivityScenarioWithAction(action: String) {

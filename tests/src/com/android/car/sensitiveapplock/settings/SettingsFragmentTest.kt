@@ -25,10 +25,12 @@ import androidx.preference.SwitchPreference
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
-import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfoFromPackageName
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
+import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -59,6 +61,7 @@ class SettingsFragmentTest {
     private val shadowPackageManager = shadowOf(context.packageManager)
 
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject lateinit var pinManager: PinManager
 
     @Before
     fun init() {
@@ -72,7 +75,7 @@ class SettingsFragmentTest {
 
     @Test
     fun enableAppLockSwitch_ifUserPinSet_isToggledOn() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val enableAppLockSwitch =
@@ -111,7 +114,7 @@ class SettingsFragmentTest {
 
     @Test
     fun appLockSwitches_ifEnableAppLockSwitchToggledOn_areEnabled() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val lockedAppsCategory =
@@ -138,7 +141,7 @@ class SettingsFragmentTest {
 
     @Test
     fun switchToggledOn_suspendsApp() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val lockedAppsCategory =
@@ -175,8 +178,6 @@ class SettingsFragmentTest {
 
     @Test
     fun appLockFeatureToggledOff_unsuspendsAllApps() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
-
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val enableAppLockSwitch =
                 (fragment as SettingsFragment)
@@ -202,7 +203,7 @@ class SettingsFragmentTest {
 
     @Test
     fun appLockFeatureToggledOff_clearsAppLockData() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
@@ -220,7 +221,7 @@ class SettingsFragmentTest {
 
     @Test
     fun appLockFeatureToggledOff_logsMetric() = runTest {
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
@@ -234,43 +235,55 @@ class SettingsFragmentTest {
 
         assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
             .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
+        assertSensitiveAppLockAtom(
+            statsLogItem = ShadowStatsLog.getStatsLogs().last(),
+            pinSet = false,
+            lockedPackages = emptyList(),
+            profileLocked = false,
+        )
     }
 
     @Test
     fun appLockToggledForApp_logsMetric() = runTest {
-        // Set PIN to enable App Lock feature so app toggles aren't disabled
-        appLockDataRepository.setPin(TEST_PIN)
+        pinManager.setAppLockPin(TEST_PIN)
 
         launchFragmentInHiltContainer<SettingsFragment> { fragment ->
             val lockedAppsCategory =
                 (fragment as SettingsFragment)
                     .preferenceScreen
                     .getPreference(LOCKED_APPS_CATEGORY_INDEX) as PreferenceGroup
-            val lockableApp = lockedAppsCategory.getPreference(0) as SwitchPreference
+            val lockableApp =
+                lockedAppsCategory.getPreference(FIRST_LOCKED_APP_INDEX) as SwitchPreference
 
             lockableApp.performClick()
         }
 
         assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
             .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
+        assertSensitiveAppLockAtom(
+            statsLogItem = ShadowStatsLog.getStatsLogs().last(),
+            pinSet = true,
+            lockedPackages = listOf(TEST_PACKAGE_UIDS[FIRST_LOCKED_APP_INDEX]),
+            profileLocked = false,
+        )
     }
 
     private fun installTestLauncherApps() {
-        for (packageName in TEST_PACKAGE_NAMES) {
+        for ((pkg, uid) in TEST_PACKAGE_NAMES.zip(TEST_PACKAGE_UIDS)) {
             shadowLauncherApps.addActivity(
                 Process.myUserHandle(),
-                buildLauncherActivityInfoFromPackageName(packageName),
+                buildLauncherActivityInfo(packageName = pkg, uid = uid),
             )
-            shadowPackageManager.installPackage(
-                PackageInfo().apply { this.packageName = packageName }
-            )
+            shadowPackageManager.installPackage(PackageInfo().apply { packageName = pkg })
         }
     }
 
     private companion object {
         val TEST_PACKAGE_NAMES = listOf("com.package.one", "com.package.two")
+        val TEST_PACKAGE_UIDS = listOf(10, 20)
         const val ENABLE_APP_LOCK_SWITCH_INDEX = 0
         const val LOCKED_APPS_CATEGORY_INDEX = 1
+        const val FIRST_LOCKED_APP_INDEX = 0
         const val TEST_PIN = "1234"
     }
 }

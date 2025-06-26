@@ -111,8 +111,10 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 isChecked = lockableApp.isLocked
                 isPersistent = false
                 onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
-                    viewModel.setAppLockForApp(preference.key, newValue as Boolean)
-                    lifecycleScope.launch { metricsLogger.logState() }
+                    lifecycleScope.launch {
+                        viewModel.setAppLockForApp(preference.key, newValue as Boolean)
+                        metricsLogger.logState()
+                    }
                     true
                 }
             }

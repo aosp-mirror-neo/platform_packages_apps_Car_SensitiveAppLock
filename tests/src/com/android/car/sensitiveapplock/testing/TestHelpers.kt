@@ -22,9 +22,12 @@ import org.mockito.kotlin.whenever
 
 /** Object containing common test helper functions. */
 object TestHelpers {
-    fun buildLauncherActivityInfoFromPackageName(packageName: String): LauncherActivityInfo {
+    fun buildLauncherActivityInfo(packageName: String, uid: Int? = null): LauncherActivityInfo {
         val applicationInfo =
             ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
+        if (uid != null) {
+            applicationInfo.uid = uid
+        }
         val mockLauncherActivityInfo =
             mock<LauncherActivityInfo>().apply {
                 whenever(getApplicationInfo()).thenReturn(applicationInfo)

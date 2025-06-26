@@ -25,7 +25,7 @@ import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListRepository
-import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfoFromPackageName
+import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -83,7 +83,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun disableAppLockFeature_unlocksAllLockedApps() {
+    fun disableAppLockFeature_unlocksAllLockedApps() = runTest {
         for (packageName in TEST_PACKAGE_NAMES) {
             viewModel.setAppLockForApp(packageName, true)
         }
@@ -109,7 +109,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun setAppLockForApp_lockTrue_suspendsApp() {
+    fun setAppLockForApp_lockTrue_suspendsApp() = runTest {
         val packageName = TEST_PACKAGE_NAMES[0]
         viewModel.setAppLockForApp(packageName, true)
 
@@ -117,7 +117,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun setAppLockForApp_lockFalse_unsuspendsApp() {
+    fun setAppLockForApp_lockFalse_unsuspendsApp() = runTest {
         val packageName = TEST_PACKAGE_NAMES[0]
         viewModel.setAppLockForApp(packageName, true)
         viewModel.setAppLockForApp(packageName, false)
@@ -150,7 +150,7 @@ class SettingsViewModelTest {
         for (packageName in TEST_PACKAGE_NAMES) {
             shadowLauncherApps.addActivity(
                 Process.myUserHandle(),
-                buildLauncherActivityInfoFromPackageName(packageName),
+                buildLauncherActivityInfo(packageName),
             )
             shadowPackageManager.installPackage(
                 PackageInfo().apply { this.packageName = packageName }
