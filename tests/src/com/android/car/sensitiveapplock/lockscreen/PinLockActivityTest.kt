@@ -16,6 +16,7 @@
 package com.android.car.sensitiveapplock.lockscreen
 
 import android.Manifest.permission.SUSPEND_APPS
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.ComponentName
 import android.content.Intent
@@ -204,6 +205,8 @@ class PinLockActivityTest {
                 assertThat(pinManager.getAppLockPinState()).isEqualTo(PinManager.PinState.SET)
             }
         }
+
+        assertThat(activityScenario.result.resultCode).isEqualTo(RESULT_OK)
     }
 
     @Test
@@ -221,6 +224,8 @@ class PinLockActivityTest {
             assertThat(settingsLockManager.lockStatusFlow.value)
                 .isEqualTo(SettingsLockStatus.VALID_PIN)
         }
+
+        assertThat(activityScenario.result.resultCode).isEqualTo(RESULT_OK)
     }
 
     @Test
@@ -258,6 +263,7 @@ class PinLockActivityTest {
                 .setFragmentResult(PinLockActivity.VALIDATE_PIN_REQUEST_KEY, Bundle())
         }
 
+        assertThat(activityScenario.result.resultCode).isEqualTo(RESULT_OK)
         for (packageName in TEST_PACKAGE_NAMES) {
             assertThat(shadowPackageManager.getPackageSetting(packageName).isSuspended).isFalse()
         }
@@ -292,7 +298,7 @@ class PinLockActivityTest {
 
     private fun createActivityScenarioWithAction(action: String) {
         val pinLockIntent = Intent(context, PinLockActivity::class.java).setAction(action)
-        activityScenario = ActivityScenario.launch(pinLockIntent)
+        activityScenario = ActivityScenario.launchActivityForResult(pinLockIntent)
     }
 
     private companion object {

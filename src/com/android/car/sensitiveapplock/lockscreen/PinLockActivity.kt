@@ -94,6 +94,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
                     }
                 }
                 metricsLogger.logState()
+                setResult(RESULT_OK)
                 finish()
             }
         }
@@ -113,6 +114,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
                 logger.d("Called from Settings. Unlocking Settings.")
                 lifecycleScope.launch {
                     viewModel.unlockSettings()
+                    setResult(RESULT_OK)
                     finish()
                 }
                 return@setFragmentResultListener
@@ -122,6 +124,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
             lifecycleScope.launch {
                 viewModel.unlockApps()
                 startActivity(viewModel.getLaunchIntentForPackage(packageManager, packageName))
+                setResult(RESULT_OK)
                 finish()
             }
         }
