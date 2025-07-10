@@ -26,4 +26,11 @@ message AppLockData {
     string password = 1;
     // List of package names of the locked apps.
     repeated string locked_apps = 2;
+    // ReAuth pin recovery account
+    RecoveryAccount re_auth_recovery_account = 3;
+}
+
+message RecoveryAccount {
+    string name = 1;
+    string type = 2;
 }

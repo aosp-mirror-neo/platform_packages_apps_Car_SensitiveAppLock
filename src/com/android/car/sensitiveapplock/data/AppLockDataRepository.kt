@@ -15,8 +15,10 @@
  */
 package com.android.car.sensitiveapplock.data
 
+import android.accounts.Account
 import androidx.datastore.core.DataStore
 import com.android.car.sensitiveapplock.AppLockData
+import com.android.car.sensitiveapplock.RecoveryAccount
 import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -60,6 +62,20 @@ class AppLockDataRepository @Inject constructor(private val dataStore: DataStore
             lockedApps.remove(packageName)
             appLockData.toBuilder().clearLockedApps().addAllLockedApps(lockedApps).build()
         }
+    }
+
+    /** Sets the reAuth pin recovery account. */
+    suspend fun setReAuthPinRecoveryAccount(account: Account) {
+        val recoveryAccount =
+            RecoveryAccount.newBuilder().setName(account.name).setType(account.type).build()
+        dataStore.updateData { appLockData ->
+            appLockData.toBuilder().setReAuthRecoveryAccount(recoveryAccount).build()
+        }
+    }
+
+    /** Returns true if pin recovery via reAuth is enabled, false otherwise. */
+    suspend fun reAuthPinRecoveryEnabled(): Boolean {
+        return dataStore.data.first().reAuthRecoveryAccount != RecoveryAccount.getDefaultInstance()
     }
 
     /** Clears the user's App Lock data. */

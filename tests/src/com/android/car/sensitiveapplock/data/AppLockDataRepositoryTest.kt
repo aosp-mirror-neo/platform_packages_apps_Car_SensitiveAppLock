@@ -15,6 +15,7 @@
  */
 package com.android.car.sensitiveapplock.data
 
+import android.accounts.Account
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
@@ -67,11 +68,13 @@ class AppLockDataRepositoryTest {
         appLockDataRepository.apply {
             setPin(USER_PIN)
             addLockedApp(LOCKED_APP)
+            setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
             clearData()
         }
 
         assertThat(appLockDataRepository.getPin()).isEmpty()
         assertThat(appLockDataRepository.getLockedApps()).isEmpty()
+        assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
     }
 
     @Test
@@ -84,8 +87,22 @@ class AppLockDataRepositoryTest {
         assertThat(appLockDataRepository.getLockedApps()).isEmpty()
     }
 
+    @Test
+    fun setReAuthPinRecoveryAccount_updatesData() = runTest {
+        appLockDataRepository.setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
+        assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isTrue()
+    }
+
+    @Test
+    fun reAuthPinRecoveryEnabled_whenNotEnabled_returnsFalse() = runTest {
+        assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+    }
+
     private companion object {
         const val USER_PIN = "7355608"
         const val LOCKED_APP = "com.trip.to.sweden"
+        const val RECOVERY_ACCOUNT_NAME = "Gothenburg"
+        const val RECOVERY_ACCOUNT_TYPE = "com.sweden"
+        val RECOVERY_ACCOUNT = Account(RECOVERY_ACCOUNT_NAME, RECOVERY_ACCOUNT_TYPE)
     }
 }
