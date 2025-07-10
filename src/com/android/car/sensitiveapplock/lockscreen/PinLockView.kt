@@ -67,6 +67,14 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
         subtitleResId = subtitle
     }
 
+    /** Enables the recovery button and sets the action to be performed on clicking it. */
+    fun setRecoveryAction(recoveryFlow: () -> Unit) {
+        findViewById<TextView>(R.id.button_recovery).apply {
+            setOnClickListener { recoveryFlow() }
+            visibility = VISIBLE
+        }
+    }
+
     /** Sets the error message. */
     fun setError(@StringRes message: Int) {
         val errorColor =

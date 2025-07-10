@@ -41,6 +41,8 @@
 
   <string name="pin_screen_next_button_label">Next</string>
 
+  <string name="pin_screen_recovery_label">Forgot your PIN?</string>
+
   <!-- Digits on the PIN pad -->
   <string name="one">1</string>
   <string name="two">2</string>
