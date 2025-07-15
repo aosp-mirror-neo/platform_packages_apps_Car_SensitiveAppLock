@@ -16,6 +16,8 @@
 package com.android.car.sensitiveapplock.lockscreen
 
 import android.Manifest.permission.SUSPEND_APPS
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Application
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
@@ -26,10 +28,12 @@ import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
+import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -42,12 +46,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowPackageManager
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowPackageManager::class])
+@Config(shadows = [ShadowResources::class])
 class PinLockViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -71,12 +74,14 @@ class PinLockViewModelTest {
         shadowOf(context).grantPermissions(SUSPEND_APPS)
         pinLockViewModel =
             PinLockViewModel(
+                context,
                 appLockDataRepository,
                 appSuspensionManager,
                 pinManager,
                 settingsLockManager,
-                lockableAppsListDataSource
+                lockableAppsListDataSource,
             )
+        ShadowResources.reset()
     }
 
     @Test
@@ -126,14 +131,12 @@ class PinLockViewModelTest {
     fun getLaunchIntentForPackage_standardApp_returnsIntentWithActionMain() {
         val packageName = TEST_PACKAGE_NAMES[0]
         val cmpName = ComponentName(packageName, "TestActivity")
-        val intentFilter = IntentFilter(Intent.ACTION_MAIN).apply {
-            addCategory(Intent.CATEGORY_LAUNCHER)
-        }
+        val intentFilter =
+            IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         shadowPackageManager.addActivityIfNotPresent(cmpName)
         shadowPackageManager.addIntentFilterForActivity(cmpName, intentFilter)
 
-        val intent = pinLockViewModel
-            .getLaunchIntentForPackage(context.packageManager, packageName)
+        val intent = pinLockViewModel.getLaunchIntentForPackage(context.packageManager, packageName)
 
         assertThat(intent?.action).isEqualTo(Intent.ACTION_MAIN)
     }
@@ -145,15 +148,42 @@ class PinLockViewModelTest {
         shadowPackageManager.addServiceIfNotPresent(cmpName)
         shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
 
-        val intent = pinLockViewModel
-            .getLaunchIntentForPackage(context.packageManager, TEST_TEMPLATE_MEDIA_PACKAGE)
+        val intent =
+            pinLockViewModel.getLaunchIntentForPackage(
+                context.packageManager,
+                TEST_TEMPLATE_MEDIA_PACKAGE,
+            )
 
         assertThat(intent?.action).isEqualTo(CarMediaIntents.ACTION_MEDIA_TEMPLATE)
+    }
+
+    @Test
+    fun enableReAuthRecoveryFlow_whenNoAccountSignedIn_returnsFalse() = runTest {
+        assertThat(pinLockViewModel.enableReAuthRecoveryFlow()).isFalse()
+    }
+
+    @Test
+    fun enableReAuthRecoveryFlow_whenAccountSignedIn_returnsTrue() = runTest {
+        ShadowResources.setString(R.string.config_recoveryAccountType, RECOVERY_ACCOUNT_TYPE)
+        val shadowAccountManager = shadowOf(AccountManager.get(context))
+        shadowAccountManager.addAccount(Account("TEST_ACCOUNT", RECOVERY_ACCOUNT_TYPE))
+
+        assertThat(pinLockViewModel.enableReAuthRecoveryFlow()).isTrue()
+    }
+
+    @Test
+    fun enableReAuthRecoveryFlow_whenAccountIsNotRecoveryType_returnsFalse() = runTest {
+        ShadowResources.setString(R.string.config_recoveryAccountType, RECOVERY_ACCOUNT_TYPE)
+        val shadowAccountManager = shadowOf(AccountManager.get(context))
+        shadowAccountManager.addAccount(Account("TEST_ACCOUNT", "com.test"))
+
+        assertThat(pinLockViewModel.enableReAuthRecoveryFlow()).isFalse()
     }
 
     private companion object {
         const val USER_PIN = "1111"
         const val TEST_TEMPLATE_MEDIA_PACKAGE = "com.template.1"
+        const val RECOVERY_ACCOUNT_TYPE = "com.oem"
 
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
     }

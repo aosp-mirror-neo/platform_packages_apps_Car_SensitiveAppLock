@@ -15,11 +15,14 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.accounts.AccountManager
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
+import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
@@ -27,6 +30,7 @@ import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,12 +43,15 @@ import kotlinx.coroutines.flow.update
 class PinLockViewModel
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     private val appLockDataRepository: AppLockDataRepository,
     private val appSuspensionManager: AppSuspensionManager,
     private val pinManager: PinManager,
     private val settingsLockManager: SettingsLockManager,
     private val lockableAppsListDataSource: LockableAppsListDataSource,
 ) : ViewModel() {
+    private val accountManager = AccountManager.get(context)
+    private val resources = context.resources
     private val _enteredPin = MutableStateFlow("")
     val enteredPin: StateFlow<String> = _enteredPin.asStateFlow()
 
@@ -91,19 +98,35 @@ constructor(
     }
 
     /**
-     * Returns an [Intent] to launch the action [Intent.ACTION_MAIN] for standard launcher
-     * app or action [CarMediaIntents.ACTION_MEDIA_TEMPLATE] for templated media apps.
+     * Returns an [Intent] to launch the action [Intent.ACTION_MAIN] for standard launcher app or
+     * action [CarMediaIntents.ACTION_MEDIA_TEMPLATE] for templated media apps.
      */
     fun getLaunchIntentForPackage(packageManager: PackageManager, packageName: String): Intent? {
-        val templateMediaApps = lockableAppsListDataSource.getLockableApps()
-            .filter { it.isTemplateMediaApp }
+        val templateMediaApps =
+            lockableAppsListDataSource.getLockableApps().filter { it.isTemplateMediaApp }
         val mediaApp = templateMediaApps.find { it.packageName == packageName }
         if (mediaApp == null) {
             return packageManager.getLaunchIntentForPackage(packageName)
         }
         val component = ComponentName(packageName, mediaApp.name)
-        val intent = Intent(CarMediaIntents.ACTION_MEDIA_TEMPLATE)
-            .putExtra(CarMediaIntents.EXTRA_MEDIA_COMPONENT, component.flattenToString())
+        val intent =
+            Intent(CarMediaIntents.ACTION_MEDIA_TEMPLATE)
+                .putExtra(CarMediaIntents.EXTRA_MEDIA_COMPONENT, component.flattenToString())
         return intent
+    }
+
+    /**
+     * Enables reAuth recovery flow if the user has already added a
+     * [R.string.config_recoveryAccountType] type account to their profile. Returns true if the flow
+     * is enabled, false otherwise.
+     */
+    suspend fun enableReAuthRecoveryFlow(): Boolean {
+        val defaultAccountType = resources.getString(R.string.config_recoveryAccountType)
+        val accounts = accountManager.getAccountsByType(defaultAccountType)
+        if (accounts.isEmpty()) {
+            return false
+        }
+        appLockDataRepository.setReAuthPinRecoveryAccount(accounts.first())
+        return true
     }
 }

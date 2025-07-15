@@ -23,4 +23,7 @@
     <string-array name="unsuspendable_packages">
         <item>com.android.car.settings</item>
     </string-array>
+
+    <!-- Default account type used for recovering pin. -->
+    <string name="config_recoveryAccountType" translatable="false">com.google</string>
 </resources>

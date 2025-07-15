@@ -18,6 +18,7 @@ package com.android.car.sensitiveapplock.shadows
 
 import android.content.res.Resources
 import androidx.annotation.BoolRes
+import androidx.annotation.StringRes
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.annotation.RealObject
@@ -42,15 +43,34 @@ class ShadowResources : org.robolectric.shadows.ShadowResources() {
         )
     }
 
+    @Implementation
+    fun getString(@StringRes id: Int): String {
+        if (stringResourceMap.containsKey(id)) {
+            return stringResourceMap.getOrDefault(id, "")
+        }
+        return Shadow.directlyOn(
+            realResources,
+            Resources::class.qualifiedName,
+            "getString",
+            ReflectionHelpers.ClassParameter.from(Int::class.javaPrimitiveType, id),
+        )
+    }
+
     companion object {
         private var booleanResourceMap = mutableMapOf<Int, Boolean>()
+        private var stringResourceMap = mutableMapOf<Int, String>()
 
         fun setBoolean(id: Int, value: Boolean) {
             booleanResourceMap[id] = value
         }
 
+        fun setString(id: Int, value: String) {
+            stringResourceMap[id] = value
+        }
+
         fun reset() {
             booleanResourceMap.clear()
+            stringResourceMap.clear()
         }
     }
 }
