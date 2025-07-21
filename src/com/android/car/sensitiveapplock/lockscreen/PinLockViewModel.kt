@@ -15,6 +15,7 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
@@ -128,5 +129,16 @@ constructor(
         }
         appLockDataRepository.setReAuthPinRecoveryAccount(accounts.first())
         return true
+    }
+
+    /** Gets the recovery account for verifying user's identity. */
+    suspend fun getReAuthRecoveryAccount(): Account? {
+        if (!appLockDataRepository.reAuthPinRecoveryEnabled()) {
+            return null
+        }
+        val recoveryAccount = appLockDataRepository.getReAuthPinRecoveryAccount()
+        return accountManager.accounts.find {
+            it.name == recoveryAccount.name && it.type == recoveryAccount.type
+        }
     }
 }

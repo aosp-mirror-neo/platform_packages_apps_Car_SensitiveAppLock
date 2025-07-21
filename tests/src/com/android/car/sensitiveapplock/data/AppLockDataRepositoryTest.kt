@@ -90,7 +90,11 @@ class AppLockDataRepositoryTest {
     @Test
     fun setReAuthPinRecoveryAccount_updatesData() = runTest {
         appLockDataRepository.setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
+
+        val recoveryAccount = appLockDataRepository.getReAuthPinRecoveryAccount()
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isTrue()
+        assertThat(recoveryAccount.name).isEqualTo(RECOVERY_ACCOUNT.name)
+        assertThat(recoveryAccount.type).isEqualTo(RECOVERY_ACCOUNT.type)
     }
 
     @Test

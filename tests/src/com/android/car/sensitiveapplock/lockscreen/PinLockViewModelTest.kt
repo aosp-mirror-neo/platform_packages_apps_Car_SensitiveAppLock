@@ -180,6 +180,26 @@ class PinLockViewModelTest {
         assertThat(pinLockViewModel.enableReAuthRecoveryFlow()).isFalse()
     }
 
+    @Test
+    fun getReAuthRecoveryAccount_whenRecoveryEnabled_returnsRecoveryAccount() = runTest {
+        ShadowResources.setString(R.string.config_recoveryAccountType, RECOVERY_ACCOUNT_TYPE)
+        val shadowAccountManager = shadowOf(AccountManager.get(context))
+        val account = Account("TEST_ACCOUNT", RECOVERY_ACCOUNT_TYPE)
+        shadowAccountManager.addAccount(Account("TEST_ACCOUNT", RECOVERY_ACCOUNT_TYPE))
+
+        pinLockViewModel.enableReAuthRecoveryFlow()
+
+        val recoveryAccount = pinLockViewModel.getReAuthRecoveryAccount()
+        assertThat(recoveryAccount).isEqualTo(account)
+    }
+
+    @Test
+    fun getReAuthRecoveryAccount_whenRecoveryNotEnabled_returnsNull() = runTest {
+        val recoveryAccount = pinLockViewModel.getReAuthRecoveryAccount()
+
+        assertThat(recoveryAccount).isNull()
+    }
+
     private companion object {
         const val USER_PIN = "1111"
         const val TEST_TEMPLATE_MEDIA_PACKAGE = "com.template.1"

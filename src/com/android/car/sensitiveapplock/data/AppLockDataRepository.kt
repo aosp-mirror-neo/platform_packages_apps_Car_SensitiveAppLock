@@ -73,6 +73,10 @@ class AppLockDataRepository @Inject constructor(private val dataStore: DataStore
         }
     }
 
+    /** Gets the user's reAuth pin recovery account. */
+    suspend fun getReAuthPinRecoveryAccount(): RecoveryAccount =
+        dataStore.data.first().reAuthRecoveryAccount
+
     /** Returns true if pin recovery via reAuth is enabled, false otherwise. */
     suspend fun reAuthPinRecoveryEnabled(): Boolean {
         return dataStore.data.first().reAuthRecoveryAccount != RecoveryAccount.getDefaultInstance()
