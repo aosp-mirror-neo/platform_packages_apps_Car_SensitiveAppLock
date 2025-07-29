@@ -32,13 +32,16 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
+import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
+import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -50,7 +53,7 @@ import org.robolectric.annotation.Config
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowResources::class])
+@Config(shadows = [ShadowResources::class, ShadowAccountManager::class])
 class PinLockViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -67,6 +70,7 @@ class PinLockViewModelTest {
     @Inject lateinit var pinManager: PinManager
 
     @Inject lateinit var lockableAppsListDataSource: LockableAppsListDataSource
+    @Inject @BackgroundContext lateinit var backgroundContext: CoroutineContext
 
     @Before
     fun init() {
@@ -80,6 +84,7 @@ class PinLockViewModelTest {
                 pinManager,
                 settingsLockManager,
                 lockableAppsListDataSource,
+                backgroundContext,
             )
         ShadowResources.reset()
     }
@@ -181,23 +186,33 @@ class PinLockViewModelTest {
     }
 
     @Test
-    fun getReAuthRecoveryAccount_whenRecoveryEnabled_returnsRecoveryAccount() = runTest {
+    fun getReAuthIntent_whenRecoveryEnabled_returnsRecoveryAccount() = runTest {
         ShadowResources.setString(R.string.config_recoveryAccountType, RECOVERY_ACCOUNT_TYPE)
         val shadowAccountManager = shadowOf(AccountManager.get(context))
-        val account = Account("TEST_ACCOUNT", RECOVERY_ACCOUNT_TYPE)
         shadowAccountManager.addAccount(Account("TEST_ACCOUNT", RECOVERY_ACCOUNT_TYPE))
+        shadowAccountManager.addAuthenticator(RECOVERY_ACCOUNT_TYPE)
 
         pinLockViewModel.enableReAuthRecoveryFlow()
 
-        val recoveryAccount = pinLockViewModel.getReAuthRecoveryAccount()
-        assertThat(recoveryAccount).isEqualTo(account)
+        assertThat(pinLockViewModel.getReAuthIntent()).isNotNull()
     }
 
     @Test
-    fun getReAuthRecoveryAccount_whenRecoveryNotEnabled_returnsNull() = runTest {
-        val recoveryAccount = pinLockViewModel.getReAuthRecoveryAccount()
+    fun getReAuthIntent_whenRecoveryNotEnabled_returnsNull() = runTest {
+        assertThat(pinLockViewModel.getReAuthIntent()).isNull()
+    }
 
-        assertThat(recoveryAccount).isNull()
+    @Test
+    fun getAddAccountIntent_returnsIntent() = runTest {
+        val accountType = context.resources.getString(R.string.config_recoveryAccountType)
+        shadowOf(AccountManager.get(context)).addAuthenticator(accountType)
+
+        assertThat(pinLockViewModel.getAddAccountIntent()).isNotNull()
+    }
+
+    @Test
+    fun getAddAccountIntent_whenNoAuthenticatorAdded_returnsNull() = runTest {
+        assertThat(pinLockViewModel.getAddAccountIntent()).isNull()
     }
 
     private companion object {
