@@ -15,26 +15,44 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.activity.addCallback
-import androidx.core.os.bundleOf
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.util.Logger
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /** A fragment that displays the Confirm Pin screen used for confirming a created PIN. */
 @AndroidEntryPoint(Fragment::class)
 class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
+    @Inject lateinit var registry: ActivityResultRegistry
+
+    private lateinit var addAccountLauncher: ActivityResultLauncher<Intent>
     private lateinit var pinLockView: PinLockView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        addAccountLauncher =
+            registerForActivityResult(StartActivityForResult(), registry, ::onAddAccountComplete)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,19 +87,73 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
 
     private fun confirmPin() {
         if (pinLockView.getPin() != viewModel.enteredPin.value) {
-            logger.w("Pin did not match!")
+            logger.d("Pin did not match!")
             pinLockView.setError(R.string.pin_error)
             return
         }
-
-        logger.d("Pin matches! Confirming pin!")
-        parentFragmentManager.setFragmentResult(
-            PinLockActivity.USER_PIN_REQUEST_KEY,
-            bundleOf(PinLockActivity.USER_PIN_BUNDLE_KEY to viewModel.enteredPin.value),
-        )
+        logger.d("Pin matches")
+        lifecycleScope.launch {
+            val recoveryEnabled = resources.getBoolean(R.bool.config_enablePinLockRecovery)
+            if (recoveryEnabled && !viewModel.enableReAuthRecoveryFlow()) {
+                logger.v("User not signed-in. Showing sign-in dialog.")
+                showSignInDialog()
+                return@launch
+            }
+            logger.d("User already signed-in. Confirming pin!")
+            setResult()
+        }
     }
 
-    private companion object {
-        val logger = Logger(ConfirmPinFragment::class.java)
+    private fun showSignInDialog() {
+        val dialog =
+            AlertDialog.Builder(context)
+                .apply {
+                    setTitle(R.string.signin_dialog_title)
+                    setMessage(R.string.signin_dialog_message)
+                    setCancelable(false)
+                    setOnCancelListener { setResult() }
+                    setNeutralButton(R.string.signin_dialog_neutral_button_text) { _, _ ->
+                        setResult()
+                    }
+                    setPositiveButton(R.string.signin_dialog_positive_button_text) { _, _ ->
+                        addAccount()
+                    }
+                }
+                .create()
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
+    }
+
+    private fun addAccount() =
+        lifecycleScope.launch {
+            val intent = viewModel.getAddAccountIntent()
+            if (intent == null) {
+                logger.d("Could not fetch intent to add account")
+                setResult()
+                return@launch
+            }
+            logger.d("Starting add account launcher")
+            addAccountLauncher.launch(intent)
+        }
+
+    private fun onAddAccountComplete(result: ActivityResult) =
+        lifecycleScope.launch {
+            val signedIn = viewModel.enableReAuthRecoveryFlow()
+            setResult(signedIn)
+        }
+
+    private fun setResult(signedIn: Boolean = false) {
+        val bundle =
+            Bundle().apply {
+                putString(PinLockActivity.USER_PIN_BUNDLE_KEY, viewModel.enteredPin.value)
+                putBoolean(USER_SIGNED_IN_BUNDLE_KEY, signedIn)
+            }
+        parentFragmentManager.setFragmentResult(PinLockActivity.USER_PIN_REQUEST_KEY, bundle)
+    }
+
+    companion object {
+        private val logger = Logger(ConfirmPinFragment::class.java)
+
+        const val USER_SIGNED_IN_BUNDLE_KEY = "user_signed_in_bundle_key"
     }
 }
