@@ -19,6 +19,7 @@ package com.android.car.sensitiveapplock.testing
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
@@ -29,7 +30,8 @@ import androidx.core.app.ActivityOptionsCompat
  */
 class FakeActivityResultRegistry(private val context: Context) : ActivityResultRegistry() {
     private var lastLaunchedIntent: Intent? = null
-    private var resultCode = Activity.RESULT_CANCELED
+    private val resultCodes = mutableListOf<Int>()
+    private val resultBundles = mutableListOf<Bundle>()
 
     override fun <I, O> onLaunch(
         requestCode: Int,
@@ -38,12 +40,16 @@ class FakeActivityResultRegistry(private val context: Context) : ActivityResultR
         options: ActivityOptionsCompat?,
     ) {
         lastLaunchedIntent = contract.createIntent(context, input)
-        dispatchResult(requestCode, ActivityResult(resultCode, null))
+        val bundle = resultBundles.removeFirstOrNull() ?: Bundle.EMPTY
+        val intent = Intent().apply { putExtras(bundle) }
+        val resultCode = resultCodes.removeFirstOrNull() ?: Activity.RESULT_CANCELED
+        dispatchResult(requestCode, ActivityResult(resultCode, intent))
     }
 
     fun getLastLaunchedIntent(): Intent? = lastLaunchedIntent
 
-    fun setResultCode(resultCode: Int) {
-        this.resultCode = resultCode
+    fun setResult(resultCode: Int, bundle: Bundle = Bundle.EMPTY) {
+        resultCodes.add(resultCode)
+        resultBundles.add(bundle)
     }
 }
