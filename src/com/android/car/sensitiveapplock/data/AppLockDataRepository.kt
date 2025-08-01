@@ -82,6 +82,24 @@ class AppLockDataRepository @Inject constructor(private val dataStore: DataStore
         return dataStore.data.first().reAuthRecoveryAccount != RecoveryAccount.getDefaultInstance()
     }
 
+    /** Adds an app to the user's list of locked system apps whose data has been deleted. */
+    suspend fun addLockedDataClearedSystemApp(packageName: String) {
+        dataStore.updateData { appLockData ->
+            appLockData.toBuilder().addLockedDataClearedSystemApps(packageName).build()
+        }
+    }
+
+    /** Gets the user's list of locked system apps whose data has been deleted. */
+    suspend fun getLockedDataClearedSystemApps(): List<String> =
+        dataStore.data.first().lockedDataClearedSystemAppsList
+
+    /** Clears the list of locked system apps whose data been deleted. */
+    suspend fun clearLockedDataClearedSystemApps() {
+        dataStore.updateData { appLockData ->
+            appLockData.toBuilder().clearLockedDataClearedSystemApps().build()
+        }
+    }
+
     /** Clears the user's App Lock data. */
     suspend fun clearData() {
         dataStore.updateData { appLockData -> AppLockData.getDefaultInstance() }

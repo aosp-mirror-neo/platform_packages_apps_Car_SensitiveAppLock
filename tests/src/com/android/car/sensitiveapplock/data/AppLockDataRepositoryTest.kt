@@ -69,12 +69,14 @@ class AppLockDataRepositoryTest {
             setPin(USER_PIN)
             addLockedApp(LOCKED_APP)
             setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
+            addLockedDataClearedSystemApp(LOCKED_APP)
             clearData()
         }
 
         assertThat(appLockDataRepository.getPin()).isEmpty()
         assertThat(appLockDataRepository.getLockedApps()).isEmpty()
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
     }
 
     @Test
@@ -100,6 +102,24 @@ class AppLockDataRepositoryTest {
     @Test
     fun reAuthPinRecoveryEnabled_whenNotEnabled_returnsFalse() = runTest {
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+    }
+
+    @Test
+    fun addLockedDataClearedSystemApp_updatesData() = runTest {
+        appLockDataRepository.addLockedDataClearedSystemApp(LOCKED_APP)
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps())
+            .containsExactly(LOCKED_APP)
+    }
+
+    @Test
+    fun clearLockedDataClearedSystemApps_updatesData() = runTest {
+        appLockDataRepository.apply {
+            addLockedDataClearedSystemApp(LOCKED_APP)
+            addLockedDataClearedSystemApp(LOCKED_APP)
+            clearLockedDataClearedSystemApps()
+        }
+
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
     }
 
     private companion object {

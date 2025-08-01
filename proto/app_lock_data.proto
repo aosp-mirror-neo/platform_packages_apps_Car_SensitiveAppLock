@@ -28,6 +28,8 @@ message AppLockData {
     repeated string locked_apps = 2;
     // ReAuth pin recovery account
     RecoveryAccount re_auth_recovery_account = 3;
+    // List of system packages which are locked and have their data cleared
+    repeated string locked_data_cleared_system_apps = 4;
 }
 
 message RecoveryAccount {
