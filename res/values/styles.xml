@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2025 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +14,10 @@
   ~ limitations under the License.
   -->
 <resources>
-    <style name="PinPadKey" parent="Widget.CarUi.Button">
+    <!--  Dummy style so that overlays can be applied without removing dynamic styling  -->
+    <style name="PinPadKeyOverlayable" parent="Widget.CarUi.Button" />
+
+    <style name="PinPadKey" parent="PinPadKeyOverlayable">
         <item name="android:gravity">center</item>
         <item name="android:textStyle">normal</item>
         <item name="android:includeFontPadding">false</item>
