@@ -21,9 +21,12 @@ import android.accounts.AccountManager
 import android.app.Application
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
+import android.os.Process
 import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -36,6 +39,7 @@ import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
+import com.android.car.sensitiveapplock.testing.TestHelpers
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -59,6 +63,8 @@ class PinLockViewModelTest {
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
     private val shadowPackageManager = shadowOf(context.packageManager)
+    private val shadowLauncherApps =
+        shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
 
     private lateinit var pinLockViewModel: PinLockViewModel
 
@@ -140,6 +146,8 @@ class PinLockViewModelTest {
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         shadowPackageManager.addActivityIfNotPresent(cmpName)
         shadowPackageManager.addIntentFilterForActivity(cmpName, intentFilter)
+        val launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(packageName)
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
 
         val intent = pinLockViewModel.getLaunchIntentForPackage(context.packageManager, packageName)
 
@@ -213,6 +221,29 @@ class PinLockViewModelTest {
     @Test
     fun getAddAccountIntent_whenNoAuthenticatorAdded_returnsNull() = runTest {
         assertThat(pinLockViewModel.getAddAccountIntent()).isNull()
+    }
+
+    @Test
+    fun getLockedApps_returnsOnlyLockedAppInfo() = runTest {
+        var launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[0])
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[1])
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+
+        val lockedApps = pinLockViewModel.getLockedApps()
+
+        assertThat(lockedApps).hasSize(1)
+        assertThat(lockedApps[0].packageName).isEqualTo(TEST_PACKAGE_NAMES[0])
+    }
+
+    @Test
+    fun clearPinResetData_removesRecoveryFlowData() = runTest {
+        appLockDataRepository.addLockedDataClearedSystemApp(TEST_PACKAGE_NAMES.first())
+
+        pinLockViewModel.clearPinResetData()
+
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
     }
 
     private companion object {

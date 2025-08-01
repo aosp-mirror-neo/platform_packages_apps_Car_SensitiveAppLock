@@ -26,6 +26,7 @@ import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
+import com.android.car.sensitiveapplock.data.AppInfo
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
@@ -197,6 +198,27 @@ constructor(
                 return@withContext null
             }
         }
+
+    /** Gets the [AppInfo] of all locked user apps. */
+    suspend fun getLockedApps(): List<AppInfo> {
+        val apps = appLockDataRepository.getLockedApps()
+        val userLockableApps = lockableAppsListDataSource.getLockableApps()
+        return userLockableApps.filter { apps.contains(it.packageName) }
+    }
+
+    /**
+     * Invalidates all data related to the user pin reset flow when user has no recovery account.
+     *
+     * This method should be called after a user successfully validates their existing pin, as this
+     * action confirms the user's identity and makes the reset data unnecessary.
+     */
+    suspend fun clearPinResetData() {
+        appLockDataRepository.clearLockedDataClearedSystemApps()
+    }
+
+    /** Gets the list of locked systems apps whose data has been cleared by the user. */
+    suspend fun getLockedDataClearedSystemApps(): List<String> =
+        appLockDataRepository.getLockedDataClearedSystemApps()
 
     private companion object {
         val logger = Logger(PinLockViewModel::class.java)
