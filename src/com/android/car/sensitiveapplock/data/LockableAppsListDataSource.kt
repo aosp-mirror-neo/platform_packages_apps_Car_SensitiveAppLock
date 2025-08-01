@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
@@ -97,7 +98,8 @@ constructor(@ApplicationContext private val context: Context) {
             packageUid = applicationInfo.uid,
             label = applicationInfo.loadLabel(packageManager).toString(),
             icon = applicationInfo.loadIcon(packageManager),
-            isTemplateMediaApp = false
+            isTemplateMediaApp = false,
+            isBundledApp = (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
         )
     }
 
@@ -109,7 +111,8 @@ constructor(@ApplicationContext private val context: Context) {
             packageUid = serviceInfo.applicationInfo.uid,
             label = serviceInfo.applicationInfo.loadLabel(packageManager).toString(),
             icon = loadIcon(packageManager),
-            isTemplateMediaApp = true
+            isTemplateMediaApp = true,
+            isBundledApp = (serviceInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
         )
     }
 }

@@ -22,9 +22,13 @@ import org.mockito.kotlin.whenever
 
 /** Object containing common test helper functions. */
 object TestHelpers {
-    fun buildLauncherActivityInfo(packageName: String, uid: Int? = null): LauncherActivityInfo {
+    fun buildLauncherActivityInfo(
+        packageName: String,
+        uid: Int? = null,
+        flags: Int = 0,
+    ): LauncherActivityInfo {
         val applicationInfo =
-            ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
+            ApplicationInfoBuilder.newBuilder().setPackageName(packageName).setFlags(flags).build()
         if (uid != null) {
             applicationInfo.uid = uid
         }

@@ -24,5 +24,6 @@ data class AppInfo(
     val packageUid: Int,
     val label: String,
     val icon: Drawable,
-    val isTemplateMediaApp: Boolean
+    val isTemplateMediaApp: Boolean,
+    val isBundledApp: Boolean,
 )
