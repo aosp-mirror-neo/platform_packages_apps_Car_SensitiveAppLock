@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources>
-  <!-- Default dimensions for PIN pad view -->
-  <dimen name="pin_pad_title_text_size">44sp</dimen>
-  <dimen name="pin_pad_subtitle_text_size">32sp</dimen>
-  <dimen name="pin_pad_key_diameter">96dp</dimen>
+  <!--  Dimensions for condensed portrait view -->
+  <dimen name="pin_lock_screen_title_margin">0dp</dimen>
+  <dimen name="pin_lock_screen_subtitle_margin">24dp</dimen>
+  <dimen name="pin_lock_screen_entered_pin_margin">8dp</dimen>
+  <dimen name="pin_lock_screen_pin_pad_margin">48dp</dimen>
+  <dimen name="pin_lock_screen_recovery_button_margin">24dp</dimen>
+
+  <!-- Dimensions for condensed PIN pad view -->
+  <dimen name="pin_pad_title_text_size">36sp</dimen>
+  <dimen name="pin_pad_subtitle_text_size">24sp</dimen>
+  <dimen name="pin_pad_key_height">80dp</dimen>
+  <dimen name="pin_pad_key_width">96dp</dimen>
   <dimen name="pin_pad_key_text_size">32sp</dimen>
   <dimen name="pin_pad_key_padding">24dp</dimen>
-  <dimen name="pin_pad_row_spacing">10dp</dimen>
+  <dimen name="pin_pad_row_spacing">8dp</dimen>
+  <dimen name="pin_pad_row_spacing_negative">-8dp</dimen>
   <dimen name="pin_pad_col_spacing">12dp</dimen>
-  <dimen name="pin_pad_spacing">16dp</dimen>
+  <dimen name="pin_pad_col_spacing_negative">-12dp</dimen>
 </resources>

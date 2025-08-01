@@ -18,9 +18,10 @@
     <style name="PinPadKey" parent="Widget.CarUi.Button">
         <item name="android:gravity">center</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">@dimen/pin_pad_key_text_size</item>
-        <item name="android:layout_height">@dimen/pin_pad_key_diameter</item>
-        <item name="android:layout_width">@dimen/pin_pad_key_diameter</item>
+        <item name="android:layout_height">@dimen/pin_pad_key_height</item>
+        <item name="android:layout_width">@dimen/pin_pad_key_width</item>
         <item name="android:padding">@dimen/pin_pad_key_padding</item>
         <item name="android:layout_marginStart">@dimen/pin_pad_col_spacing</item>
         <item name="android:layout_marginEnd">@dimen/pin_pad_col_spacing</item>

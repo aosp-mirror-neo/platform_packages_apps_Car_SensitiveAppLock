@@ -14,11 +14,17 @@
   ~ limitations under the License.
   -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
 
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/pin_pad_col_spacing_negative"
+        android:layout_marginEnd="@dimen/pin_pad_col_spacing_negative"
+        android:layout_marginTop="@dimen/pin_pad_row_spacing_negative"
+        android:layout_marginBottom="@dimen/pin_pad_row_spacing_negative"
         android:columnCount="3">
         <!--  Row 1  -->
         <TextView
@@ -29,7 +35,7 @@
         <TextView
             android:id="@+id/key_2"
             style="@style/PinPadKey"
-            android:text="@string/two" />
+            android:text="@string/two"/>
 
         <TextView
             android:id="@+id/key_3"
