@@ -198,6 +198,7 @@ class PinResetDialogFragment(lockedApps: List<AppInfo>, private val dataClearedA
     }
 
     companion object {
+        const val TAG = "PIN_RESET_DIALOG_FRAGMENT_TAG"
         const val PIN_RESET_DIALOG_REQUEST_KEY = "user_pin_reset_dialog_request_key"
         const val PIN_RESET_DIALOG_BUNDLE_KEY = "user_pin_reset_dialog_bundle_key"
     }

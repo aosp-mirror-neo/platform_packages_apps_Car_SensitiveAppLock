@@ -18,7 +18,10 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
+import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.ActivityResult
@@ -27,6 +30,7 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity.Companion.ACTION_CREATE_PIN
@@ -40,9 +44,9 @@ import kotlinx.coroutines.launch
 class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_screen) {
     private val viewModel: PinLockViewModel by activityViewModels()
 
-    private lateinit var pinLockView: PinLockView
-
     @Inject lateinit var activityResultRegistry: ActivityResultRegistry
+
+    private lateinit var pinLockView: PinLockView
     private lateinit var confirmCredentialsLauncher: ActivityResultLauncher<Intent>
     private lateinit var pinRecreateResultLauncher: ActivityResultLauncher<Intent>
 
@@ -82,10 +86,7 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
         lifecycleScope.launch {
             if (viewModel.isSavedPin(pinLockView.getPin())) {
                 logger.d("User entered the correct pin.")
-                parentFragmentManager.setFragmentResult(
-                    PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
-                    Bundle(),
-                )
+                setResult()
             } else {
                 logger.d("User entered the wrong pin.")
                 pinLockView.setError(R.string.pin_error)
@@ -98,6 +99,11 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
             val intent = viewModel.getReAuthIntent()
             if (intent == null) {
                 logger.d("Cannot recover pin; User has not setup recovery account")
+                setPinResetDialogResultListener()
+                val lockedApps = viewModel.getLockedApps()
+                val dataClearedApps = viewModel.getLockedDataClearedSystemApps()
+                PinResetDialogFragment(lockedApps, dataClearedApps)
+                    .show(parentFragmentManager, PinResetDialogFragment.TAG)
                 return@launch
             }
             logger.v("Starting reauth activity")
@@ -120,12 +126,39 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
     private fun onPinRecreateComplete(result: ActivityResult) {
         logger.d("Pin recreated with result:${result.resultCode}")
         if (result.resultCode == RESULT_OK) {
-            lifecycleScope.launch {
-                parentFragmentManager.setFragmentResult(
-                    PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
-                    Bundle(),
-                )
+            setResult()
+        }
+    }
+
+    private fun setResult() =
+        lifecycleScope.launch {
+            viewModel.clearPinResetData()
+            parentFragmentManager.setFragmentResult(
+                PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
+                Bundle(),
+            )
+        }
+
+    private fun setPinResetDialogResultListener() {
+        setFragmentResultListener(PinResetDialogFragment.PIN_RESET_DIALOG_REQUEST_KEY) { _, bundle
+            ->
+            val recreatePin =
+                bundle.getBoolean(PinResetDialogFragment.PIN_RESET_DIALOG_BUNDLE_KEY, false)
+            if (!recreatePin) {
+                logger.d("Show all application screen")
+                val intent =
+                    Intent().apply {
+                        action = ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
+                        addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+                    }
+                startActivity(intent)
+                return@setFragmentResultListener
             }
+            logger.d("Start pin recreation flow")
+            val pinScreenIntent =
+                Intent(context, PinLockActivity::class.java).apply { action = ACTION_CREATE_PIN }
+            pinRecreateResultLauncher.launch(pinScreenIntent)
         }
     }
 

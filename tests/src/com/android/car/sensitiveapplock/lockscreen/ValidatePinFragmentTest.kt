@@ -15,20 +15,28 @@
  */
 package com.android.car.sensitiveapplock.lockscreen
 
+import android.Manifest.permission.SUSPEND_APPS
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.ComponentName
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
+import android.os.Looper
+import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.setFragmentResult
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment.Companion.PIN_RESET_DIALOG_BUNDLE_KEY
+import com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment.Companion.PIN_RESET_DIALOG_REQUEST_KEY
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
@@ -46,6 +54,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowAlertDialog
 
 @HiltAndroidTest
 @SmallTest
@@ -67,6 +76,9 @@ class ValidatePinFragmentTest {
     @Before
     fun init() {
         hiltRule.inject()
+
+        shadowOf(context).grantPermissions(SUSPEND_APPS)
+
         ShadowResources.reset()
     }
 
@@ -102,6 +114,25 @@ class ValidatePinFragmentTest {
 
             assertThat(receivedBundle).isNotNull()
         }
+    }
+
+    @Test
+    fun onEnterKeyClick_pinIsValid_clearsPinResetData() = runTest {
+        pinManager.setAppLockPin(USER_PIN)
+        appLockDataRepository.addLockedDataClearedSystemApp("com.test")
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
+
+            // 4 digit pin before hitting enter
+            for (i in 0..3) {
+                pinPadZeroKey.performClick()
+            }
+            pinPadEnterKey.performClick()
+        }
+
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
     }
 
     @Test
@@ -151,6 +182,23 @@ class ValidatePinFragmentTest {
     }
 
     @Test
+    fun onRecoveryButtonClick_whenRecoveryAccountSet_launchesReAuthActivity() = runTest {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        val testAccount = Account("test", accountType)
+        shadowAccountManager.addAccount(testAccount)
+        appLockDataRepository.setReAuthPinRecoveryAccount(testAccount)
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+            recoverKey.performClick()
+        }
+        val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+        assertThat(launchedIntent).isNotNull()
+        assertThat(launchedIntent?.action).isNull()
+    }
+
+    @Test
     fun pinRecovery_ReAuthSuccessful_launchesPinLockActivity() = runTest {
         ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         val testAccount = Account("test", accountType)
@@ -197,6 +245,86 @@ class ValidatePinFragmentTest {
             recoverKey.performClick()
 
             assertThat(receivedBundle).isNotNull()
+        }
+    }
+
+    @Test
+    fun pinRecovery_pinRecreated_clearsPinResetData() = runTest {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        CarUiInstaller.register(context)
+        val testAccount = Account("test", accountType)
+        shadowAccountManager.addAccount(testAccount)
+        appLockDataRepository.setReAuthPinRecoveryAccount(testAccount)
+        val onConfirmCredentialsBundle =
+            Bundle().apply { putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true) }
+        fakeActivityResultRegistry.setResult(RESULT_OK, onConfirmCredentialsBundle) // ReAuth
+        fakeActivityResultRegistry.setResult(RESULT_OK) // PinRecreate
+        appLockDataRepository.addLockedDataClearedSystemApp("com.test")
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+            recoverKey.performClick()
+        }
+
+        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
+    }
+
+    @Test
+    fun pinRecovery_noRecoveryAccount_showsPinResetDialog() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        CarUiInstaller.register(context)
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+            recoverKey.performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            val shadowDialog = shadowOf(dialog)
+            val title = shadowDialog.view.findViewById<TextView>(R.id.reset_dialog_title)
+            assertThat(dialog.isShowing).isTrue()
+            assertThat(title.text)
+                .isEqualTo(context.getString(R.string.reset_dialog_reset_now_title))
+        }
+    }
+
+    @Test
+    fun pinResetDialog_onResultBundleValueTrue_launchesPinLockActivity() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        CarUiInstaller.register(context)
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+            val bundle = Bundle().apply { putBoolean(PIN_RESET_DIALOG_BUNDLE_KEY, true) }
+
+            recoverKey.performClick()
+            fragment.setFragmentResult(PIN_RESET_DIALOG_REQUEST_KEY, bundle)
+
+            val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+            assertThat(launchedIntent?.component)
+                .isEqualTo(ComponentName(context, PinLockActivity::class.java))
+            assertThat(launchedIntent?.action).isEqualTo(PinLockActivity.ACTION_CREATE_PIN)
+        }
+    }
+
+    @Test
+    fun pinResetDialog_onResultBundleValueFalse_launchesManageAllAppsActivity() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        CarUiInstaller.register(context)
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+            val bundle = Bundle().apply { putBoolean(PIN_RESET_DIALOG_BUNDLE_KEY, false) }
+
+            recoverKey.performClick()
+            fragment.setFragmentResult(PIN_RESET_DIALOG_REQUEST_KEY, bundle)
+
+            val launchedIntent = shadowOf(context).peekNextStartedActivity()
+            assertThat(launchedIntent.action).isEqualTo(ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS)
+            assertThat(launchedIntent.flags)
+                .isEqualTo(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 
