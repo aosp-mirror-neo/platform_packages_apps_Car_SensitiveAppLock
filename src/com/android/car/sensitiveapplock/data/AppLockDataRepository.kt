@@ -73,6 +73,16 @@ class AppLockDataRepository @Inject constructor(private val dataStore: DataStore
         }
     }
 
+    /** Clears the reAuth pin recovery account. */
+    suspend fun clearReAuthPinRecoveryAccount() {
+        dataStore.updateData { appLockData ->
+            appLockData
+                .toBuilder()
+                .setReAuthRecoveryAccount(RecoveryAccount.getDefaultInstance())
+                .build()
+        }
+    }
+
     /** Gets the user's reAuth pin recovery account. */
     suspend fun getReAuthPinRecoveryAccount(): RecoveryAccount =
         dataStore.data.first().reAuthRecoveryAccount

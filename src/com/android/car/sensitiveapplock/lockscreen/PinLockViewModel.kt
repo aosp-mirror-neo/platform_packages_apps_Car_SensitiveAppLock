@@ -132,6 +132,7 @@ constructor(
         val defaultAccountType = resources.getString(R.string.config_recoveryAccountType)
         val accounts = accountManager.getAccountsByType(defaultAccountType)
         if (accounts.isEmpty()) {
+            appLockDataRepository.clearReAuthPinRecoveryAccount()
             return false
         }
         appLockDataRepository.setReAuthPinRecoveryAccount(accounts.first())

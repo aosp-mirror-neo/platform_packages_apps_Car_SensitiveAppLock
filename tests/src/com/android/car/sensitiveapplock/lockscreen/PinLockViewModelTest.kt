@@ -32,6 +32,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.RecoveryAccount
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
@@ -173,6 +174,8 @@ class PinLockViewModelTest {
     @Test
     fun enableReAuthRecoveryFlow_whenNoAccountSignedIn_returnsFalse() = runTest {
         assertThat(pinLockViewModel.enableReAuthRecoveryFlow()).isFalse()
+        assertThat(appLockDataRepository.getReAuthPinRecoveryAccount())
+            .isEqualTo(RecoveryAccount.getDefaultInstance())
     }
 
     @Test

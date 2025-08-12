@@ -18,6 +18,7 @@ package com.android.car.sensitiveapplock.data
 import android.accounts.Account
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.RecoveryAccount
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -97,6 +98,16 @@ class AppLockDataRepositoryTest {
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isTrue()
         assertThat(recoveryAccount.name).isEqualTo(RECOVERY_ACCOUNT.name)
         assertThat(recoveryAccount.type).isEqualTo(RECOVERY_ACCOUNT.type)
+    }
+
+    @Test
+    fun clearReAuthPinRecoveryAccount_updatesData() = runTest {
+        appLockDataRepository.setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
+
+        appLockDataRepository.clearReAuthPinRecoveryAccount()
+        assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+        assertThat(appLockDataRepository.getReAuthPinRecoveryAccount())
+            .isEqualTo(RecoveryAccount.getDefaultInstance())
     }
 
     @Test
