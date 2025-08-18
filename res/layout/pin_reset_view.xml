@@ -14,70 +14,80 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-  <TextView
-      android:id="@+id/reset_dialog_title"
-      android:textStyle="bold"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/reset_dialog_title"
-      android:textSize="36sp" />
-
-  <TextView
-      android:id="@+id/reset_dialog_message"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="48dp"
-      android:layout_marginBottom="32dp"
-      android:text="@string/reset_dialog_message"
-      android:textSize="32sp" />
-
-  <TextView
-      android:id="@+id/reset_dialog_user_apps_message"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="61dp"
-      android:text="@string/reset_dialog_downloaded_apps"
-      android:textSize="32sp"
-      android:visibility="gone" />
-
-  <view class="com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment$NonScrollableGridView"
-      android:id="@+id/reset_dialog_user_apps_list"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="61dp"
-      android:columnWidth="@dimen/reset_dialog_app_icon_size"
-      android:gravity="center"
-      android:horizontalSpacing="24dp"
-      android:numColumns="auto_fit"
-      android:stretchMode="columnWidth"
-      android:verticalSpacing="10dp"
-      android:visibility="gone" />
+      android:paddingTop="@dimen/reset_dialog_default_padding"
+      android:paddingStart="@dimen/reset_dialog_default_padding"
+      android:paddingEnd="@dimen/reset_dialog_default_padding"
+      android:orientation="vertical">
 
-  <TextView
-      android:id="@+id/reset_dialog_user_preinstalled_apps_message"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="61dp"
-      android:text="@string/reset_dialog_preinstalled_apps"
-      android:textSize="32sp"
-      android:visibility="gone" />
+    <TextView
+        android:id="@+id/reset_dialog_title"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_dialog_title"
+        android:textSize="36sp" />
 
-  <view class="com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment$NonScrollableGridView"
-      android:id="@+id/reset_dialog_user_preinstalled_apps_list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:columnWidth="@dimen/reset_dialog_app_icon_size"
-      android:gravity="center"
-      android:horizontalSpacing="24dp"
-      android:nestedScrollingEnabled="false"
-      android:numColumns="auto_fit"
-      android:stretchMode="columnWidth"
-      android:verticalSpacing="10dp"
-      android:visibility="gone" />
+    <TextView
+        android:id="@+id/reset_dialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/reset_dialog_message"
+        android:textSize="32sp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/reset_dialog_user_apps_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="61dp"
+        android:text="@string/reset_dialog_downloaded_apps"
+        android:textSize="32sp"
+        android:visibility="gone" />
+
+    <view class="com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment$NonScrollableGridView"
+        android:id="@+id/reset_dialog_user_apps_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="61dp"
+        android:columnWidth="@dimen/reset_dialog_app_icon_size"
+        android:gravity="center"
+        android:horizontalSpacing="24dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/reset_dialog_user_preinstalled_apps_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="61dp"
+        android:text="@string/reset_dialog_preinstalled_apps"
+        android:textSize="32sp"
+        android:visibility="gone" />
+
+    <view class="com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment$NonScrollableGridView"
+        android:id="@+id/reset_dialog_user_preinstalled_apps_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="@dimen/reset_dialog_app_icon_size"
+        android:gravity="center"
+        android:horizontalSpacing="24dp"
+        android:nestedScrollingEnabled="false"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        android:visibility="gone" />
+
+  </LinearLayout>
+
+</ScrollView>

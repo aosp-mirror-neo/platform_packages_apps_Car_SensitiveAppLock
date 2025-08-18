@@ -35,6 +35,7 @@
   <dimen name="pin_pad_col_spacing_negative">-12dp</dimen>
 
   <!-- Default dimensions for the pin reset dialog view -->
+  <dimen name="reset_dialog_default_padding">48dp</dimen>
   <dimen name="reset_dialog_app_icon_size">64dp</dimen>
   <dimen name="reset_dialog_app_icon_padding">8dp</dimen>
 </resources>
