@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:labelFor="@id/entered_pin"
-        android:textSize="@dimen/pin_pad_title_text_size"
+        android:textSize="@dimen/pin_lock_screen_title_text_size"
         tools:text="Title"
         android:layout_marginTop="@dimen/pin_lock_screen_title_margin" />
 
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/pin_lock_screen_subtitle_margin"
-        android:textSize="@dimen/pin_pad_subtitle_text_size"
+        android:textSize="@dimen/pin_lock_screen_subtitle_text_size"
         tools:text="Subtitle" />
 
     <EditText

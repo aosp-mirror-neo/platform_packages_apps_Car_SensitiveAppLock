@@ -16,14 +16,14 @@
   -->
 <resources>
     <!--  Dimensions for relaxed portrait view -->
+    <dimen name="pin_lock_screen_title_text_size">44sp</dimen>
+    <dimen name="pin_lock_screen_subtitle_text_size">32sp</dimen>
     <dimen name="pin_lock_screen_title_margin">48dp</dimen>
     <dimen name="pin_lock_screen_subtitle_margin">32dp</dimen>
     <dimen name="pin_lock_screen_entered_pin_margin">24dp</dimen>
     <dimen name="pin_lock_screen_pin_pad_margin">72dp</dimen>
 
     <!-- Dimensions for relaxed PIN pad view -->
-    <dimen name="pin_pad_title_text_size">44sp</dimen>
-    <dimen name="pin_pad_subtitle_text_size">32sp</dimen>
     <dimen name="pin_pad_key_height">96dp</dimen>
     <dimen name="pin_pad_key_width">96dp</dimen>
     <dimen name="pin_pad_row_spacing">12dp</dimen>

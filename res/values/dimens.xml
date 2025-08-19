@@ -16,6 +16,8 @@
   -->
 <resources>
   <!--  Dimensions for condensed portrait view -->
+  <dimen name="pin_lock_screen_title_text_size">36sp</dimen>
+  <dimen name="pin_lock_screen_subtitle_text_size">24sp</dimen>
   <dimen name="pin_lock_screen_title_margin">0dp</dimen>
   <dimen name="pin_lock_screen_subtitle_margin">24dp</dimen>
   <dimen name="pin_lock_screen_entered_pin_margin">8dp</dimen>
@@ -23,8 +25,6 @@
   <dimen name="pin_lock_screen_recovery_button_margin">24dp</dimen>
 
   <!-- Dimensions for condensed PIN pad view -->
-  <dimen name="pin_pad_title_text_size">36sp</dimen>
-  <dimen name="pin_pad_subtitle_text_size">24sp</dimen>
   <dimen name="pin_pad_key_height">80dp</dimen>
   <dimen name="pin_pad_key_width">96dp</dimen>
   <dimen name="pin_pad_key_text_size">32sp</dimen>

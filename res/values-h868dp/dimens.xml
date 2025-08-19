@@ -16,12 +16,12 @@
   -->
 <resources>
     <!--  Dimensions for default portrait view -->
+    <dimen name="pin_lock_screen_title_text_size">44sp</dimen>
+    <dimen name="pin_lock_screen_subtitle_text_size">32sp</dimen>
     <dimen name="pin_lock_screen_subtitle_margin">32dp</dimen>
     <dimen name="pin_lock_screen_entered_pin_margin">16dp</dimen>
 
     <!--  Dimensions for default PIN pad view -->
-    <dimen name="pin_pad_title_text_size">44sp</dimen>
-    <dimen name="pin_pad_subtitle_text_size">32sp</dimen>
     <dimen name="pin_pad_key_height">96dp</dimen>
     <dimen name="pin_pad_key_width">96dp</dimen>
 </resources>
