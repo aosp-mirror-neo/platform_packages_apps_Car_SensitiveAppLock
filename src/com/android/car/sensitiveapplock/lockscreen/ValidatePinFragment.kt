@@ -18,8 +18,7 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
 import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
 import android.view.View
@@ -149,8 +148,7 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
                 val intent =
                     Intent().apply {
                         action = ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
-                        addFlags(FLAG_ACTIVITY_NEW_TASK)
-                        addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+                        flags = FLAG_ACTIVITY_NO_HISTORY
                     }
                 startActivity(intent)
                 return@setFragmentResultListener

@@ -21,8 +21,7 @@ import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.ComponentName
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
@@ -323,8 +322,7 @@ class ValidatePinFragmentTest {
 
             val launchedIntent = shadowOf(context).peekNextStartedActivity()
             assertThat(launchedIntent.action).isEqualTo(ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS)
-            assertThat(launchedIntent.flags)
-                .isEqualTo(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
+            assertThat(launchedIntent.flags).isEqualTo(FLAG_ACTIVITY_NO_HISTORY)
         }
     }
 
