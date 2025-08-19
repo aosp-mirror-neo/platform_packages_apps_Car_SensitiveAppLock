@@ -16,6 +16,8 @@
 package com.android.car.sensitiveapplock.settings
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -139,7 +141,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
         val pinScreenIntent =
             Intent(context, PinLockActivity::class.java).apply {
                 action = PinLockActivity.ACTION_CREATE_PIN
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_NO_HISTORY
             }
         startActivity(pinScreenIntent)
     }

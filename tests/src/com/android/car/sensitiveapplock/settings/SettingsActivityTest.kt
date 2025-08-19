@@ -112,6 +112,17 @@ class SettingsActivityTest {
     }
 
     @Test
+    fun onCreate_pinSet_hasSavedInstanceState_doesNotStartPinLockActivity() {
+        activityScenario.onActivity { activity ->
+            shadowOf(activity).clearNextStartedActivities()
+            activity.recreate()
+
+            val fragments = activity.supportFragmentManager.fragments
+            assertThat(fragments.size).isEqualTo(0)
+        }
+    }
+
+    @Test
     fun onNewIntent_pinSet_startsPinLockActivity() {
         activityScenario.onActivity { activity ->
             shadowOf(activity).clearNextStartedActivities()

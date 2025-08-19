@@ -34,7 +34,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
@@ -50,6 +49,7 @@ import com.android.car.ui.core.CarUi
 import com.android.car.ui.core.CarUiInstaller
 import com.android.car.ui.toolbar.NavButtonMode
 import com.google.common.truth.Truth.assertThat
+import com.google.testing.junit.testparameterinjector.TestParameter
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -59,12 +59,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestParameterInjector
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowStatsLog
 
 @HiltAndroidTest
 @SmallTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestParameterInjector::class)
 class PinLockActivityTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -182,6 +183,30 @@ class PinLockActivityTest {
                     .navController
 
             assertThat(navController.currentDestination?.id).isEqualTo(R.id.validate_pin)
+        }
+    }
+
+    @Test
+    fun onCreate_hasSavedInstanceState_doesNotNavigate(
+        @TestParameter(
+            PinLockActivity.ACTION_CREATE_PIN,
+            PinLockActivity.ACTION_VALIDATE_PIN,
+            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS,
+        )
+        action: String
+    ) {
+        createActivityScenarioWithAction(action)
+
+        activityScenario.onActivity { activity ->
+            val navController =
+                (activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                        as NavHostFragment)
+                    .navController
+            navController.navigate(R.id.start)
+
+            activity.recreate()
+
+            assertThat(navController.currentDestination?.id).isEqualTo(R.id.start)
         }
     }
 
