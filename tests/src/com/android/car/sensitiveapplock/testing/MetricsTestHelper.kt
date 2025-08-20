@@ -15,7 +15,10 @@
  */
 package com.android.car.sensitiveapplock.testing
 
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.RecoveryEvent
 import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
+import com.android.car.sensitiveapplock.metrics.SignInEvent
 import com.google.common.truth.Truth.assertThat
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -25,7 +28,10 @@ import org.robolectric.shadows.ShadowStatsLog.StatsLogItem
 /** Object containing helper methods for testing Metrics. */
 object MetricsTestHelper {
 
-    /** Asserts relevant info inside a [SensitiveAppLockStatsLog] object. */
+    /**
+     * Asserts relevant info inside a [SensitiveAppLockStatsLog] object for the
+     * [SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED] atom.
+     */
     fun assertSensitiveAppLockAtom(
         statsLogItem: StatsLogItem,
         pinSet: Boolean,
@@ -40,13 +46,10 @@ object MetricsTestHelper {
         atomBytes.position(HEADER)
 
         // pin set
-        var field = parseFieldMetaData(atomBytes)
-        assertThat(field.type).isEqualTo(TYPE_BOOLEAN)
-        assertThat(atomBytes.get()).isEqualTo(pinSet.toByte())
-        skipAnnotations(atomBytes, field.annotationCount)
+        assertBoolean(atomBytes, pinSet)
 
         // locked packages
-        field = parseFieldMetaData(atomBytes)
+        val field = parseFieldMetaData(atomBytes)
         assertThat(field.type).isEqualTo(TYPE_LIST)
         assertThat(atomBytes.get()).isEqualTo(lockedPackages.size.toByte())
         assertThat(atomBytes.get()).isEqualTo(TYPE_INT) // Element type
@@ -56,10 +59,52 @@ object MetricsTestHelper {
         skipAnnotations(atomBytes, field.annotationCount)
 
         // profile lock
-        field = parseFieldMetaData(atomBytes)
+        assertBoolean(atomBytes, profileLocked)
+    }
+
+    /**
+     * Asserts relevant info inside a [SensitiveAppLockStatsLog] object for the
+     * [SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED] atom.
+     */
+    fun assertSensitiveAppLockEventAtom(
+        statsLogItem: StatsLogItem,
+        packageUid: Int = NULL_PACKAGE_UID,
+        appLockEvent: AppLockEvent = AppLockEvent.UNSPECIFIED,
+        signInEvent: SignInEvent = SignInEvent.UNSPECIFIED,
+        recoveryEvent: RecoveryEvent = RecoveryEvent.UNSPECIFIED,
+    ) {
+        assertThat(statsLogItem.atomId())
+            .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED)
+        val atomBytes = getByteBuffer(statsLogItem)
+
+        // skip header
+        atomBytes.position(HEADER)
+
+        // packageUid
+        assertInt(atomBytes, packageUid)
+
+        // appLockEvent
+        assertInt(atomBytes, appLockEvent.value)
+
+        // signInEvent
+        assertInt(atomBytes, signInEvent.value)
+
+        // recoveryEvent
+        assertInt(atomBytes, recoveryEvent.value)
+    }
+
+    private fun assertBoolean(buffer: ByteBuffer, expected: Boolean) {
+        val field = parseFieldMetaData(buffer)
         assertThat(field.type).isEqualTo(TYPE_BOOLEAN)
-        assertThat(atomBytes.get()).isEqualTo(profileLocked.toByte())
-        skipAnnotations(atomBytes, field.annotationCount)
+        assertThat(buffer.get()).isEqualTo(expected.toByte())
+        skipAnnotations(buffer, field.annotationCount)
+    }
+
+    private fun assertInt(buffer: ByteBuffer, expected: Int) {
+        val field = parseFieldMetaData(buffer)
+        assertThat(field.type).isEqualTo(TYPE_INT)
+        assertThat(buffer.getInt()).isEqualTo(expected)
+        skipAnnotations(buffer, field.annotationCount)
     }
 
     private fun Boolean.toByte(): Byte {
@@ -98,4 +143,5 @@ object MetricsTestHelper {
     private const val TYPE_BOOLEAN: Byte = 0x05
     private const val MASK: Byte = 0x0F
     private const val HEADER = 16
+    private const val NULL_PACKAGE_UID = 0
 }

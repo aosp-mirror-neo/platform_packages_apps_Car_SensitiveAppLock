@@ -60,4 +60,87 @@ constructor(
             )
             // TODO: b/416017684 - Add ATS test for logging metrics.
         }
+
+    /**
+     * Logs an app lock event.
+     *
+     * Pass the [packageUid] when logging a package related events like
+     * [AppLockEvent.PACKAGED_ADDED], [AppLockEvent.PACKAGE_REMOVED] or similar events.
+     */
+    suspend fun logAppLockEvent(event: AppLockEvent, packageUid: Int = NULL_PACKAGE_UID) =
+        withContext(backgroundContext) {
+            when (event) {
+                AppLockEvent.APP_LOCK_ENABLED,
+                AppLockEvent.APP_LOCK_DISABLED,
+                AppLockEvent.PACKAGED_ADDED,
+                AppLockEvent.PACKAGE_REMOVED -> logState()
+                else -> {}
+            }
+            SensitiveAppLockStatsLog.write(
+                SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED,
+                packageUid,
+                event.value,
+                SignInEvent.UNSPECIFIED.value,
+                RecoveryEvent.UNSPECIFIED.value,
+            )
+        }
+
+    /** Logs sign-in related flow events. */
+    suspend fun logSignInEvent(event: SignInEvent) =
+        withContext(backgroundContext) {
+            SensitiveAppLockStatsLog.write(
+                SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED,
+                NULL_PACKAGE_UID,
+                AppLockEvent.UNSPECIFIED.value,
+                event.value,
+                RecoveryEvent.UNSPECIFIED.value,
+            )
+        }
+
+    /** Logs recovery flow events. */
+    suspend fun logRecoveryEvent(event: RecoveryEvent) =
+        withContext(backgroundContext) {
+            SensitiveAppLockStatsLog.write(
+                SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED,
+                NULL_PACKAGE_UID,
+                AppLockEvent.UNSPECIFIED.value,
+                SignInEvent.UNSPECIFIED.value,
+                event.value,
+            )
+        }
+
+    private companion object {
+        const val NULL_PACKAGE_UID = 0
+    }
+}
+
+/** App lock events that can be logged. */
+enum class AppLockEvent(val value: Int) {
+    UNSPECIFIED(0),
+    APP_LOCK_ENABLED(1),
+    APP_LOCK_DISABLED(2),
+    APP_LOCK_SETTINGS_SCREEN_OPENED(3),
+    PACKAGED_ADDED(4),
+    PACKAGE_REMOVED(5),
+    PACKAGE_UNLOCK_REQUESTED(6),
+    PACKAGE_LAUNCHED(7),
+}
+
+/** Sign-in events that can be logged. */
+enum class SignInEvent(val value: Int) {
+    UNSPECIFIED(0),
+    USER_ALREADY_SIGNED_IN(1),
+    USER_STARTED_SIGN_IN(2),
+    USER_COMPLETED_SIGN_IN(3),
+    USER_DECLINED_SIGN_IN(4),
+}
+
+/** Recovery flow events that can be logged. */
+enum class RecoveryEvent(val value: Int) {
+    UNSPECIFIED(0),
+    USER_STARTED_REAUTH_RECOVERY_FLOW(1),
+    USER_COMPLETED_REAUTH_RECOVERY_FLOW(2),
+    USER_STARTED_MANUAL_RESET_RECOVERY_FLOW(3),
+    USER_STARTED_PIN_RECREATE_FLOW(4),
+    USER_RECREATED_PIN(5),
 }

@@ -38,7 +38,7 @@ import androidx.annotation.RequiresApi;
  *
  * @hide
  */
-public class SensitiveAppLockStatsLog {
+public final class SensitiveAppLockStatsLog {
     // Constants for atom codes.
 
     /**
@@ -47,7 +47,38 @@ public class SensitiveAppLockStatsLog {
      */
     public static final int SENSITIVE_APP_LOCK_STATE_CHANGED = 1030;
 
+    /**
+     * SensitiveAppLockEventReported sensitive_app_lock_event_reported<br>
+     * Usage: StatsLog.write(StatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED, int package_uid, int event_type, int sign_in_event_type, int recovery_flow_event_type);<br>
+     */
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED = 1172;
+
     // Constants for enum values.
+
+    // Values for SensitiveAppLockEventReported.event_type
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__UNSPECIFIED_APP_LOCK_EVENT_TYPE = 0;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__APP_LOCK_ENABLED = 1;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__APP_LOCK_DISABLED = 2;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__APP_LOCK_SETTINGS_SCREEN_OPENED = 3;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__PACKAGED_ADDED = 4;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__PACKAGE_REMOVED = 5;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__PACKAGE_UNLOCK_REQUESTED = 6;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__EVENT_TYPE__PACKAGE_LAUNCHED = 7;
+
+    // Values for SensitiveAppLockEventReported.sign_in_event_type
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__SIGN_IN_EVENT_TYPE__UNSPECIFIED_SIGN_IN_EVENT_TYPE = 0;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__SIGN_IN_EVENT_TYPE__USER_ALREADY_SIGNED_IN = 1;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__SIGN_IN_EVENT_TYPE__USER_STARTED_SIGN_IN = 2;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__SIGN_IN_EVENT_TYPE__USER_COMPLETED_SIGN_IN = 3;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__SIGN_IN_EVENT_TYPE__USER_DECLINED_SIGN_IN = 4;
+
+    // Values for SensitiveAppLockEventReported.recovery_flow_event_type
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__UNSPECIFIED_RECOVERY_FLOW_EVENT_TYPE = 0;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__USER_STARTED_REAUTH_RECOVERY_FLOW = 1;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__USER_COMPLETED_REAUTH_RECOVERY_FLOW = 2;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__USER_STARTED_MANUAL_RESET_RECOVERY_FLOW = 3;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__USER_STARTED_PIN_RECREATE_FLOW = 4;
+    public static final int SENSITIVE_APP_LOCK_EVENT_REPORTED__RECOVERY_FLOW_EVENT_TYPE__USER_RECREATED_PIN = 5;
 
     // Annotation constants.
     @android.annotation.SuppressLint("InlinedApi")
@@ -87,6 +118,21 @@ public class SensitiveAppLockStatsLog {
             builder.addBooleanAnnotation(ANNOTATION_ID_IS_UID, true);
         }
         builder.writeBoolean(arg3);
+
+        builder.usePooledBuffer();
+        StatsLog.write(builder.build());
+    }
+
+    public static void write(int code, int arg1, int arg2, int arg3, int arg4) {
+        final StatsEvent.Builder builder = StatsEvent.newBuilder();
+        builder.setAtomId(code);
+        builder.writeInt(arg1);
+        if (SENSITIVE_APP_LOCK_EVENT_REPORTED == code) {
+            builder.addBooleanAnnotation(ANNOTATION_ID_IS_UID, true);
+        }
+        builder.writeInt(arg2);
+        builder.writeInt(arg3);
+        builder.writeInt(arg4);
 
         builder.usePooledBuffer();
         StatsLog.write(builder.build());
