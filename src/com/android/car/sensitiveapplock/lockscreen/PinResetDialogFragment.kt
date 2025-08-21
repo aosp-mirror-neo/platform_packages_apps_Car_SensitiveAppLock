@@ -45,6 +45,7 @@ class PinResetDialogFragment(lockedApps: List<AppInfo>, private val dataClearedA
     DialogFragment() {
     private val userApps: List<AppInfo>
     private val systemApps: List<AppInfo>
+    private val systemAppsDataCleared: Boolean
     private lateinit var resetView: View
     private var startPinRecreateFlow = false
 
@@ -52,12 +53,13 @@ class PinResetDialogFragment(lockedApps: List<AppInfo>, private val dataClearedA
         val (systemApps, userApps) = lockedApps.partition { it.isBundledApp }
         this.systemApps = systemApps
         this.userApps = userApps
+        this.systemAppsDataCleared = dataClearedApps.containsAll(systemApps.map { it.packageName })
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         resetView = layoutInflater.inflate(R.layout.pin_reset_view, null)
 
-        if (userApps.isEmpty() && systemAppsDataCleared()) {
+        if (userApps.isEmpty() && systemAppsDataCleared) {
             startPinRecreateFlow = true
             return showResetNowDialog()
         }
@@ -96,16 +98,6 @@ class PinResetDialogFragment(lockedApps: List<AppInfo>, private val dataClearedA
         return dialog
     }
 
-    private fun systemAppsDataCleared(): Boolean {
-        if (systemApps.isEmpty()) {
-            return true
-        }
-        if (dataClearedApps.isEmpty()) {
-            return false
-        }
-        return systemApps.map { it.packageName }.containsAll(dataClearedApps)
-    }
-
     private fun setUserLockableApps() {
         if (userApps.isEmpty()) {
             return
@@ -119,14 +111,12 @@ class PinResetDialogFragment(lockedApps: List<AppInfo>, private val dataClearedA
     }
 
     private fun setSystemLockableApps() {
-        if (systemApps.isEmpty()) {
+        if (systemAppsDataCleared) {
             return
         }
-        val pkgNames = systemApps.map { it.packageName }
-        if (dataClearedApps.isNotEmpty() && pkgNames.containsAll(dataClearedApps)) {
-            return
-        }
-        val userAppsDrawable = systemApps.map { it.icon }
+        // List of system app icons whose data is not cleared
+        val userAppsDrawable =
+            systemApps.filterNot { dataClearedApps.contains(it.packageName) }.map { it.icon }
         val message = resetView.findViewById<View>(R.id.reset_dialog_user_preinstalled_apps_message)
         val gridView =
             resetView.findViewById<GridView>(R.id.reset_dialog_user_preinstalled_apps_list)

@@ -116,25 +116,6 @@ class ValidatePinFragmentTest {
     }
 
     @Test
-    fun onEnterKeyClick_pinIsValid_clearsPinResetData() = runTest {
-        pinManager.setAppLockPin(USER_PIN)
-        appLockDataRepository.addLockedDataClearedSystemApp("com.test")
-
-        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
-            val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
-            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
-
-            // 4 digit pin before hitting enter
-            for (i in 0..3) {
-                pinPadZeroKey.performClick()
-            }
-            pinPadEnterKey.performClick()
-        }
-
-        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
-    }
-
-    @Test
     fun onEnterKeyClick_pinIsNotValid_doesNotSetFragmentResult() = runTest {
         pinManager.setAppLockPin(USER_PIN)
 
@@ -245,28 +226,6 @@ class ValidatePinFragmentTest {
 
             assertThat(receivedBundle).isNotNull()
         }
-    }
-
-    @Test
-    fun pinRecovery_pinRecreated_clearsPinResetData() = runTest {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
-        CarUiInstaller.register(context)
-        val testAccount = Account("test", accountType)
-        shadowAccountManager.addAccount(testAccount)
-        appLockDataRepository.setReAuthPinRecoveryAccount(testAccount)
-        val onConfirmCredentialsBundle =
-            Bundle().apply { putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true) }
-        fakeActivityResultRegistry.setResult(RESULT_OK, onConfirmCredentialsBundle) // ReAuth
-        fakeActivityResultRegistry.setResult(RESULT_OK) // PinRecreate
-        appLockDataRepository.addLockedDataClearedSystemApp("com.test")
-
-        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
-            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
-
-            recoverKey.performClick()
-        }
-
-        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
     }
 
     @Test

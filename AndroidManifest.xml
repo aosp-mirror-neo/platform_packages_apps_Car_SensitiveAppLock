@@ -27,6 +27,7 @@
     <!-- System permission to control media playback of the active session -->
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
 
 
     <application
@@ -79,16 +80,6 @@
             <intent-filter
                 android:priority="999">
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".recovery.PackageClearedReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_DATA_CLEARED"/>
-                <data android:scheme="package" />
             </intent-filter>
         </receiver>
     </application>

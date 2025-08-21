@@ -18,11 +18,14 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.accounts.AccountManager
 import android.accounts.AccountManager.KEY_INTENT
 import android.accounts.AccountsException
+import android.app.usage.StorageStatsManager
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Process
+import android.os.storage.StorageManager
 import androidx.lifecycle.ViewModel
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
@@ -59,6 +62,8 @@ constructor(
     @BackgroundContext private val backgroundContext: CoroutineContext,
 ) : ViewModel() {
     private val accountManager = AccountManager.get(context)
+    private val storageStatsManager =
+        context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     private val resources = context.resources
     private val _enteredPin = MutableStateFlow("")
     val enteredPin: StateFlow<String> = _enteredPin.asStateFlow()
@@ -207,19 +212,23 @@ constructor(
         return userLockableApps.filter { apps.contains(it.packageName) }
     }
 
-    /**
-     * Invalidates all data related to the user pin reset flow when user has no recovery account.
-     *
-     * This method should be called after a user successfully validates their existing pin, as this
-     * action confirms the user's identity and makes the reset data unnecessary.
-     */
-    suspend fun clearPinResetData() {
-        appLockDataRepository.clearLockedDataClearedSystemApps()
-    }
-
     /** Gets the list of locked systems apps whose data has been cleared by the user. */
-    suspend fun getLockedDataClearedSystemApps(): List<String> =
-        appLockDataRepository.getLockedDataClearedSystemApps()
+    suspend fun getLockedDataClearedSystemApps(): List<String> {
+        val systemLockedApps = getLockedApps().filter { it.isBundledApp }
+        val dataClearedSystemApps = mutableListOf<String>()
+        for (app in systemLockedApps) {
+            val stats =
+                storageStatsManager.queryStatsForPackage(
+                    StorageManager.UUID_DEFAULT,
+                    app.packageName,
+                    Process.myUserHandle(),
+                )
+            if (stats.dataBytes == 0L) {
+                dataClearedSystemApps.add(app.packageName)
+            }
+        }
+        return dataClearedSystemApps
+    }
 
     private companion object {
         val logger = Logger(PinLockViewModel::class.java)

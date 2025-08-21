@@ -103,6 +103,20 @@ class PinResetDialogFragmentTest {
     }
 
     @Test
+    fun onCreate_systemAppsPartiallyCleared_showsSystemAppsList() {
+        val lockedApps = listOf(SYSTEM_APP_INFO, SYSTEM_APP_INFO_TWO)
+        val dataClearedApps = listOf(SYSTEM_APP_INFO.packageName)
+
+        launchFragment(lockedApps, dataClearedApps) { fragment ->
+            assertAppsListDialog(
+                dialog = fragment.dialog,
+                userAppsVisibility = View.GONE,
+                systemAppsVisibility = View.VISIBLE,
+            )
+        }
+    }
+
+    @Test
     fun onCreate_userAppsNotEmpty_showsUserAppsList() {
         val lockedApps = listOf(USER_APP_INFO)
         val dataClearedApps = emptyList<String>()
@@ -238,6 +252,17 @@ class PinResetDialogFragmentTest {
                 name = "System App",
                 packageUid = 2,
                 label = "SystemApp",
+                icon = ColorDrawable(TRANSPARENT),
+                isTemplateMediaApp = false,
+                isBundledApp = true,
+            )
+
+        val SYSTEM_APP_INFO_TWO =
+            AppInfo(
+                packageName = "com.test.package.system.two",
+                name = "System App 2",
+                packageUid = 3,
+                label = "SystemApp2",
                 icon = ColorDrawable(TRANSPARENT),
                 isTemplateMediaApp = false,
                 isBundledApp = true,

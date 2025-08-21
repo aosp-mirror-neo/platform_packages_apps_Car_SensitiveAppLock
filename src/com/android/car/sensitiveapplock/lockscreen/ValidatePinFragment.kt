@@ -131,7 +131,6 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
 
     private fun setResult() =
         lifecycleScope.launch {
-            viewModel.clearPinResetData()
             parentFragmentManager.setFragmentResult(
                 PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
                 Bundle(),

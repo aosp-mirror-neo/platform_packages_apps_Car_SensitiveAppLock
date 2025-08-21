@@ -78,7 +78,6 @@ android {
                 "tests/src/com/android/car/sensitiveapplock/data",
                 "tests/src/com/android/car/sensitiveapplock/lockscreen",
                 "tests/src/com/android/car/sensitiveapplock/metrics",
-                "tests/src/com/android/car/sensitiveapplock/recovery",
                 "tests/src/com/android/car/sensitiveapplock/settings",
                 "tests/src/com/android/car/sensitiveapplock/shadows",
                 "tests/src/com/android/car/sensitiveapplock/suspension",

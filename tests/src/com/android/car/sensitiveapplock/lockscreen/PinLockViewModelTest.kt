@@ -19,14 +19,18 @@ import android.Manifest.permission.SUSPEND_APPS
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Application
+import android.app.usage.StorageStats
+import android.app.usage.StorageStatsManager
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
 import android.os.Process
+import android.os.storage.StorageManager
 import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -52,6 +56,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
@@ -66,6 +72,8 @@ class PinLockViewModelTest {
     private val shadowPackageManager = shadowOf(context.packageManager)
     private val shadowLauncherApps =
         shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
+    val shadowStorageStatsManager =
+        shadowOf(context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager)
 
     private lateinit var pinLockViewModel: PinLockViewModel
 
@@ -94,6 +102,7 @@ class PinLockViewModelTest {
                 backgroundContext,
             )
         ShadowResources.reset()
+        shadowStorageStatsManager.clearStorageStats()
     }
 
     @Test
@@ -241,12 +250,48 @@ class PinLockViewModelTest {
     }
 
     @Test
-    fun clearPinResetData_removesRecoveryFlowData() = runTest {
-        appLockDataRepository.addLockedDataClearedSystemApp(TEST_PACKAGE_NAMES.first())
+    fun getLockedDataClearedSystemApps_returnsOnlyLockedAppsWithDataCleared() = runTest {
+        var launcherActivityInfo =
+            TestHelpers.buildLauncherActivityInfo(
+                TEST_PACKAGE_NAMES[0],
+                uid = 1,
+                ApplicationInfo.FLAG_SYSTEM,
+            )
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        launcherActivityInfo =
+            TestHelpers.buildLauncherActivityInfo(
+                TEST_PACKAGE_NAMES[1],
+                uid = 2,
+                ApplicationInfo.FLAG_SYSTEM,
+            )
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[2], uid = 3)
+        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[2])
+        shadowStorageStatsManager.addStorageStats(
+            StorageManager.UUID_DEFAULT,
+            TEST_PACKAGE_NAMES[0],
+            Process.myUserHandle(),
+            createStorageStats(1),
+        )
+        shadowStorageStatsManager.addStorageStats(
+            StorageManager.UUID_DEFAULT,
+            TEST_PACKAGE_NAMES[1],
+            Process.myUserHandle(),
+            createStorageStats(0),
+        )
+        shadowStorageStatsManager.addStorageStats(
+            StorageManager.UUID_DEFAULT,
+            TEST_PACKAGE_NAMES[2],
+            Process.myUserHandle(),
+            createStorageStats(0),
+        )
 
-        pinLockViewModel.clearPinResetData()
+        val apps = pinLockViewModel.getLockedDataClearedSystemApps()
 
-        assertThat(appLockDataRepository.getLockedDataClearedSystemApps()).isEmpty()
+        assertThat(apps).containsExactly(TEST_PACKAGE_NAMES[1])
     }
 
     private companion object {
@@ -255,5 +300,9 @@ class PinLockViewModelTest {
         const val RECOVERY_ACCOUNT_TYPE = "com.oem"
 
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
+
+        fun createStorageStats(dataBytes: Long): StorageStats {
+            return mock<StorageStats> { on { getDataBytes() } doReturn dataBytes }
+        }
     }
 }
