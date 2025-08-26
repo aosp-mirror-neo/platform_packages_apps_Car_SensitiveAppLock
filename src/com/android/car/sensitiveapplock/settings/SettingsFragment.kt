@@ -28,6 +28,7 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.ui.preference.CarUiFooterPreference
 import com.android.car.ui.preference.PreferenceFragment
@@ -112,8 +113,14 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 isPersistent = false
                 onPreferenceChangeListener = OnPreferenceChangeListener { preference, newValue ->
                     lifecycleScope.launch {
-                        viewModel.setAppLockForApp(preference.key, newValue as Boolean)
-                        metricsLogger.logState()
+                        val lockState = newValue as Boolean
+                        viewModel.setAppLockForApp(preference.key, lockState)
+                        val uid = lockableApp.appInfo.packageUid
+                        if (lockState) {
+                            metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_ADDED, uid)
+                        } else {
+                            metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_REMOVED, uid)
+                        }
                     }
                     true
                 }
@@ -125,7 +132,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
     private fun enableAppLockFeature(enable: Boolean) {
         if (!enable) {
             viewModel.disableAppLockFeature()
-            lifecycleScope.launch { metricsLogger.logState() }
+            lifecycleScope.launch { metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_DISABLED) }
             return
         }
 

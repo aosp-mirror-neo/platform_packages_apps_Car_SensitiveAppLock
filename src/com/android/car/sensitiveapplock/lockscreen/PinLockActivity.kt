@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.util.Logger
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
@@ -93,7 +94,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
                         return@launch
                     }
                 }
-                metricsLogger.logState()
+                metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_ENABLED)
                 setResult(RESULT_OK)
                 finish()
             }

@@ -69,36 +69,6 @@ class MetricsLoggerTest {
     }
 
     @Test
-    fun logState_producesAtom() = runTest {
-        metricsLogger.logState()
-
-        val atoms = ShadowStatsLog.getStatsLogs()
-        assertSensitiveAppLockAtom(
-            statsLogItem = atoms.last(),
-            pinSet = false,
-            lockedPackages = emptyList(),
-            profileLocked = false,
-        )
-    }
-
-    @Test
-    fun logState_whenAppsLocked_producesAtomWithPackageUids() = runTest {
-        addLauncherActivities()
-        pinManager.setAppLockPin(USER_PIN)
-        shadowKeyguardManager.setIsDeviceSecure(true)
-
-        metricsLogger.logState()
-
-        val atoms = ShadowStatsLog.getStatsLogs()
-        assertSensitiveAppLockAtom(
-            statsLogItem = atoms.last(),
-            pinSet = true,
-            lockedPackages = TEST_ACTIVITIES_UID,
-            profileLocked = true,
-        )
-    }
-
-    @Test
     fun logAppLockEvent_onAppLockEnabled_producesEventAndStateAtom() = runTest {
         pinManager.setAppLockPin(USER_PIN)
 
@@ -143,13 +113,13 @@ class MetricsLoggerTest {
         pinManager.setAppLockPin(USER_PIN)
         shadowKeyguardManager.setIsDeviceSecure(true)
 
-        metricsLogger.logAppLockEvent(AppLockEvent.PACKAGED_ADDED, TEST_ACTIVITIES_UID.last())
+        metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_ADDED, TEST_ACTIVITIES_UID.last())
 
         val atoms = ShadowStatsLog.getStatsLogs().toMutableList()
         assertSensitiveAppLockEventAtom(
             statsLogItem = atoms.removeLastOrNull()!!,
             packageUid = TEST_ACTIVITIES_UID.last(),
-            appLockEvent = AppLockEvent.PACKAGED_ADDED,
+            appLockEvent = AppLockEvent.PACKAGE_ADDED,
         )
         assertSensitiveAppLockAtom(
             statsLogItem = atoms.removeLastOrNull()!!,

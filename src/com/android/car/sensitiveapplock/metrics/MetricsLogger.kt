@@ -42,7 +42,7 @@ constructor(
         context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
     /** Logs the user's current app lock state. */
-    suspend fun logState() =
+    private suspend fun logState() =
         withContext(backgroundContext) {
             val lockedApps = appLockDataRepository.getLockedApps().toHashSet()
             val packageUids =
@@ -65,14 +65,14 @@ constructor(
      * Logs an app lock event.
      *
      * Pass the [packageUid] when logging a package related events like
-     * [AppLockEvent.PACKAGED_ADDED], [AppLockEvent.PACKAGE_REMOVED] or similar events.
+     * [AppLockEvent.PACKAGE_ADDED], [AppLockEvent.PACKAGE_REMOVED] or similar events.
      */
     suspend fun logAppLockEvent(event: AppLockEvent, packageUid: Int = NULL_PACKAGE_UID) =
         withContext(backgroundContext) {
             when (event) {
                 AppLockEvent.APP_LOCK_ENABLED,
                 AppLockEvent.APP_LOCK_DISABLED,
-                AppLockEvent.PACKAGED_ADDED,
+                AppLockEvent.PACKAGE_ADDED,
                 AppLockEvent.PACKAGE_REMOVED -> logState()
                 else -> {}
             }
@@ -120,7 +120,7 @@ enum class AppLockEvent(val value: Int) {
     APP_LOCK_ENABLED(1),
     APP_LOCK_DISABLED(2),
     APP_LOCK_SETTINGS_SCREEN_OPENED(3),
-    PACKAGED_ADDED(4),
+    PACKAGE_ADDED(4),
     PACKAGE_REMOVED(5),
     PACKAGE_UNLOCK_REQUESTED(6),
     PACKAGE_LAUNCHED(7),

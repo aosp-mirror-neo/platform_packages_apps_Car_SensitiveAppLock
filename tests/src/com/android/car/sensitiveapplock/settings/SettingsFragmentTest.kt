@@ -27,9 +27,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
-import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
@@ -233,13 +234,9 @@ class SettingsFragmentTest {
             enableAppLockSwitch.performClick() // Feature turned off
         }
 
-        assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
-            .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
-        assertSensitiveAppLockAtom(
+        assertSensitiveAppLockEventAtom(
             statsLogItem = ShadowStatsLog.getStatsLogs().last(),
-            pinSet = false,
-            lockedPackages = emptyList(),
-            profileLocked = false,
+            appLockEvent = AppLockEvent.APP_LOCK_DISABLED,
         )
     }
 
@@ -258,10 +255,14 @@ class SettingsFragmentTest {
             lockableApp.performClick()
         }
 
-        assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
-            .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
+        val atoms = ShadowStatsLog.getStatsLogs().toMutableList()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.removeLastOrNull()!!,
+            appLockEvent = AppLockEvent.PACKAGE_ADDED,
+            packageUid = TEST_PACKAGE_UIDS[FIRST_LOCKED_APP_INDEX],
+        )
         assertSensitiveAppLockAtom(
-            statsLogItem = ShadowStatsLog.getStatsLogs().last(),
+            statsLogItem = atoms.removeLastOrNull()!!,
             pinSet = true,
             lockedPackages = listOf(TEST_PACKAGE_UIDS[FIRST_LOCKED_APP_INDEX]),
             profileLocked = false,

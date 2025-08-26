@@ -35,10 +35,10 @@ import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
-import com.android.car.sensitiveapplock.metrics.SensitiveAppLockStatsLog
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
-import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.ui.core.CarUi
 import com.android.car.ui.core.CarUiInstaller
@@ -286,13 +286,9 @@ class PinLockActivityTest {
         }
 
         // Pin created and feature enabled
-        assertThat(ShadowStatsLog.getStatsLogs().last().atomId())
-            .isEqualTo(SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED)
-        assertSensitiveAppLockAtom(
+        assertSensitiveAppLockEventAtom(
             statsLogItem = ShadowStatsLog.getStatsLogs().last(),
-            pinSet = true,
-            lockedPackages = emptyList(),
-            profileLocked = false,
+            appLockEvent = AppLockEvent.APP_LOCK_ENABLED,
         )
     }
 
