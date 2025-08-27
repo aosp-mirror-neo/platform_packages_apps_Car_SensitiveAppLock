@@ -26,6 +26,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.CANCELED_PIN
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.VALID_PIN
 import com.android.car.sensitiveapplock.util.Logger
@@ -34,12 +36,15 @@ import com.android.car.ui.baselayout.InsetsChangedListener
 import com.android.car.ui.core.CarUi.requireToolbar
 import com.android.car.ui.toolbar.NavButtonMode
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /** Activity housing the Settings screen. */
 @AndroidEntryPoint(FragmentActivity::class)
 class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
     private val viewModel: SettingsViewModel by viewModels()
+
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +53,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
 
         lifecycleScope.launch {
             lockSettingsIfPinSet()
+            metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -78,6 +84,9 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
         super.onNewIntent(intent)
 
         lockSettingsIfPinSet()
+        lifecycleScope.launch {
+            metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
+        }
     }
 
     private fun lockSettingsIfPinSet() {

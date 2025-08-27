@@ -109,8 +109,8 @@ constructor(
             )
         }
 
-    private companion object {
-        const val NULL_PACKAGE_UID = 0
+    companion object {
+        const val NULL_PACKAGE_UID = -1
     }
 }
 

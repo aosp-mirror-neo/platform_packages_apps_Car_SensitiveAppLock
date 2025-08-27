@@ -23,6 +23,7 @@ import com.google.common.truth.Truth.assertThat
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.experimental.and
+import org.robolectric.shadows.ShadowStatsLog
 import org.robolectric.shadows.ShadowStatsLog.StatsLogItem
 
 /** Object containing helper methods for testing Metrics. */
@@ -93,6 +94,20 @@ object MetricsTestHelper {
         assertInt(atomBytes, recoveryEvent.value)
     }
 
+    /** Returns a list of [StatsLogItem] that are related to the SensitiveAppLock. */
+    fun getAppLockAtoms(): List<StatsLogItem> {
+        val atoms = ShadowStatsLog.getStatsLogs()
+        return atoms.filter {
+            if (it.atomId() == SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_EVENT_REPORTED) {
+                return@filter true
+            }
+            if (it.atomId() == SensitiveAppLockStatsLog.SENSITIVE_APP_LOCK_STATE_CHANGED) {
+                return@filter true
+            }
+            return@filter false
+        }
+    }
+
     private fun assertBoolean(buffer: ByteBuffer, expected: Boolean) {
         val field = parseFieldMetaData(buffer)
         assertThat(field.type).isEqualTo(TYPE_BOOLEAN)
@@ -143,5 +158,5 @@ object MetricsTestHelper {
     private const val TYPE_BOOLEAN: Byte = 0x05
     private const val MASK: Byte = 0x0F
     private const val HEADER = 16
-    private const val NULL_PACKAGE_UID = 0
+    private const val NULL_PACKAGE_UID = -1
 }

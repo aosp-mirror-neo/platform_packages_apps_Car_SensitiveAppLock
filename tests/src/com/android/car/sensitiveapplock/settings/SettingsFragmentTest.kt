@@ -31,6 +31,7 @@ import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
@@ -253,9 +254,21 @@ class SettingsFragmentTest {
                 lockedAppsCategory.getPreference(FIRST_LOCKED_APP_INDEX) as SwitchPreference
 
             lockableApp.performClick()
+            lockableApp.performClick()
         }
 
-        val atoms = ShadowStatsLog.getStatsLogs().toMutableList()
+        val atoms = getAppLockAtoms().toMutableList()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.removeLastOrNull()!!,
+            appLockEvent = AppLockEvent.PACKAGE_REMOVED,
+            packageUid = TEST_PACKAGE_UIDS[FIRST_LOCKED_APP_INDEX],
+        )
+        assertSensitiveAppLockAtom(
+            statsLogItem = atoms.removeLastOrNull()!!,
+            pinSet = true,
+            lockedPackages = emptyList(),
+            profileLocked = false,
+        )
         assertSensitiveAppLockEventAtom(
             statsLogItem = atoms.removeLastOrNull()!!,
             appLockEvent = AppLockEvent.PACKAGE_ADDED,

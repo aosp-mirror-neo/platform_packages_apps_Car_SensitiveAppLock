@@ -26,6 +26,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.android.car.ui.core.CarUiInstaller
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -123,6 +126,15 @@ class SettingsActivityTest {
     }
 
     @Test
+    fun onCreate_logsMetrics() {
+        val atoms = getAppLockAtoms()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED,
+        )
+    }
+
+    @Test
     fun onNewIntent_pinUnset_initializesUi() = runTest {
         activityScenario.onActivity { activity ->
             shadowOf(activity).clearNextStartedActivities()
@@ -133,6 +145,22 @@ class SettingsActivityTest {
             val fragments = activity.supportFragmentManager.fragments
             assertThat(fragments.size).isEqualTo(1)
             assertThat(fragments[0]).isInstanceOf(SettingsFragment::class.java)
+        }
+    }
+
+    @Test
+    fun onNewIntent_logsMetrics() = runTest {
+        activityScenario.onActivity { activity ->
+            shadowOf(activity).clearNextStartedActivities()
+            activity.lifecycleScope.launch { pinManager.clearAppLockPin() }
+
+            activity.onNewIntent(Intent())
+
+            val atoms = getAppLockAtoms()
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                appLockEvent = AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED,
+            )
         }
     }
 

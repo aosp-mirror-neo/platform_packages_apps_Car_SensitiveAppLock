@@ -25,6 +25,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.sensitiveapplock.metrics.MetricsLogger.Companion.NULL_PACKAGE_UID
 import com.android.car.sensitiveapplock.util.Logger
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi.requireToolbar
@@ -48,11 +49,8 @@ class PinLockActivity : Hilt_PinLockActivity() {
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
         when (intent.action) {
-            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS,
-            ACTION_VALIDATE_PIN -> {
-                setValidatePinResultListener()
-                findNavController().navigate(R.id.action_start_to_validate_pin)
-            }
+            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS -> initializeAppUnlockFlow()
+            ACTION_VALIDATE_PIN -> initializeValidatePinFlow()
             ACTION_CREATE_PIN -> {
                 if (isPortrait(this)) {
                     createToolbarNextButton()
@@ -61,6 +59,18 @@ class PinLockActivity : Hilt_PinLockActivity() {
                 findNavController().navigate(R.id.action_start_to_create_pin)
             }
             else -> finish()
+        }
+    }
+
+    private fun initializeValidatePinFlow() {
+        setValidatePinResultListener()
+        findNavController().navigate(R.id.action_start_to_validate_pin)
+    }
+
+    private fun initializeAppUnlockFlow() {
+        initializeValidatePinFlow()
+        lifecycleScope.launch {
+            metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_UNLOCK_REQUESTED, getPackageUid())
         }
     }
 
@@ -125,6 +135,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
             lifecycleScope.launch {
                 viewModel.unlockApps()
                 startActivity(viewModel.getLaunchIntentForPackage(packageManager, packageName))
+                metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_LAUNCHED, getPackageUid())
                 setResult(RESULT_OK)
                 finish()
             }
@@ -142,6 +153,12 @@ class PinLockActivity : Hilt_PinLockActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
+    }
+
+    private suspend fun getPackageUid(): Int {
+        val packageName = intent.getStringExtra(Intent.EXTRA_PACKAGE_NAME)
+        return viewModel.getLockedApps().find { it.packageName == packageName }?.packageUid
+            ?: NULL_PACKAGE_UID
     }
 
     companion object {
