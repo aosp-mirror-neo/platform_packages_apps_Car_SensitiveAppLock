@@ -30,6 +30,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.sensitiveapplock.metrics.SignInEvent
 import com.android.car.sensitiveapplock.util.Logger
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi
@@ -43,6 +45,7 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
     private val viewModel: PinLockViewModel by activityViewModels()
 
     @Inject lateinit var registry: ActivityResultRegistry
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     private lateinit var addAccountLauncher: ActivityResultLauncher<Intent>
     private lateinit var pinLockView: PinLockView
@@ -100,6 +103,7 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
                 return@launch
             }
             logger.d("User already signed-in. Confirming pin!")
+            metricsLogger.logSignInEvent(SignInEvent.USER_ALREADY_SIGNED_IN)
             setResult()
         }
     }
@@ -113,10 +117,16 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
                     setCancelable(false)
                     setOnCancelListener { setResult() }
                     setNeutralButton(R.string.signin_dialog_neutral_button_text) { _, _ ->
-                        setResult()
+                        lifecycleScope.launch {
+                            metricsLogger.logSignInEvent(SignInEvent.USER_DECLINED_SIGN_IN)
+                            setResult()
+                        }
                     }
                     setPositiveButton(R.string.signin_dialog_positive_button_text) { _, _ ->
-                        addAccount()
+                        lifecycleScope.launch {
+                            metricsLogger.logSignInEvent(SignInEvent.USER_STARTED_SIGN_IN)
+                            addAccount()
+                        }
                     }
                 }
                 .create()
@@ -139,6 +149,9 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
     private fun onAddAccountComplete(result: ActivityResult) =
         lifecycleScope.launch {
             val signedIn = viewModel.enableReAuthRecoveryFlow()
+            if (signedIn) {
+                metricsLogger.logSignInEvent(SignInEvent.USER_COMPLETED_SIGN_IN)
+            }
             setResult(signedIn)
         }
 

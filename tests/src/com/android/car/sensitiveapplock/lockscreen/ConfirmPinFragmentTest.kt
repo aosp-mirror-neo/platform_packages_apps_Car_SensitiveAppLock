@@ -32,9 +32,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.ConfirmPinFragment.Companion.USER_SIGNED_IN_BUNDLE_KEY
+import com.android.car.sensitiveapplock.metrics.SignInEvent
 import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.android.car.ui.core.CarUi.requireToolbar
 import com.android.car.ui.core.CarUiInstaller
@@ -43,12 +46,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -67,7 +65,6 @@ class ConfirmPinFragmentTest {
     @get:Rule(order = 1) val hiltTestActivityRule = HiltTestActivityRule()
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
-    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Inject lateinit var fakeActivityResultRegistry: FakeActivityResultRegistry
 
@@ -80,13 +77,7 @@ class ConfirmPinFragmentTest {
         CarUiInstaller.register(context)
         hiltRule.inject()
 
-        Dispatchers.setMain(testDispatcher)
         ShadowResources.reset()
-    }
-
-    @After
-    fun cleanUp() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -147,6 +138,25 @@ class ConfirmPinFragmentTest {
     }
 
     @Test
+    fun onEnterKeyClick_pinMatches_userSignedIn_logsMetrics() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        shadowAccountManager.addAccount(Account("com.test", accountType))
+        launchFragmentInHiltContainer<ConfirmPinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
+
+            pinPadEnterKey.performClick()
+
+            val atoms = getAppLockAtoms()
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                signInEvent = SignInEvent.USER_ALREADY_SIGNED_IN,
+            )
+        }
+    }
+
+    @Test
     fun onEnterKeyClick_pinMatches_userNotSignedIn_showsSignInDialog() {
         ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         launchFragmentInHiltContainer<ConfirmPinFragment>(
@@ -190,6 +200,28 @@ class ConfirmPinFragmentTest {
     }
 
     @Test
+    fun signInDialog_onDismiss_logsMetrics() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        launchFragmentInHiltContainer<ConfirmPinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
+
+            pinPadEnterKey.performClick()
+
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            val atoms = getAppLockAtoms()
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                signInEvent = SignInEvent.USER_DECLINED_SIGN_IN,
+            )
+        }
+    }
+
+    @Test
     fun signInDialog_onSignIn_launchesSignInActivity() {
         ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
@@ -206,6 +238,29 @@ class ConfirmPinFragmentTest {
 
             val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
             assertThat(launchedIntent).isNotNull()
+        }
+    }
+
+    @Test
+    fun signInDialog_onSignIn_logsMetrics() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
+        launchFragmentInHiltContainer<ConfirmPinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
+
+            pinPadEnterKey.performClick()
+
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            val atoms = getAppLockAtoms()
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                signInEvent = SignInEvent.USER_STARTED_SIGN_IN,
+            )
         }
     }
 
@@ -235,6 +290,32 @@ class ConfirmPinFragmentTest {
             shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
             assertThat(resultBundle.getBoolean(USER_SIGNED_IN_BUNDLE_KEY)).isTrue()
+        }
+    }
+
+    @Test
+    fun signInActivity_onSignInSuccess_logsMetrics() {
+        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
+        shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
+        launchFragmentInHiltContainer<ConfirmPinFragment>(
+            onActivity = { activity -> setupToolbar(activity) }
+        ) { fragment ->
+            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
+
+            pinPadEnterKey.performClick()
+
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+
+            // Simulate adding account by sign-in activity
+            shadowAccountManager.addAccount(Account("test", accountType))
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            val atoms = getAppLockAtoms()
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                signInEvent = SignInEvent.USER_COMPLETED_SIGN_IN,
+            )
         }
     }
 
