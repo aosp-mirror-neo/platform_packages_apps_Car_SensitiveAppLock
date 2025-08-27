@@ -33,6 +33,8 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity.Companion.ACTION_CREATE_PIN
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.sensitiveapplock.metrics.RecoveryEvent
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -44,6 +46,7 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
     private val viewModel: PinLockViewModel by activityViewModels()
 
     @Inject lateinit var activityResultRegistry: ActivityResultRegistry
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     private lateinit var pinLockView: PinLockView
     private lateinit var confirmCredentialsLauncher: ActivityResultLauncher<Intent>
@@ -103,39 +106,41 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
                 val dataClearedApps = viewModel.getLockedDataClearedSystemApps()
                 PinResetDialogFragment(lockedApps, dataClearedApps)
                     .show(parentFragmentManager, PinResetDialogFragment.TAG)
+                metricsLogger.logRecoveryEvent(
+                    RecoveryEvent.USER_STARTED_MANUAL_RESET_RECOVERY_FLOW
+                )
                 return@launch
             }
             logger.v("Starting reauth activity")
+            metricsLogger.logRecoveryEvent(RecoveryEvent.USER_STARTED_REAUTH_RECOVERY_FLOW)
             confirmCredentialsLauncher.launch(intent)
         }
 
-    private fun onConfirmCredentials(result: ActivityResult) {
-        val authResult =
-            result.data?.getBooleanExtra(AccountManager.KEY_BOOLEAN_RESULT, false) == true
-        if (!authResult) {
-            logger.d("Failed to reauth user")
-            return
-        }
-        logger.d("Successfully reauth user; Start pin recreation flow")
-        val pinScreenIntent =
-            Intent(context, PinLockActivity::class.java).apply { action = ACTION_CREATE_PIN }
-        pinRecreateResultLauncher.launch(pinScreenIntent)
-    }
-
-    private fun onPinRecreateComplete(result: ActivityResult) {
-        logger.d("Pin recreated with result:${result.resultCode}")
-        if (result.resultCode == RESULT_OK) {
-            setResult()
-        }
-    }
-
-    private fun setResult() =
+    private fun onConfirmCredentials(result: ActivityResult) =
         lifecycleScope.launch {
-            parentFragmentManager.setFragmentResult(
-                PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
-                Bundle(),
-            )
+            val authResult =
+                result.data?.getBooleanExtra(AccountManager.KEY_BOOLEAN_RESULT, false) == true
+            if (!authResult) {
+                logger.d("Failed to reauth user")
+                return@launch
+            }
+            logger.d("Successfully reauth user; Start pin recreation flow")
+            metricsLogger.logRecoveryEvent(RecoveryEvent.USER_COMPLETED_REAUTH_RECOVERY_FLOW)
+            startPinRecreateFlow()
         }
+
+    private fun onPinRecreateComplete(result: ActivityResult) =
+        lifecycleScope.launch {
+            logger.d("Pin recreated with result:${result.resultCode}")
+            if (result.resultCode == RESULT_OK) {
+                metricsLogger.logRecoveryEvent(RecoveryEvent.USER_RECREATED_PIN)
+                setResult()
+            }
+        }
+
+    private fun setResult() {
+        parentFragmentManager.setFragmentResult(PinLockActivity.VALIDATE_PIN_REQUEST_KEY, Bundle())
+    }
 
     private fun setPinResetDialogResultListener() {
         setFragmentResultListener(PinResetDialogFragment.PIN_RESET_DIALOG_REQUEST_KEY) { _, bundle
@@ -153,11 +158,17 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
                 return@setFragmentResultListener
             }
             logger.d("Start pin recreation flow")
+            startPinRecreateFlow()
+        }
+    }
+
+    private fun startPinRecreateFlow() =
+        lifecycleScope.launch {
             val pinScreenIntent =
                 Intent(context, PinLockActivity::class.java).apply { action = ACTION_CREATE_PIN }
             pinRecreateResultLauncher.launch(pinScreenIntent)
+            metricsLogger.logRecoveryEvent(RecoveryEvent.USER_STARTED_PIN_RECREATE_FLOW)
         }
-    }
 
     private companion object {
         val logger = Logger(ValidatePinFragment::class.java)
