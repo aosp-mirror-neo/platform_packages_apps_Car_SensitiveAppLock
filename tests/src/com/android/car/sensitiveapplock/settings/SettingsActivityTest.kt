@@ -17,7 +17,9 @@ package com.android.car.sensitiveapplock.settings
 
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
+import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -99,6 +102,34 @@ class SettingsActivityTest {
         activityScenario = ActivityScenario.launch(SettingsActivity::class.java)
 
         activityScenario.onActivity { activity ->
+            val fragments = activity.supportFragmentManager.fragments
+            assertThat(fragments.size).isEqualTo(1)
+            assertThat(fragments[0]).isInstanceOf(SettingsFragment::class.java)
+        }
+    }
+
+    @Test
+    fun onNewIntent_pinSet_startsPinLockActivity() {
+        activityScenario.onActivity { activity ->
+            shadowOf(activity).clearNextStartedActivities()
+
+            activity.onNewIntent(Intent())
+
+            val launchedIntent = shadowOf(activity).peekNextStartedActivity()
+            assertThat(launchedIntent.action).isEqualTo(PinLockActivity.ACTION_VALIDATE_PIN)
+            assertThat(launchedIntent.flags and FLAG_ACTIVITY_NEW_TASK)
+                .isEqualTo(FLAG_ACTIVITY_NEW_TASK)
+        }
+    }
+
+    @Test
+    fun onNewIntent_pinUnset_initializesUi() = runTest {
+        activityScenario.onActivity { activity ->
+            shadowOf(activity).clearNextStartedActivities()
+            activity.lifecycleScope.launch { pinManager.clearAppLockPin() }
+
+            activity.onNewIntent(Intent())
+
             val fragments = activity.supportFragmentManager.fragments
             assertThat(fragments.size).isEqualTo(1)
             assertThat(fragments[0]).isInstanceOf(SettingsFragment::class.java)

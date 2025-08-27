@@ -19,6 +19,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -45,19 +46,8 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
         setContentView(R.layout.activity_settings)
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
-        val pinLockIntent =
-            Intent(applicationContext, PinLockActivity::class.java).apply {
-                action = PinLockActivity.ACTION_VALIDATE_PIN
-                flags = FLAG_ACTIVITY_NEW_TASK
-            }
         lifecycleScope.launch {
-            when (viewModel.isPinSet()) {
-                true -> {
-                    viewModel.lockSettings()
-                    startActivity(pinLockIntent)
-                }
-                false -> viewModel.unlockSettings()
-            }
+            lockSettingsIfPinSet()
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -79,6 +69,29 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
                         else -> return@collect
                     }
                 }
+            }
+        }
+    }
+
+    @VisibleForTesting
+    public override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        lockSettingsIfPinSet()
+    }
+
+    private fun lockSettingsIfPinSet() {
+        lifecycleScope.launch {
+            if (viewModel.isPinSet()) {
+                viewModel.lockSettings()
+                val pinLockIntent =
+                    Intent(applicationContext, PinLockActivity::class.java).apply {
+                        action = PinLockActivity.ACTION_VALIDATE_PIN
+                        flags = FLAG_ACTIVITY_NEW_TASK
+                    }
+                startActivity(pinLockIntent)
+            } else {
+                viewModel.unlockSettings()
             }
         }
     }
