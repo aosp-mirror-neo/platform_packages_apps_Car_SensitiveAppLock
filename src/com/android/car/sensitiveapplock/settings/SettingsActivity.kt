@@ -16,7 +16,9 @@
 package com.android.car.sensitiveapplock.settings
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
@@ -52,7 +54,11 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
         lifecycleScope.launch {
-            lockSettingsIfPinSet()
+            // If this Activity has been recreated we probably saw a config change so don't reinit
+            // to avoid showing the lockscreen again.
+            if (savedInstanceState == null) {
+                lockSettingsIfPinSet()
+            }
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -60,10 +66,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
                     when (uiState.settingsLockStatus) {
                         VALID_PIN -> {
                             // Display the fragment as the main content if not already there
-                            if (
-                                savedInstanceState == null &&
-                                    supportFragmentManager.fragments.isEmpty()
-                            ) {
+                            if (supportFragmentManager.fragments.isEmpty()) {
                                 logger.d("Initializing UI")
                                 supportFragmentManager
                                     .beginTransaction()
@@ -93,10 +96,14 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
         lifecycleScope.launch {
             if (viewModel.isPinSet()) {
                 viewModel.lockSettings()
+                logger.d("Launching pin lock.")
                 val pinLockIntent =
                     Intent(applicationContext, PinLockActivity::class.java).apply {
                         action = PinLockActivity.ACTION_VALIDATE_PIN
-                        flags = FLAG_ACTIVITY_NEW_TASK
+                        flags =
+                            FLAG_ACTIVITY_NEW_TASK or
+                                FLAG_ACTIVITY_NO_HISTORY or
+                                FLAG_ACTIVITY_CLEAR_TASK
                     }
                 startActivity(pinLockIntent)
             } else {

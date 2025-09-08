@@ -15,27 +15,37 @@
   ~ limitations under the License.
   -->
 <resources>
-  <!--  Dimensions for condensed portrait view -->
-  <dimen name="pin_lock_screen_title_text_size">36sp</dimen>
-  <dimen name="pin_lock_screen_subtitle_text_size">24sp</dimen>
-  <dimen name="pin_lock_screen_title_margin">0dp</dimen>
-  <dimen name="pin_lock_screen_subtitle_margin">24dp</dimen>
-  <dimen name="pin_lock_screen_entered_pin_margin">8dp</dimen>
-  <dimen name="pin_lock_screen_pin_pad_margin">48dp</dimen>
-  <dimen name="pin_lock_screen_recovery_button_margin">24dp</dimen>
+    <!--  Dimensions for condensed portrait view -->
+    <dimen name="pin_lock_screen_title_text_size">36sp</dimen>
+    <dimen name="pin_lock_screen_subtitle_text_size">24sp</dimen>
+    <dimen name="pin_lock_screen_title_margin">0dp</dimen>
+    <dimen name="pin_lock_screen_subtitle_margin">24dp</dimen>
+    <dimen name="pin_lock_screen_entered_pin_margin">8dp</dimen>
+    <dimen name="pin_lock_screen_pin_pad_margin">48dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin">24dp</dimen>
 
-  <!-- Dimensions for condensed PIN pad view -->
-  <dimen name="pin_pad_key_height">80dp</dimen>
-  <dimen name="pin_pad_key_width">96dp</dimen>
-  <dimen name="pin_pad_key_text_size">32sp</dimen>
-  <dimen name="pin_pad_key_padding">24dp</dimen>
-  <dimen name="pin_pad_row_spacing">8dp</dimen>
-  <dimen name="pin_pad_row_spacing_negative">-8dp</dimen>
-  <dimen name="pin_pad_col_spacing">12dp</dimen>
-  <dimen name="pin_pad_col_spacing_negative">-12dp</dimen>
+    <!-- Dimensions for condensed PIN pad view -->
+    <dimen name="pin_pad_key_height">80dp</dimen>
+    <dimen name="pin_pad_key_width">96dp</dimen>
+    <dimen name="pin_pad_key_text_size">32sp</dimen>
+    <dimen name="pin_pad_key_padding">24dp</dimen>
+    <dimen name="pin_pad_row_spacing">8dp</dimen>
+    <dimen name="pin_pad_row_spacing_negative">-8dp</dimen>
+    <dimen name="pin_pad_col_spacing">12dp</dimen>
+    <dimen name="pin_pad_col_spacing_negative">-12dp</dimen>
 
-  <!-- Default dimensions for the pin reset dialog view -->
-  <dimen name="reset_dialog_default_padding">48dp</dimen>
-  <dimen name="reset_dialog_app_icon_size">64dp</dimen>
-  <dimen name="reset_dialog_app_icon_padding">8dp</dimen>
+    <!-- Default dimensions for landscape PIN pad view -->
+    <dimen name="pin_pad_key_height_land">96dp</dimen>
+    <dimen name="pin_pad_key_width_land">96dp</dimen>
+    <dimen name="pin_pad_key_text_size_land">32sp</dimen>
+    <dimen name="pin_pad_key_padding_land">24dp</dimen>
+    <dimen name="pin_pad_row_spacing_land">8dp</dimen>
+    <dimen name="pin_pad_row_spacing_negative_land">-8dp</dimen>
+    <dimen name="pin_pad_col_spacing_land">12dp</dimen>
+    <dimen name="pin_pad_col_spacing_negative_land">-12dp</dimen>
+
+    <!-- Default dimensions for the pin reset dialog view -->
+    <dimen name="reset_dialog_default_padding">48dp</dimen>
+    <dimen name="reset_dialog_app_icon_size">64dp</dimen>
+    <dimen name="reset_dialog_app_icon_padding">8dp</dimen>
 </resources>

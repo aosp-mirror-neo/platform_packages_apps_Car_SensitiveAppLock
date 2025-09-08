@@ -21,60 +21,60 @@
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/pin_pad_col_spacing_negative_land"
-        android:layout_marginEnd="@dimen/pin_pad_col_spacing_negative_land"
-        android:layout_marginTop="@dimen/pin_pad_row_spacing_negative_land"
-        android:layout_marginBottom="@dimen/pin_pad_row_spacing_negative_land"
+        android:layout_marginStart="@dimen/pin_pad_col_spacing_negative"
+        android:layout_marginEnd="@dimen/pin_pad_col_spacing_negative"
+        android:layout_marginTop="@dimen/pin_pad_row_spacing_negative"
+        android:layout_marginBottom="@dimen/pin_pad_row_spacing_negative"
         android:columnCount="3">
         <!--  Row 1  -->
         <TextView
             android:id="@+id/key_1"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/one" />
 
         <TextView
             android:id="@+id/key_2"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/two"/>
 
         <TextView
             android:id="@+id/key_3"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/three" />
         <!--  Row 2  -->
         <TextView
             android:id="@+id/key_4"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/four" />
 
         <TextView
             android:id="@+id/key_5"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/five" />
 
         <TextView
             android:id="@+id/key_6"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/six" />
         <!--  Row 3  -->
         <TextView
             android:id="@+id/key_7"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/seven" />
 
         <TextView
             android:id="@+id/key_8"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/eight" />
 
         <TextView
             android:id="@+id/key_9"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/nine" />
         <!--  Row 4  -->
         <ImageButton
             android:id="@+id/key_backspace"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:scaleType="fitCenter"
             android:src="@drawable/outline_backspace_24"
             android:contentDescription="@string/backspace_key_content_description"
@@ -82,12 +82,12 @@
 
         <TextView
             android:id="@+id/key_0"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:text="@string/zero" />
 
         <ImageButton
             android:id="@+id/key_confirm"
-            style="@style/PinPadKey"
+            style="@style/PinPadKey.Portrait"
             android:scaleType="fitCenter"
             android:src="@drawable/outline_check_24"
             android:contentDescription="@string/confirm_key_content_description"

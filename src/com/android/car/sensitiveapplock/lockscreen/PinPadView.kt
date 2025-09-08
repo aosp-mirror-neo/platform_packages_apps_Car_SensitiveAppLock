@@ -7,12 +7,17 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 
 /** A custom view for a Pin Pad. */
 class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     init {
-        inflate(context, R.layout.pin_pad, this)
+        if (isPortrait(context)) {
+            inflate(context, R.layout.pin_pad_portrait, this)
+        } else {
+            inflate(context, R.layout.pin_pad, this)
+        }
         // Adding an onClickListener automatically enables the button so disable it after
         setConfirmEnabled(false)
     }

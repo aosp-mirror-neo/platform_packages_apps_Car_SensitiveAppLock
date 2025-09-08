@@ -49,28 +49,36 @@ class PinLockActivity : Hilt_PinLockActivity() {
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
         when (intent.action) {
-            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS -> initializeAppUnlockFlow()
-            ACTION_VALIDATE_PIN -> initializeValidatePinFlow()
+            Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS,
+            ACTION_VALIDATE_PIN -> {
+                setValidatePinResultListener()
+
+                // Android tries to restore NavController state so navigating if an activity is
+                // recreated will result in a crash since we won't be on the start destination.
+                // Hence the null check to avoid doing so.
+                if (savedInstanceState == null) {
+                    findNavController().navigate(R.id.action_start_to_validate_pin)
+                }
+
+                if (intent.action == Intent.ACTION_SHOW_SUSPENDED_APP_DETAILS) {
+                    lifecycleScope.launch {
+                        metricsLogger.logAppLockEvent(
+                            AppLockEvent.PACKAGE_UNLOCK_REQUESTED,
+                            getPackageUid(),
+                        )
+                    }
+                }
+            }
             ACTION_CREATE_PIN -> {
                 if (isPortrait(this)) {
                     createToolbarNextButton()
                 }
                 setCreatePinResultListener()
-                findNavController().navigate(R.id.action_start_to_create_pin)
+                if (savedInstanceState == null) {
+                    findNavController().navigate(R.id.action_start_to_create_pin)
+                }
             }
             else -> finish()
-        }
-    }
-
-    private fun initializeValidatePinFlow() {
-        setValidatePinResultListener()
-        findNavController().navigate(R.id.action_start_to_validate_pin)
-    }
-
-    private fun initializeAppUnlockFlow() {
-        initializeValidatePinFlow()
-        lifecycleScope.launch {
-            metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_UNLOCK_REQUESTED, getPackageUid())
         }
     }
 
