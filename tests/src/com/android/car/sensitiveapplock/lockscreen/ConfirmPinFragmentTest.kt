@@ -119,7 +119,7 @@ class ConfirmPinFragmentTest {
     fun onEnterKeyClick_pinMatches_userSignedIn_setsFragmentResult() {
         ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowAccountManager.addAccount(Account("com.test", accountType))
-        var actualResult: String? = null
+        var resultBundle: Bundle? = null
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
         ) { fragment ->
@@ -127,13 +127,15 @@ class ConfirmPinFragmentTest {
                 PinLockActivity.USER_PIN_REQUEST_KEY,
                 fragment.requireActivity(),
             ) { requestKey, bundle ->
-                actualResult = bundle.getString(PinLockActivity.USER_PIN_BUNDLE_KEY)
+                resultBundle = bundle
             }
             val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
 
             pinPadEnterKey.performClick()
 
-            assertThat(actualResult).isNotNull()
+            assertThat(resultBundle).isNotNull()
+            assertThat(resultBundle?.getString(PinLockActivity.USER_PIN_BUNDLE_KEY)).isNotNull()
+            assertThat(resultBundle?.getBoolean(USER_SIGNED_IN_BUNDLE_KEY)).isTrue()
         }
     }
 

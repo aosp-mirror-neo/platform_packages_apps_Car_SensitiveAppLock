@@ -18,7 +18,6 @@ package com.android.car.sensitiveapplock.settings
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
@@ -100,10 +99,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
                 val pinLockIntent =
                     Intent(applicationContext, PinLockActivity::class.java).apply {
                         action = PinLockActivity.ACTION_VALIDATE_PIN
-                        flags =
-                            FLAG_ACTIVITY_NEW_TASK or
-                                FLAG_ACTIVITY_NO_HISTORY or
-                                FLAG_ACTIVITY_CLEAR_TASK
+                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
                     }
                 startActivity(pinLockIntent)
             } else {

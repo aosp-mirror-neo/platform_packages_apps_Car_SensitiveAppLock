@@ -104,7 +104,7 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
             }
             logger.d("User already signed-in. Confirming pin!")
             metricsLogger.logSignInEvent(SignInEvent.USER_ALREADY_SIGNED_IN)
-            setResult()
+            setResult(signedIn = true)
         }
     }
 

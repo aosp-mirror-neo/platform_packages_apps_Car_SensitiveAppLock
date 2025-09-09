@@ -17,6 +17,8 @@ package com.android.car.sensitiveapplock.settings
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
 import android.os.Process
@@ -27,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
@@ -86,6 +89,23 @@ class SettingsFragmentTest {
                     .getPreference(ENABLE_APP_LOCK_SWITCH_INDEX) as SwitchPreference
 
             assertThat(enableAppLockSwitch.isChecked).isTrue()
+        }
+    }
+
+    @Test
+    fun enableAppLockSwitch_ifUserPinNotSet_onToggle_launchesPinLockActivity() {
+        launchFragmentInHiltContainer<SettingsFragment> { fragment ->
+            val enableAppLockSwitch =
+                (fragment as SettingsFragment)
+                    .preferenceScreen
+                    .getPreference(ENABLE_APP_LOCK_SWITCH_INDEX) as SwitchPreference
+
+            enableAppLockSwitch.performClick()
+
+            val launchedIntent = shadowOf(fragment.activity).peekNextStartedActivity()
+            assertThat(launchedIntent.action).isEqualTo(PinLockActivity.ACTION_CREATE_PIN)
+            assertThat(launchedIntent.flags)
+                .isEqualTo(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 

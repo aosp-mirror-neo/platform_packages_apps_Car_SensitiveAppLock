@@ -18,6 +18,7 @@ package com.android.car.sensitiveapplock.settings
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ActivityScenario
@@ -91,8 +92,8 @@ class SettingsActivityTest {
         activityScenario.onActivity { activity ->
             val launchedIntent = shadowOf(activity).peekNextStartedActivity()
             assertThat(launchedIntent.action).isEqualTo(PinLockActivity.ACTION_VALIDATE_PIN)
-            assertThat(launchedIntent.flags and FLAG_ACTIVITY_NEW_TASK)
-                .isEqualTo(FLAG_ACTIVITY_NEW_TASK)
+            assertThat(launchedIntent.flags)
+                .isEqualTo(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 
