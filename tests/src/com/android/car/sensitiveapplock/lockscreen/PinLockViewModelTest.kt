@@ -274,19 +274,19 @@ class PinLockViewModelTest {
             StorageManager.UUID_DEFAULT,
             TEST_PACKAGE_NAMES[0],
             Process.myUserHandle(),
-            createStorageStats(1),
+            createStorageStats(DEFAULT_EMPTY_APP_SIZE + 10), // App with some user data
         )
         shadowStorageStatsManager.addStorageStats(
             StorageManager.UUID_DEFAULT,
             TEST_PACKAGE_NAMES[1],
             Process.myUserHandle(),
-            createStorageStats(0),
+            createStorageStats(DEFAULT_EMPTY_APP_SIZE),
         )
         shadowStorageStatsManager.addStorageStats(
             StorageManager.UUID_DEFAULT,
             TEST_PACKAGE_NAMES[2],
             Process.myUserHandle(),
-            createStorageStats(0),
+            createStorageStats(DEFAULT_EMPTY_APP_SIZE),
         )
 
         val apps = pinLockViewModel.getLockedDataClearedSystemApps()
@@ -298,6 +298,7 @@ class PinLockViewModelTest {
         const val USER_PIN = "1111"
         const val TEST_TEMPLATE_MEDIA_PACKAGE = "com.template.1"
         const val RECOVERY_ACCOUNT_TYPE = "com.oem"
+        const val DEFAULT_EMPTY_APP_SIZE = 24576L // Empty directory metadata size
 
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
 

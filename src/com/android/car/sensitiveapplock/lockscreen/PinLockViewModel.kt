@@ -223,7 +223,7 @@ constructor(
                     app.packageName,
                     Process.myUserHandle(),
                 )
-            if (stats.dataBytes == 0L) {
+            if (stats.dataBytes <= DEFAULT_APP_SIZE) {
                 dataClearedSystemApps.add(app.packageName)
             }
         }
@@ -231,6 +231,7 @@ constructor(
     }
 
     private companion object {
+        const val DEFAULT_APP_SIZE = 24576L // Empty directory metadata size
         val logger = Logger(PinLockViewModel::class.java)
     }
 }
