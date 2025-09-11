@@ -74,4 +74,7 @@
   <string name="reset_dialog_reset_now_message">You can now reset your pin.</string>
   <string name="reset_dialog_positive_button_text">Reset</string>
 
+  <!-- Guest Users -->
+  <string name="guest_user_exit_toast_message">App lock isn\'t available in guest profile.</string>
+
 </resources>

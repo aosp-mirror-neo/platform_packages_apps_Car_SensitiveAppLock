@@ -19,6 +19,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.FragmentActivity
@@ -49,6 +50,13 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (viewModel.isGuestUser()) {
+            Toast.makeText(this, R.string.guest_user_exit_toast_message, Toast.LENGTH_SHORT).show()
+            logger.v("Early exit on guest user")
+            finish()
+            return
+        }
         setContentView(R.layout.activity_settings)
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 

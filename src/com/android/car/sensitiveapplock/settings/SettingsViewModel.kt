@@ -15,6 +15,8 @@
  */
 package com.android.car.sensitiveapplock.settings
 
+import android.content.Context
+import android.os.UserManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.car.sensitiveapplock.auth.PinManager
@@ -24,6 +26,7 @@ import com.android.car.sensitiveapplock.data.LockableAppsListRepository
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,12 +49,15 @@ data class SettingsUiState(
 class SettingsViewModel
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     private val appLockDataRepository: AppLockDataRepository,
     private val lockableAppsListDataRepository: LockableAppsListRepository,
     private val appSuspensionManager: AppSuspensionManager,
     private val settingsLockManager: SettingsLockManager,
     private val pinManager: PinManager,
 ) : ViewModel() {
+    private val userManager = context.getSystemService(UserManager::class.java)
+
     val uiState: SharedFlow<SettingsUiState> =
         combine(appLockDataRepository.appLockDataFlow, settingsLockManager.lockStatusFlow) {
                 appLockData,
@@ -114,6 +120,9 @@ constructor(
 
     /** Locks the Settings screen. */
     fun lockSettings() = settingsLockManager.setLockStatus(SettingsLockStatus.UNSET)
+
+    /** Checks if the current user is a guest user. */
+    fun isGuestUser() = userManager.isGuestUser
 
     private companion object {
         val logger = Logger(SettingsViewModel::class.java)

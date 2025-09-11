@@ -17,14 +17,18 @@ package com.android.car.sensitiveapplock.settings
 
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.os.UserManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
@@ -44,6 +48,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowToast
+import org.robolectric.shadows.ShadowUserManager
 
 @HiltAndroidTest
 @SmallTest
@@ -52,6 +58,15 @@ class SettingsActivityTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val shadowUserManager =
+        shadowOf(context.getSystemService(Context.USER_SERVICE) as UserManager).apply {
+            setSupportsMultipleUsers(true)
+            addUser(
+                ShadowUserManager.DEFAULT_SECONDARY_USER_ID,
+                "guest_user",
+                ShadowUserManager.FLAG_GUEST,
+            )
+        }
 
     private lateinit var activityScenario: ActivityScenario<SettingsActivity>
 
@@ -77,6 +92,17 @@ class SettingsActivityTest {
     @After
     fun tearDown() {
         activityScenario.close()
+    }
+
+    @Test
+    fun onCreate_onGuestUser_showsToastAndFinishesActivity() {
+        shadowUserManager.switchUser(ShadowUserManager.DEFAULT_SECONDARY_USER_ID)
+
+        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
+            assertThat(ShadowToast.getTextOfLatestToast())
+                .isEqualTo(context.getString(R.string.guest_user_exit_toast_message))
+            assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+        }
     }
 
     @Test

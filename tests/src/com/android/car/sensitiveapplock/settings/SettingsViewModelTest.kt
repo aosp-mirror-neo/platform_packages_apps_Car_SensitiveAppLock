@@ -72,6 +72,7 @@ class SettingsViewModelTest {
         // Can't inject a [HiltViewModel]
         viewModel =
             SettingsViewModel(
+                context,
                 appLockDataRepository,
                 lockableAppsListRepository,
                 appSuspensionManager,
