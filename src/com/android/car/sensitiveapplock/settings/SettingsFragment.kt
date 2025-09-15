@@ -27,12 +27,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
-import androidx.preference.SwitchPreference
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.ui.preference.CarUiFooterPreference
+import com.android.car.ui.preference.CarUiSwitchPreference
 import com.android.car.ui.preference.PreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -51,7 +51,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
                 setTitle(R.string.setting_title)
 
                 val appLockSwitch =
-                    SwitchPreference(requireContext()).apply {
+                    CarUiSwitchPreference(requireContext()).apply {
                         setTitle(R.string.app_lock_switch)
                         setSummary(R.string.app_lock_switch_summary)
                         key = ENABLE_APP_LOCK_SWITCH_KEY
@@ -91,7 +91,7 @@ class SettingsFragment : Hilt_SettingsFragment() {
 
     private fun updateUi(state: SettingsUiState) {
         val appLockSwitch =
-            preferenceScreen.getPreference(ENABLE_APP_LOCK_SWITCH_INDEX) as SwitchPreference
+            preferenceScreen.getPreference(ENABLE_APP_LOCK_SWITCH_INDEX) as CarUiSwitchPreference
         appLockSwitch.isChecked = state.appLockEnabled
 
         val lockedAppsCategory =
@@ -105,9 +105,9 @@ class SettingsFragment : Hilt_SettingsFragment() {
         }
     }
 
-    private fun createSwitchPreference(lockableApp: LockableApp): SwitchPreference {
+    private fun createSwitchPreference(lockableApp: LockableApp): CarUiSwitchPreference {
         val appSwitchPreference =
-            SwitchPreference(requireContext()).apply {
+            CarUiSwitchPreference(requireContext()).apply {
                 key = lockableApp.appInfo.packageName
                 title = lockableApp.appInfo.label
                 icon = lockableApp.appInfo.icon
