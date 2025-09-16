@@ -59,6 +59,8 @@
                 android:resource="@drawable/setting_icon" />
             <meta-data android:name="com.android.settings.icon_tintable"
                 android:value="true" />
+            <!-- The higher the order the earlier it shows up in the Setting screen. -->
+            <meta-data android:name="com.android.settings.order" android:value="100"/>
         </activity>
 
         <activity
