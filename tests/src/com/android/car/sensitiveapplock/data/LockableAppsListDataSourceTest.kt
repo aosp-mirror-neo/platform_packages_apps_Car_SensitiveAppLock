@@ -19,6 +19,7 @@ import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
@@ -70,7 +71,10 @@ class LockableAppsListDataSourceTest {
         addLauncherActivities()
         val lockableApps = lockableAppsListDataSource.getLockableApps().map { it.packageName }
 
-        val unsuspendablePackages = context.resources.getStringArray(R.array.unsuspendable_packages)
+        val unsuspendablePackages =
+            context.resources.getStringArray(R.array.unsuspendable_packages) +
+                TEST_MAPS_PACKAGE +
+                TEST_ASSISTANT_PACKAGE
         assertThat(lockableApps).containsNoneIn(unsuspendablePackages)
     }
 
@@ -105,6 +109,8 @@ class LockableAppsListDataSourceTest {
                 buildLauncherActivityInfo(activity),
             )
         }
+        addAssistantApp(TEST_ASSISTANT_PACKAGE)
+        addMapsApp(TEST_MAPS_PACKAGE)
     }
 
     private fun addMediaLauncherActivities() {
@@ -121,6 +127,27 @@ class LockableAppsListDataSourceTest {
         shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
     }
 
+    private fun addAssistantApp(packageName: String) {
+        val intentFilter = IntentFilter(Intent.ACTION_VOICE_ASSIST)
+        addAppToPackageManager(packageName, intentFilter)
+    }
+
+    private fun addMapsApp(packageName: String) {
+        val intentFilter =
+            IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_APP_MAPS) }
+        addAppToPackageManager(packageName, intentFilter)
+    }
+
+    private fun addAppToPackageManager(packageName: String, intentFilter: IntentFilter) {
+        val componentName = ComponentName(packageName, "MyActivity")
+        shadowLauncherApps.addActivity(
+            Process.myUserHandle(),
+            buildLauncherActivityInfo(componentName.packageName),
+        )
+        shadowPackageManager.addActivityIfNotPresent(componentName)
+        shadowPackageManager.addIntentFilterForActivity(componentName, intentFilter)
+    }
+
     private fun buildLauncherActivityInfo(packageName: String): LauncherActivityInfo {
         val applicationInfo =
             ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
@@ -134,5 +161,7 @@ class LockableAppsListDataSourceTest {
     private companion object {
         val TEST_ACTIVITIES = listOf("com.package.1", "com.package.2")
         val TEST_MEDIA_PACKAGES = listOf("com.package.media.1", "com.package.media.2")
+        const val TEST_MAPS_PACKAGE = "com.package.maps"
+        const val TEST_ASSISTANT_PACKAGE = "com.package.assistant"
     }
 }

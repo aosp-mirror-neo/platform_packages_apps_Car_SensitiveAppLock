@@ -53,11 +53,24 @@ constructor(@ApplicationContext private val context: Context) {
         context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
     private val logger = Logger(this.javaClass)
 
+    /**
+     * Gets a list of lockable apps on the device.
+     *
+     * An app is deemed to be lockable if it clears the following criteria:
+     * - Not unsuspendable by Package Manager
+     * - Not marked unsuspendable in the deny list in the config
+     * - Not an Assistant app
+     * - Not a Maps app
+     */
     fun getLockableApps(): List<AppInfo> {
         val allApps = (getLauncherApps() + getMediaApps()).distinctBy { it.packageName }
-
         val allAppPackageNames = allApps.map(AppInfo::packageName).toTypedArray()
-        unsuspendablePackages.addAll(packageManager.getUnsuspendablePackages(allAppPackageNames))
+
+        unsuspendablePackages.apply {
+            addAll(packageManager.getUnsuspendablePackages(allAppPackageNames))
+            addAll(getAssistantApps())
+            addAll(getMapsApps())
+        }
         logger.d("Unsuspendable apps list: $unsuspendablePackages")
 
         return allApps
@@ -90,6 +103,22 @@ constructor(@ApplicationContext private val context: Context) {
             }
             .map { it.toAppInfo(context.packageManager) }
     }
+
+    private fun getAssistantApps(): List<String> =
+        context.packageManager
+            .queryIntentActivities(
+                Intent(Intent.ACTION_VOICE_ASSIST),
+                0, // flags
+            )
+            .map { it.activityInfo.packageName }
+
+    private fun getMapsApps(): List<String> =
+        context.packageManager
+            .queryIntentActivities(
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MAPS),
+                0, // flags,
+            )
+            .map { it.activityInfo.packageName }
 
     private fun LauncherActivityInfo.toAppInfo(packageManager: PackageManager): AppInfo {
         return AppInfo(
