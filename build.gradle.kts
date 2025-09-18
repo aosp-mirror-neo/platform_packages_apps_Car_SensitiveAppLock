@@ -78,6 +78,7 @@ android {
                 "tests/src/com/android/car/sensitiveapplock/data",
                 "tests/src/com/android/car/sensitiveapplock/lockscreen",
                 "tests/src/com/android/car/sensitiveapplock/metrics",
+                "tests/src/com/android/car/sensitiveapplock/service",
                 "tests/src/com/android/car/sensitiveapplock/settings",
                 "tests/src/com/android/car/sensitiveapplock/shadows",
                 "tests/src/com/android/car/sensitiveapplock/suspension",
@@ -210,6 +211,7 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.android.compiler)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.mockito.kotlin)
 }
 
 hilt {
