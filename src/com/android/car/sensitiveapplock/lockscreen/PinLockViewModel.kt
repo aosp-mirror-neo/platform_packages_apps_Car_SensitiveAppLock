@@ -88,10 +88,9 @@ constructor(
      */
     suspend fun savePin(pin: String): Boolean = pinManager.setAppLockPin(pin)
 
-    /** Unlocks all locked apps. */
-    suspend fun unlockApps() {
-        val lockedApps = appLockDataRepository.getLockedApps().toTypedArray()
-        appSuspensionManager.setAppSuspensionState(packageNames = lockedApps, state = false)
+    /** Unlocks the locked app. */
+    fun unlockApp(packageName: String) {
+        appSuspensionManager.setAppSuspensionState(packageName, state = false)
     }
 
     /**

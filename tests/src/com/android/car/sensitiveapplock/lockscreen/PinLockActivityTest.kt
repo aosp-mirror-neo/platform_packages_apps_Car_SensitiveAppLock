@@ -25,7 +25,6 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
-import android.content.pm.PackageInfo
 import android.os.Bundle
 import android.os.Process
 import androidx.core.os.bundleOf
@@ -288,23 +287,13 @@ class PinLockActivityTest {
     }
 
     @Test
-    fun onValidatePinRequestResult_calledFromSuspendDialog_unlocksApps() = runTest {
+    fun onValidatePinRequestResult_calledFromSuspendDialog_unlocksApp() = runTest {
         val shadowPackageManager = shadowOf(context.packageManager)
+        // Need to add an intent filter to have getlaunchIntentForPackage properly resolve
+        val intentFilter =
+            IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         for (packageName in TEST_PACKAGE_NAMES) {
-            shadowPackageManager.installPackage(
-                PackageInfo().apply { this.packageName = packageName }
-            )
-            shadowPackageManager.addOrUpdateActivity(
-                ActivityInfo().apply {
-                    name = TEST_ACTIVITY_CLASS
-                    this.packageName = packageName
-                }
-            )
-            // Need to add an intent filter to have getlaunchIntentForPackage properly resolve
-            shadowPackageManager.addIntentFilterForActivity(
-                ComponentName(packageName, TEST_ACTIVITY_CLASS),
-                IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) },
-            )
+            TestHelpers.addAppToPackageManager(context, packageName, intentFilter)
             appSuspensionManager.setAppSuspensionState(packageName, true)
             appLockDataRepository.addLockedApp(packageName)
         }
@@ -323,9 +312,13 @@ class PinLockActivityTest {
         }
 
         assertThat(activityScenario.result.resultCode).isEqualTo(RESULT_OK)
-        for (packageName in TEST_PACKAGE_NAMES) {
-            assertThat(shadowPackageManager.getPackageSetting(packageName).isSuspended).isFalse()
-        }
+
+        // Only first app should be unlocked
+        assertThat(shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAMES[0]).isSuspended)
+            .isFalse()
+        TEST_PACKAGE_NAMES.drop(1)
+            .all { shadowPackageManager.getPackageSetting(it).isSuspended }
+            .let { allSuspended -> assertThat(allSuspended).isTrue() }
     }
 
     @Test

@@ -72,7 +72,7 @@ class PinLockViewModelTest {
     private val shadowPackageManager = shadowOf(context.packageManager)
     private val shadowLauncherApps =
         shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
-    val shadowStorageStatsManager =
+    private val shadowStorageStatsManager =
         shadowOf(context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager)
 
     private lateinit var pinLockViewModel: PinLockViewModel
@@ -132,7 +132,7 @@ class PinLockViewModelTest {
     }
 
     @Test
-    fun unlockApps_unsuspendsAllApps() = runTest {
+    fun unlockApp_unsuspendsSpecificApp() = runTest {
         for (packageName in TEST_PACKAGE_NAMES) {
             shadowPackageManager.installPackage(
                 PackageInfo().apply { this.packageName = packageName }
@@ -141,23 +141,22 @@ class PinLockViewModelTest {
             appLockDataRepository.addLockedApp(packageName)
         }
 
-        pinLockViewModel.unlockApps()
+        pinLockViewModel.unlockApp(TEST_PACKAGE_NAMES[0])
 
-        for (packageName in TEST_PACKAGE_NAMES) {
-            assertThat(shadowPackageManager.getPackageSetting(packageName).isSuspended).isFalse()
-        }
+        // Only first app should be unlocked
+        assertThat(shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAMES[0]).isSuspended)
+            .isFalse()
+        TEST_PACKAGE_NAMES.drop(1)
+            .all { shadowPackageManager.getPackageSetting(it).isSuspended }
+            .let { allSuspended -> assertThat(allSuspended).isTrue() }
     }
 
     @Test
     fun getLaunchIntentForPackage_standardApp_returnsIntentWithActionMain() {
         val packageName = TEST_PACKAGE_NAMES[0]
-        val cmpName = ComponentName(packageName, "TestActivity")
         val intentFilter =
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        shadowPackageManager.addActivityIfNotPresent(cmpName)
-        shadowPackageManager.addIntentFilterForActivity(cmpName, intentFilter)
-        val launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(packageName)
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        TestHelpers.addAppToPackageManager(context, packageName, intentFilter)
 
         val intent = pinLockViewModel.getLaunchIntentForPackage(context.packageManager, packageName)
 

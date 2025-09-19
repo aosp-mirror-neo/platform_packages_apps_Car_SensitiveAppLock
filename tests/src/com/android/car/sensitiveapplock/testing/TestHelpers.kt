@@ -15,10 +15,16 @@
  */
 package com.android.car.sensitiveapplock.testing
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
+import android.os.Process
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import org.robolectric.Shadows.shadowOf
 
 /** Object containing common test helper functions. */
 object TestHelpers {
@@ -37,5 +43,19 @@ object TestHelpers {
                 whenever(getApplicationInfo()).thenReturn(applicationInfo)
             }
         return mockLauncherActivityInfo
+    }
+
+    fun addAppToPackageManager(context: Context, packageName: String, intentFilter: IntentFilter) {
+        val shadowLauncherApps =
+            shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
+        val shadowPackageManager = shadowOf(context.packageManager)
+        val componentName = ComponentName(packageName, "MyActivity")
+
+        shadowLauncherApps.addActivity(
+            Process.myUserHandle(),
+            buildLauncherActivityInfo(componentName.packageName),
+        )
+        shadowPackageManager.addActivityIfNotPresent(componentName)
+        shadowPackageManager.addIntentFilterForActivity(componentName, intentFilter)
     }
 }

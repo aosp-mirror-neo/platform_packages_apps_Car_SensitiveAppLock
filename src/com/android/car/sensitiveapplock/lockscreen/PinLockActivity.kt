@@ -139,9 +139,9 @@ class PinLockActivity : Hilt_PinLockActivity() {
                 return@setFragmentResultListener
             }
 
-            logger.d("Called from Suspend Dialog. Unlocking apps and launching $packageName.")
+            logger.d("Called from Suspend Dialog. Unlocking and launching $packageName.")
             lifecycleScope.launch {
-                viewModel.unlockApps()
+                viewModel.unlockApp(packageName)
                 startActivity(viewModel.getLaunchIntentForPackage(packageManager, packageName))
                 metricsLogger.logAppLockEvent(AppLockEvent.PACKAGE_LAUNCHED, getPackageUid())
                 setResult(RESULT_OK)
