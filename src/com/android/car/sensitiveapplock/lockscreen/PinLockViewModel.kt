@@ -18,14 +18,12 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.accounts.AccountManager
 import android.accounts.AccountManager.KEY_INTENT
 import android.accounts.AccountsException
-import android.app.usage.StorageStatsManager
+import android.app.ActivityManager
 import android.car.media.CarMediaIntents
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Process
-import android.os.storage.StorageManager
 import androidx.lifecycle.ViewModel
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
@@ -53,7 +51,7 @@ import kotlinx.coroutines.withContext
 class PinLockViewModel
 @Inject
 constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
     private val appLockDataRepository: AppLockDataRepository,
     private val appSuspensionManager: AppSuspensionManager,
     private val pinManager: PinManager,
@@ -62,8 +60,6 @@ constructor(
     @BackgroundContext private val backgroundContext: CoroutineContext,
 ) : ViewModel() {
     private val accountManager = AccountManager.get(context)
-    private val storageStatsManager =
-        context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     private val resources = context.resources
     private val _enteredPin = MutableStateFlow("")
     val enteredPin: StateFlow<String> = _enteredPin.asStateFlow()
@@ -204,33 +200,40 @@ constructor(
             }
         }
 
-    /** Gets the [AppInfo] of all locked user apps. */
+    /** Gets the [AppInfo] of all locked apps. */
     suspend fun getLockedApps(): List<AppInfo> {
         val apps = appLockDataRepository.getLockedApps()
         val userLockableApps = lockableAppsListDataSource.getLockableApps()
         return userLockableApps.filter { apps.contains(it.packageName) }
     }
 
-    /** Gets the list of locked systems apps whose data has been cleared by the user. */
-    suspend fun getLockedDataClearedSystemApps(): List<String> {
-        val systemLockedApps = getLockedApps().filter { it.isBundledApp }
-        val dataClearedSystemApps = mutableListOf<String>()
-        for (app in systemLockedApps) {
-            val stats =
-                storageStatsManager.queryStatsForPackage(
-                    StorageManager.UUID_DEFAULT,
-                    app.packageName,
-                    Process.myUserHandle(),
+    /** Gets the [AppInfo] of all locked user apps. */
+    suspend fun getLockedUserApps(): List<AppInfo> {
+        val lockedApps = getLockedApps()
+        return lockedApps.filter { !it.isBundledApp }
+    }
+
+    /** Gets the [AppInfo] of all locked system apps. */
+    suspend fun getLockedSystemApps(): List<AppInfo> {
+        val lockedApps = getLockedApps()
+        return lockedApps.filter { it.isBundledApp }
+    }
+
+    /** Clears the data for locked system apps. */
+    suspend fun clearSystemAppsData() {
+        val systemApps = getLockedSystemApps()
+        for (app in systemApps) {
+            val ctx =
+                context.createPackageContext(
+                    app.packageName, // packageName
+                    0, // flags
                 )
-            if (stats.dataBytes <= DEFAULT_APP_SIZE) {
-                dataClearedSystemApps.add(app.packageName)
-            }
+            val am = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            am.clearApplicationUserData()
         }
-        return dataClearedSystemApps
     }
 
     private companion object {
-        const val DEFAULT_APP_SIZE = 24576L // Empty directory metadata size
         val logger = Logger(PinLockViewModel::class.java)
     }
 }

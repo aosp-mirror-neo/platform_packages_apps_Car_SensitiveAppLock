@@ -18,9 +18,8 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.Manifest.permission.SUSPEND_APPS
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.ActivityManager
 import android.app.Application
-import android.app.usage.StorageStats
-import android.app.usage.StorageStatsManager
 import android.car.media.CarMediaIntents
 import android.content.Context
 import android.content.Intent
@@ -29,7 +28,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
 import android.os.Process
-import android.os.storage.StorageManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -41,11 +39,11 @@ import com.android.car.sensitiveapplock.data.LockableAppsListDataSource
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
+import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addMediaAppToPackageManager
-import com.android.car.sensitiveapplock.testing.AppInstallationHelper.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -57,15 +55,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowResources::class, ShadowAccountManager::class])
+@Config(
+    shadows = [ShadowResources::class, ShadowAccountManager::class, ShadowActivityManager::class]
+)
 class PinLockViewModelTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -73,8 +71,6 @@ class PinLockViewModelTest {
     private val shadowPackageManager = shadowOf(context.packageManager)
     private val shadowLauncherApps =
         shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
-    private val shadowStorageStatsManager =
-        shadowOf(context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager)
 
     private lateinit var pinLockViewModel: PinLockViewModel
 
@@ -103,7 +99,7 @@ class PinLockViewModelTest {
                 backgroundContext,
             )
         ShadowResources.reset()
-        shadowStorageStatsManager.clearStorageStats()
+        ShadowActivityManager.reset()
     }
 
     @Test
@@ -249,60 +245,40 @@ class PinLockViewModelTest {
     }
 
     @Test
-    fun getLockedDataClearedSystemApps_returnsOnlyLockedAppsWithDataCleared() = runTest {
-        var launcherActivityInfo =
-            buildLauncherActivityInfo(
-                TEST_PACKAGE_NAMES[0],
-                uid = 1,
-                ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-            )
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
-        launcherActivityInfo =
-            buildLauncherActivityInfo(
-                TEST_PACKAGE_NAMES[1],
-                uid = 2,
-                ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-            )
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
-        launcherActivityInfo = buildLauncherActivityInfo(TEST_PACKAGE_NAMES[2], uid = 3)
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+    fun clearSystemAppsData_clearsDataForLockedSystemApps() = runTest {
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[0],
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[1],
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[2],
+            flags = DEFAULT_FLAGS,
+        )
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[2])
-        shadowStorageStatsManager.addStorageStats(
-            StorageManager.UUID_DEFAULT,
-            TEST_PACKAGE_NAMES[0],
-            Process.myUserHandle(),
-            createStorageStats(DEFAULT_EMPTY_APP_SIZE + 10), // App with some user data
-        )
-        shadowStorageStatsManager.addStorageStats(
-            StorageManager.UUID_DEFAULT,
-            TEST_PACKAGE_NAMES[1],
-            Process.myUserHandle(),
-            createStorageStats(DEFAULT_EMPTY_APP_SIZE),
-        )
-        shadowStorageStatsManager.addStorageStats(
-            StorageManager.UUID_DEFAULT,
-            TEST_PACKAGE_NAMES[2],
-            Process.myUserHandle(),
-            createStorageStats(DEFAULT_EMPTY_APP_SIZE),
-        )
 
-        val apps = pinLockViewModel.getLockedDataClearedSystemApps()
+        pinLockViewModel.clearSystemAppsData()
 
-        assertThat(apps).containsExactly(TEST_PACKAGE_NAMES[1])
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val shadowAm = shadowOf(am) as ShadowActivityManager
+
+        val dataClearedApps = shadowAm.getClearedApplicationUserDataPackages()
+        assertThat(dataClearedApps).containsExactly(TEST_PACKAGE_NAMES[0], TEST_PACKAGE_NAMES[1])
     }
 
     private companion object {
         const val USER_PIN = "1111"
         const val TEST_TEMPLATE_MEDIA_PACKAGE = "com.template.1"
         const val RECOVERY_ACCOUNT_TYPE = "com.oem"
-        const val DEFAULT_EMPTY_APP_SIZE = 24576L // Empty directory metadata size
 
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
-
-        fun createStorageStats(dataBytes: Long): StorageStats {
-            return mock<StorageStats> { on { getDataBytes() } doReturn dataBytes }
-        }
     }
 }

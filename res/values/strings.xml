@@ -66,13 +66,15 @@
 
   <!-- Pin Reset Dialog -->
   <string name="reset_dialog_title">Security reset required</string>
-  <string name="reset_dialog_message">No recovery method was set up. To keep your data safe, resetting your PIN requires you to uninstall all protected apps first.</string>
-  <string name="reset_dialog_downloaded_apps">Uninstall the following apps</string>
-  <string name="reset_dialog_preinstalled_apps">For system apps you cannot uninstall, clear their data by selecting the App > Storage &amp; Cache > Clear storage</string>
-  <string name="reset_dialog_neutral_button_text">Got it</string>
-  <string name="reset_dialog_reset_now_title">Reset Now</string>
-  <string name="reset_dialog_reset_now_message">You can now reset your pin.</string>
-  <string name="reset_dialog_positive_button_text">Reset</string>
+  <string name="reset_dialog_message">No recovery method was set up. To keep your data safe, resetting your PIN requires you to uninstall or clear necessary data for all protected apps.\n\nNo problem we’ll take you through it.</string>
+  <string name="reset_dialog_neutral_button_text">Cancel</string>
+  <string name="reset_dialog_positive_button_text">Review &amp; uninstall</string>
+
+  <!-- Clear data Dialog -->
+  <string name="clear_data_dialog_title">Clear data</string>
+  <string name="clear_data_dialog_message">Clear data from</string>
+  <string name="clear_data_dialog_neutral_button_text">Cancel</string>
+  <string name="clear_data_dialog_positive_button_text">Clear</string>
 
   <!-- Guest Users -->
   <string name="guest_user_exit_toast_message">App lock isn\'t available in guest profile.</string>

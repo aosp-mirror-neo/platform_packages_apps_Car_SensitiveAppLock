@@ -25,7 +25,7 @@
     </string-array>
 
     <!-- Config for allowing pin lock recovery. -->
-    <bool name="config_enablePinLockRecovery">false</bool>
+    <bool name="config_enablePinLockRecovery">true</bool>
     <!-- Default account type used for recovering pin. -->
     <string name="config_recoveryAccountType" translatable="false">com.google</string>
 </resources>

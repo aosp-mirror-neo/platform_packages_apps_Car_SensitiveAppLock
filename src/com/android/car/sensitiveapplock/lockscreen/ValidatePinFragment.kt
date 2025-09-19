@@ -17,19 +17,18 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
 import android.os.Bundle
-import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity.Companion.ACTION_CREATE_PIN
@@ -49,12 +48,19 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
     @Inject lateinit var metricsLogger: MetricsLogger
 
     private lateinit var pinLockView: PinLockView
+    private lateinit var appUninstallResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var confirmCredentialsLauncher: ActivityResultLauncher<Intent>
     private lateinit var pinRecreateResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        appUninstallResultLauncher =
+            registerForActivityResult(
+                StartActivityForResult(),
+                activityResultRegistry,
+                ::onAppUninstall,
+            )
         confirmCredentialsLauncher =
             registerForActivityResult(
                 StartActivityForResult(),
@@ -101,11 +107,7 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
             val intent = viewModel.getReAuthIntent()
             if (intent == null) {
                 logger.d("Cannot recover pin; User has not setup recovery account")
-                setPinResetDialogResultListener()
-                val lockedApps = viewModel.getLockedApps()
-                val dataClearedApps = viewModel.getLockedDataClearedSystemApps()
-                PinResetDialogFragment(lockedApps, dataClearedApps)
-                    .show(parentFragmentManager, PinResetDialogFragment.TAG)
+                showSecurityResetDialog()
                 metricsLogger.logRecoveryEvent(
                     RecoveryEvent.USER_STARTED_MANUAL_RESET_RECOVERY_FLOW
                 )
@@ -115,6 +117,15 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
             metricsLogger.logRecoveryEvent(RecoveryEvent.USER_STARTED_REAUTH_RECOVERY_FLOW)
             confirmCredentialsLauncher.launch(intent)
         }
+
+    private fun onAppUninstall(result: ActivityResult) {
+        logger.d("Successfully uninstalled package:")
+        if (result.resultCode == RESULT_OK) {
+            uninstallAppsAndClearData()
+        } else {
+            showSecurityResetDialog()
+        }
+    }
 
     private fun onConfirmCredentials(result: ActivityResult) =
         lifecycleScope.launch {
@@ -142,33 +153,73 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
         parentFragmentManager.setFragmentResult(PinLockActivity.VALIDATE_PIN_REQUEST_KEY, Bundle())
     }
 
-    private fun setPinResetDialogResultListener() {
-        setFragmentResultListener(PinResetDialogFragment.PIN_RESET_DIALOG_REQUEST_KEY) { _, bundle
-            ->
-            val recreatePin =
-                bundle.getBoolean(PinResetDialogFragment.PIN_RESET_DIALOG_BUNDLE_KEY, false)
-            if (!recreatePin) {
-                logger.d("Show all application screen")
-                val intent =
-                    Intent().apply {
-                        action = ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
-                        flags = FLAG_ACTIVITY_NO_HISTORY
-                    }
-                startActivity(intent)
-                return@setFragmentResultListener
-            }
-            logger.d("Start pin recreation flow")
-            startPinRecreateFlow()
-        }
+    private suspend fun startPinRecreateFlow() {
+        val pinScreenIntent =
+            Intent(context, PinLockActivity::class.java).apply { action = ACTION_CREATE_PIN }
+        pinRecreateResultLauncher.launch(pinScreenIntent)
+        metricsLogger.logRecoveryEvent(RecoveryEvent.USER_STARTED_PIN_RECREATE_FLOW)
     }
 
-    private fun startPinRecreateFlow() =
+    private fun uninstallAppsAndClearData() =
         lifecycleScope.launch {
-            val pinScreenIntent =
-                Intent(context, PinLockActivity::class.java).apply { action = ACTION_CREATE_PIN }
-            pinRecreateResultLauncher.launch(pinScreenIntent)
-            metricsLogger.logRecoveryEvent(RecoveryEvent.USER_STARTED_PIN_RECREATE_FLOW)
+            // Uninstall user apps
+            val userApps = viewModel.getLockedUserApps()
+            if (userApps.isNotEmpty()) {
+                val uri = ("package:${userApps.first().packageName}").toUri()
+                val uninstallIntent =
+                    Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri).apply {
+                        putExtra(Intent.EXTRA_RETURN_RESULT, true)
+                    }
+                appUninstallResultLauncher.launch(uninstallIntent)
+                return@launch
+            }
+            showClearAppsDataDialog()
         }
+
+    private fun showSecurityResetDialog() {
+        AlertDialog.Builder(context)
+            .apply {
+                setTitle(R.string.reset_dialog_title)
+                setMessage(R.string.reset_dialog_message)
+                setNeutralButton(R.string.reset_dialog_neutral_button_text) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                setPositiveButton(R.string.reset_dialog_positive_button_text) { dialog, _ ->
+                    dialog.dismiss()
+                    uninstallAppsAndClearData()
+                }
+            }
+            .create()
+            .show()
+    }
+
+    private suspend fun showClearAppsDataDialog() {
+        val systemApps = viewModel.getLockedSystemApps()
+        if (systemApps.isEmpty()) {
+            startPinRecreateFlow()
+            return
+        }
+        val appNames = systemApps.joinToString(", ") { it.label }
+        val message = getString(R.string.clear_data_dialog_message) + " " + appNames
+        AlertDialog.Builder(context)
+            .apply {
+                setTitle(R.string.clear_data_dialog_title)
+                setMessage(message)
+                setNeutralButton(R.string.clear_data_dialog_neutral_button_text) { dialog, _ ->
+                    dialog.dismiss()
+                    showSecurityResetDialog()
+                }
+                setPositiveButton(R.string.clear_data_dialog_positive_button_text) { dialog, _ ->
+                    lifecycleScope.launch {
+                        dialog.dismiss()
+                        viewModel.clearSystemAppsData()
+                        startPinRecreateFlow()
+                    }
+                }
+            }
+            .create()
+            .show()
+    }
 
     private companion object {
         val logger = Logger(ValidatePinFragment::class.java)

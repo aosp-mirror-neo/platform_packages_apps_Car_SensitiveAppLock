@@ -18,27 +18,32 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.Manifest.permission.SUSPEND_APPS
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.Activity.RESULT_FIRST_USER
 import android.app.Activity.RESULT_OK
+import android.app.ActivityManager
+import android.app.AlertDialog
 import android.app.Application
 import android.content.ComponentName
-import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.fragment.app.setFragmentResult
+import androidx.core.net.toUri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
-import com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment.Companion.PIN_RESET_DIALOG_BUNDLE_KEY
-import com.android.car.sensitiveapplock.lockscreen.PinResetDialogFragment.Companion.PIN_RESET_DIALOG_REQUEST_KEY
 import com.android.car.sensitiveapplock.metrics.RecoveryEvent
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
+import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
@@ -49,7 +54,13 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,7 +72,10 @@ import org.robolectric.shadows.ShadowAlertDialog
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowResources::class, ShadowAccountManager::class])
+@Config(
+    shadows = [ShadowResources::class, ShadowAccountManager::class, ShadowActivityManager::class]
+)
+@OptIn(ExperimentalCoroutinesApi::class)
 class ValidatePinFragmentTest {
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
     @get:Rule(order = 1) val hiltTestActivityRule = HiltTestActivityRule()
@@ -82,6 +96,7 @@ class ValidatePinFragmentTest {
         shadowOf(context).grantPermissions(SUSPEND_APPS)
 
         ShadowResources.reset()
+        ShadowActivityManager.reset()
 
         ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         CarUiInstaller.register(context)
@@ -299,7 +314,7 @@ class ValidatePinFragmentTest {
     }
 
     @Test
-    fun pinRecovery_noRecoveryAccount_showsPinResetDialog() {
+    fun pinRecovery_noRecoveryAccount_showsSecurityResetDialog() {
         launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
             val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
 
@@ -308,10 +323,9 @@ class ValidatePinFragmentTest {
 
             val dialog = ShadowAlertDialog.getLatestAlertDialog()
             val shadowDialog = shadowOf(dialog)
-            val title = shadowDialog.view.findViewById<TextView>(R.id.reset_dialog_title)
             assertThat(dialog.isShowing).isTrue()
-            assertThat(title.text)
-                .isEqualTo(context.getString(R.string.reset_dialog_reset_now_title))
+            assertThat(shadowDialog.title)
+                .isEqualTo(context.resources.getString(R.string.reset_dialog_title))
         }
     }
 
@@ -332,54 +346,245 @@ class ValidatePinFragmentTest {
     }
 
     @Test
-    fun pinResetDialog_onResultBundleValueTrue_launchesPinLockActivity() {
+    fun securityResetDialog_onPrimaryCta_launchesAppUninstallIntent() = runTest {
+        AppInstallationHelper.addAppToPackageManager(context, TEST_PACKAGE_NAMES[0])
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+
         launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
             val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
-            val bundle = Bundle().apply { putBoolean(PIN_RESET_DIALOG_BUNDLE_KEY, true) }
 
             recoverKey.performClick()
-            fragment.setFragmentResult(PIN_RESET_DIALOG_REQUEST_KEY, bundle)
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-            val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
-            assertThat(launchedIntent?.component)
-                .isEqualTo(ComponentName(context, PinLockActivity::class.java))
-            assertThat(launchedIntent?.action).isEqualTo(PinLockActivity.ACTION_CREATE_PIN)
+            // Confirm the reset dialog
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+        }
+
+        val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+        assertThat(launchedIntent?.action).isEqualTo(Intent.ACTION_UNINSTALL_PACKAGE)
+        assertThat(launchedIntent?.data).isEqualTo(("package:${TEST_PACKAGE_NAMES[0]}").toUri())
+        assertThat(launchedIntent?.getBooleanExtra(Intent.EXTRA_RETURN_RESULT, false)).isTrue()
+    }
+
+    @Test
+    fun appUninstall_success_launchesNextAppUninstallIntent() {
+        val testDispatcher = StandardTestDispatcher()
+        val testScope = TestScope(testDispatcher)
+        Dispatchers.setMain(testDispatcher)
+        AppInstallationHelper.addAppToPackageManager(context, TEST_PACKAGE_NAMES[0])
+        AppInstallationHelper.addAppToPackageManager(context, TEST_PACKAGE_NAMES[1])
+        fakeActivityResultRegistry.setResult(RESULT_OK) // AppUninstall for first app
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            testScope.runTest {
+                appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+                appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
+                val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+                recoverKey.performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+                testDispatcher.scheduler.runCurrent()
+
+                // Security reset dialog
+                val dialog = ShadowAlertDialog.getLatestAlertDialog()
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+                // Mock uninstallation of the first app, ShadowLauncherApps does not have a an
+                // uninstall method.
+                appLockDataRepository.removeLockedApp(TEST_PACKAGE_NAMES[0])
+
+                // The above ordering works because coroutines are executed in the order they are
+                // scheduled. The second uninstallAppAndClearData which occurs recursively happens
+                // after the removeLockedApp method is called.
+            }
+        }
+
+        val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+        assertThat(launchedIntent?.action).isEqualTo(Intent.ACTION_UNINSTALL_PACKAGE)
+        assertThat(launchedIntent?.data).isEqualTo(("package:${TEST_PACKAGE_NAMES[1]}").toUri())
+        assertThat(launchedIntent?.getBooleanExtra(Intent.EXTRA_RETURN_RESULT, false)).isTrue()
+
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun appUninstall_onCancel_showsSecurityResetDialog() = runTest {
+        AppInstallationHelper.addAppToPackageManager(context, TEST_PACKAGE_NAMES[0])
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+        fakeActivityResultRegistry.setResult(RESULT_FIRST_USER)
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+            recoverKey.performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            // Confirm the reset dialog
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+        }
+        val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+        assertThat(launchedIntent?.action).isEqualTo(Intent.ACTION_UNINSTALL_PACKAGE)
+
+        val dialog = ShadowAlertDialog.getLatestAlertDialog()
+        val shadowDialog = shadowOf(dialog)
+        assertThat(dialog.isShowing).isTrue()
+        assertThat(shadowDialog.title)
+            .isEqualTo(context.resources.getString(R.string.reset_dialog_title))
+    }
+
+    @Test
+    fun securityResetDialog_onPrimaryCta_whenOnlySystemAppsLocked_showClearDataDialog() = runTest {
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[0],
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+            recoverKey.performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            // Security reset dialog
+            val dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            val clearDataDialog = ShadowAlertDialog.getLatestAlertDialog()
+            val shadowClearDataDialog = shadowOf(clearDataDialog)
+            assertThat(clearDataDialog.isShowing).isTrue()
+            assertThat(shadowClearDataDialog.title)
+                .isEqualTo(context.resources.getString(R.string.clear_data_dialog_title))
         }
     }
 
     @Test
-    fun pinResetDialog_onResultBundleValueTrue_logsMetrics() {
+    fun onAllUserAppsUninstalled_withSystemAppLocked_showsClearDataDialog() {
+        val testDispatcher = StandardTestDispatcher()
+        val testScope = TestScope(testDispatcher)
+        Dispatchers.setMain(testDispatcher)
+        AppInstallationHelper.addAppToPackageManager(context, packageName = TEST_PACKAGE_NAMES[0])
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[1],
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
+        fakeActivityResultRegistry.setResult(RESULT_OK) // AppUninstall for first app
+
+        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+            testScope.runTest {
+                appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+                appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
+                val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+                recoverKey.performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+                testDispatcher.scheduler.runCurrent()
+
+                // Security reset dialog
+                val dialog = ShadowAlertDialog.getLatestAlertDialog()
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+                // Mock uninstallation of the first app, ShadowLauncherApps does not have a an
+                // uninstall method.
+                appLockDataRepository.removeLockedApp(TEST_PACKAGE_NAMES[0])
+            }
+        }
+
+        val clearDataDialog = ShadowAlertDialog.getLatestAlertDialog()
+        val shadowClearDataDialog = shadowOf(clearDataDialog)
+        assertThat(clearDataDialog.isShowing).isTrue()
+        assertThat(shadowClearDataDialog.title)
+            .isEqualTo(context.resources.getString(R.string.clear_data_dialog_title))
+
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun clearDataDialog_onDismiss_showsSecurityResetDialog() = runTest {
+        AppInstallationHelper.addAppToPackageManager(
+            context,
+            packageName = TEST_PACKAGE_NAMES[0],
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
             val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
-            val bundle = Bundle().apply { putBoolean(PIN_RESET_DIALOG_BUNDLE_KEY, true) }
 
             recoverKey.performClick()
-            fragment.setFragmentResult(PIN_RESET_DIALOG_REQUEST_KEY, bundle)
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-            val atoms = getAppLockAtoms()
-            assertSensitiveAppLockEventAtom(
-                statsLogItem = atoms.last(),
-                recoveryEvent = RecoveryEvent.USER_STARTED_PIN_RECREATE_FLOW,
+            // Security reset dialog
+            var dialog = ShadowAlertDialog.getLatestAlertDialog()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            // Clear data dialog
+            val clearDataDialog = ShadowAlertDialog.getLatestAlertDialog()
+            clearDataDialog.getButton(AlertDialog.BUTTON_NEUTRAL).performClick()
+            shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+            dialog = ShadowAlertDialog.getLatestAlertDialog()
+            val shadowDialog = shadowOf(dialog)
+            assertThat(dialog.isShowing).isTrue()
+            assertThat(shadowDialog.title)
+                .isEqualTo(context.resources.getString(R.string.reset_dialog_title))
+        }
+    }
+
+    @Test
+    fun clearDataDialog_onPrimaryCta_clearsDataAndLogsMetricsAndLaunchesPinRecreateFlow() =
+        runTest {
+            AppInstallationHelper.addAppToPackageManager(
+                context,
+                packageName = TEST_PACKAGE_NAMES[0],
+                flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
             )
+            appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
+            launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
+                val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
+
+                recoverKey.performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+                // Security reset dialog
+                val dialog = ShadowAlertDialog.getLatestAlertDialog()
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+                // Clear data dialog
+                val clearDataDialog = ShadowAlertDialog.getLatestAlertDialog()
+                clearDataDialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+                shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+                val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val shadowAm = shadowOf(am) as ShadowActivityManager
+                assertThat(shadowAm.getClearedApplicationUserDataPackages())
+                    .containsExactly(TEST_PACKAGE_NAMES[0])
+
+                val atoms = getAppLockAtoms()
+                assertSensitiveAppLockEventAtom(
+                    statsLogItem = atoms.last(),
+                    recoveryEvent = RecoveryEvent.USER_STARTED_PIN_RECREATE_FLOW,
+                )
+
+                val launchedIntent = fakeActivityResultRegistry.getLastLaunchedIntent()
+                assertThat(launchedIntent?.component)
+                    .isEqualTo(ComponentName(context, PinLockActivity::class.java))
+                assertThat(launchedIntent?.action).isEqualTo(PinLockActivity.ACTION_CREATE_PIN)
+            }
         }
-    }
-
-    @Test
-    fun pinResetDialog_onResultBundleValueFalse_launchesManageAllAppsActivity() {
-        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
-            val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
-            val bundle = Bundle().apply { putBoolean(PIN_RESET_DIALOG_BUNDLE_KEY, false) }
-
-            recoverKey.performClick()
-            fragment.setFragmentResult(PIN_RESET_DIALOG_REQUEST_KEY, bundle)
-
-            val launchedIntent = shadowOf(context).peekNextStartedActivity()
-            assertThat(launchedIntent.action).isEqualTo(ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS)
-            assertThat(launchedIntent.flags).isEqualTo(FLAG_ACTIVITY_NO_HISTORY)
-        }
-    }
 
     private companion object {
         const val USER_PIN = "0000"
+
+        val TEST_PACKAGE_NAMES = listOf("com.test.package.user", "com.test.package.user.two")
     }
 }
