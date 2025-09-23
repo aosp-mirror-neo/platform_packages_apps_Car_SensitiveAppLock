@@ -17,20 +17,18 @@ package com.android.car.sensitiveapplock.data
 
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.LauncherActivityInfo
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
-import android.os.Process
-import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.shadows.ShadowResources
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addAppToPackageManager
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addMediaAppToPackageManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -40,8 +38,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
@@ -74,7 +70,11 @@ class LockableAppsListDataSourceTest {
         val unsuspendablePackages =
             context.resources.getStringArray(R.array.unsuspendable_packages) +
                 TEST_MAPS_PACKAGE +
-                TEST_ASSISTANT_PACKAGE
+                TEST_ASSISTANT_PACKAGE +
+                TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE +
+                TEST_DISALLOW_DATA_CLEARING_PACKAGE
+
+        assertThat(lockableApps).isNotEmpty()
         assertThat(lockableApps).containsNoneIn(unsuspendablePackages)
     }
 
@@ -99,69 +99,55 @@ class LockableAppsListDataSourceTest {
     }
 
     private fun addLauncherActivities() {
-        val unsuspendableActivities =
-            context.resources.getStringArray(R.array.unsuspendable_packages)
-        val activities = TEST_ACTIVITIES.toMutableList().also { it.addAll(unsuspendableActivities) }
+        val unsuspendablePackages = context.resources.getStringArray(R.array.unsuspendable_packages)
+        val packages = TEST_PACKAGE_NAMES.toMutableList().also { it.addAll(unsuspendablePackages) }
 
-        for (activity in activities) {
-            shadowLauncherApps.addActivity(
-                Process.myUserHandle(),
-                buildLauncherActivityInfo(activity),
-            )
+        for (packageName in packages) {
+            addAppToPackageManager(context, packageName)
         }
         addAssistantApp(TEST_ASSISTANT_PACKAGE)
         addMapsApp(TEST_MAPS_PACKAGE)
+        addAppsThatDisallowDataClearing()
     }
 
     private fun addMediaLauncherActivities() {
         for (mediaPackage in TEST_MEDIA_PACKAGES) {
-            addMediaApps(mediaPackage)
+            addMediaAppToPackageManager(context, mediaPackage)
         }
-    }
-
-    private fun addMediaApps(packageName: String) {
-        val classComponentName = "MediaBrowserService"
-        val cmpName = ComponentName(packageName, classComponentName)
-        val intentFilter = IntentFilter(MediaBrowserService.SERVICE_INTERFACE)
-        shadowPackageManager.addServiceIfNotPresent(cmpName)
-        shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
     }
 
     private fun addAssistantApp(packageName: String) {
         val intentFilter = IntentFilter(Intent.ACTION_VOICE_ASSIST)
-        addAppToPackageManager(packageName, intentFilter)
+        addAppToPackageManager(context, packageName, intentFilter)
     }
 
     private fun addMapsApp(packageName: String) {
         val intentFilter =
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_APP_MAPS) }
-        addAppToPackageManager(packageName, intentFilter)
+        addAppToPackageManager(context, packageName, intentFilter)
     }
 
-    private fun addAppToPackageManager(packageName: String, intentFilter: IntentFilter) {
-        val componentName = ComponentName(packageName, "MyActivity")
-        shadowLauncherApps.addActivity(
-            Process.myUserHandle(),
-            buildLauncherActivityInfo(componentName.packageName),
+    private fun addAppsThatDisallowDataClearing() {
+        addAppToPackageManager(
+            context,
+            TEST_DISALLOW_DATA_CLEARING_PACKAGE,
+            flags = ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA.inv(),
         )
-        shadowPackageManager.addActivityIfNotPresent(componentName)
-        shadowPackageManager.addIntentFilterForActivity(componentName, intentFilter)
-    }
-
-    private fun buildLauncherActivityInfo(packageName: String): LauncherActivityInfo {
-        val applicationInfo =
-            ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
-        val mockLauncherActivityInfo =
-            mock<LauncherActivityInfo>().apply {
-                whenever(getApplicationInfo()).thenReturn(applicationInfo)
-            }
-        return mockLauncherActivityInfo
+        addAppToPackageManager(
+            context,
+            TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE,
+            flags = ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA.inv(),
+        )
     }
 
     private companion object {
-        val TEST_ACTIVITIES = listOf("com.package.1", "com.package.2")
+        val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
         val TEST_MEDIA_PACKAGES = listOf("com.package.media.1", "com.package.media.2")
+
         const val TEST_MAPS_PACKAGE = "com.package.maps"
         const val TEST_ASSISTANT_PACKAGE = "com.package.assistant"
+        const val TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE =
+            "com.package.media.disallow.data.clearing"
+        const val TEST_DISALLOW_DATA_CLEARING_PACKAGE = "com.package.disallow.data.clearing"
     }
 }

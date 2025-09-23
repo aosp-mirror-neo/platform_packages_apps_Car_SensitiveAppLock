@@ -20,14 +20,13 @@ import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
 import android.app.KeyguardManager
 import android.content.Context
-import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.os.Process
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -38,8 +37,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowKeyguardManager
 import org.robolectric.shadows.ShadowStatsLog
@@ -199,16 +196,5 @@ class MetricsLoggerTest {
 
         val TEST_ACTIVITIES = listOf("com.package.1", "com.package.2")
         val TEST_ACTIVITIES_UID = listOf(10, 20)
-
-        fun buildLauncherActivityInfo(packageName: String, uid: Int): LauncherActivityInfo {
-            val applicationInfo =
-                ApplicationInfoBuilder.newBuilder().setPackageName(packageName).build()
-            applicationInfo.uid = uid
-            val mockLauncherActivityInfo =
-                mock<LauncherActivityInfo>().apply {
-                    whenever(getApplicationInfo()).thenReturn(applicationInfo)
-                }
-            return mockLauncherActivityInfo
-        }
     }
 }

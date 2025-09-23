@@ -61,6 +61,7 @@ constructor(@ApplicationContext private val context: Context) {
      * - Not marked unsuspendable in the deny list in the config
      * - Not an Assistant app
      * - Not a Maps app
+     * - Allows data clearing (FLAG_ALLOW_CLEAR_USER_DATA is not set to false)
      */
     fun getLockableApps(): List<AppInfo> {
         val allApps = (getLauncherApps() + getMediaApps()).distinctBy { it.packageName }
@@ -84,6 +85,7 @@ constructor(@ApplicationContext private val context: Context) {
                 null, // packageName
                 Process.myUserHandle(),
             )
+            .filter { it.applicationInfo.isDataClearingAllowed() }
             .map { it.toAppInfo(packageManager) }
     }
 
@@ -99,7 +101,8 @@ constructor(@ApplicationContext private val context: Context) {
             )
             .filter {
                 val componentName = ComponentName(it.serviceInfo.packageName, it.serviceInfo.name)
-                MediaSource.isAudioMediaSource(context, componentName)
+                MediaSource.isAudioMediaSource(context, componentName) &&
+                    it.serviceInfo.applicationInfo.isDataClearingAllowed()
             }
             .map { it.toAppInfo(context.packageManager) }
     }
@@ -119,6 +122,10 @@ constructor(@ApplicationContext private val context: Context) {
                 0, // flags,
             )
             .map { it.activityInfo.packageName }
+
+    private fun ApplicationInfo.isDataClearingAllowed(): Boolean {
+        return (flags and ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA) != 0
+    }
 
     private fun LauncherActivityInfo.toAppInfo(packageManager: PackageManager): AppInfo {
         return AppInfo(

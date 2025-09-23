@@ -22,7 +22,6 @@ import android.app.Application
 import android.app.usage.StorageStats
 import android.app.usage.StorageStatsManager
 import android.car.media.CarMediaIntents
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -31,7 +30,6 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo
 import android.os.Process
 import android.os.storage.StorageManager
-import android.service.media.MediaBrowserService
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -44,7 +42,10 @@ import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
-import com.android.car.sensitiveapplock.testing.TestHelpers
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addMediaAppToPackageManager
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -156,7 +157,7 @@ class PinLockViewModelTest {
         val packageName = TEST_PACKAGE_NAMES[0]
         val intentFilter =
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        TestHelpers.addAppToPackageManager(context, packageName, intentFilter)
+        AppInstallationHelper.addAppToPackageManager(context, packageName, intentFilter)
 
         val intent = pinLockViewModel.getLaunchIntentForPackage(context.packageManager, packageName)
 
@@ -165,10 +166,7 @@ class PinLockViewModelTest {
 
     @Test
     fun getLaunchIntentForPackage_templateMediaApp_returnsIntentWithActionMediaTemplate() {
-        val cmpName = ComponentName(TEST_TEMPLATE_MEDIA_PACKAGE, "MediaBrowserService")
-        val intentFilter = IntentFilter(MediaBrowserService.SERVICE_INTERFACE)
-        shadowPackageManager.addServiceIfNotPresent(cmpName)
-        shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
+        addMediaAppToPackageManager(context, TEST_TEMPLATE_MEDIA_PACKAGE)
 
         val intent =
             pinLockViewModel.getLaunchIntentForPackage(
@@ -236,9 +234,11 @@ class PinLockViewModelTest {
 
     @Test
     fun getLockedApps_returnsOnlyLockedAppInfo() = runTest {
-        var launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[0])
+        var launcherActivityInfo =
+            AppInstallationHelper.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[0])
         shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
-        launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[1])
+        launcherActivityInfo =
+            AppInstallationHelper.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[1])
         shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
 
@@ -251,20 +251,20 @@ class PinLockViewModelTest {
     @Test
     fun getLockedDataClearedSystemApps_returnsOnlyLockedAppsWithDataCleared() = runTest {
         var launcherActivityInfo =
-            TestHelpers.buildLauncherActivityInfo(
+            buildLauncherActivityInfo(
                 TEST_PACKAGE_NAMES[0],
                 uid = 1,
-                ApplicationInfo.FLAG_SYSTEM,
+                ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
             )
         shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
         launcherActivityInfo =
-            TestHelpers.buildLauncherActivityInfo(
+            buildLauncherActivityInfo(
                 TEST_PACKAGE_NAMES[1],
                 uid = 2,
-                ApplicationInfo.FLAG_SYSTEM,
+                ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
             )
         shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
-        launcherActivityInfo = TestHelpers.buildLauncherActivityInfo(TEST_PACKAGE_NAMES[2], uid = 3)
+        launcherActivityInfo = buildLauncherActivityInfo(TEST_PACKAGE_NAMES[2], uid = 3)
         shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])

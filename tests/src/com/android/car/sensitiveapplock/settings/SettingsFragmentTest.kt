@@ -31,11 +31,11 @@ import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
-import com.android.car.sensitiveapplock.testing.TestHelpers.buildLauncherActivityInfo
 import com.android.car.sensitiveapplock.testing.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule

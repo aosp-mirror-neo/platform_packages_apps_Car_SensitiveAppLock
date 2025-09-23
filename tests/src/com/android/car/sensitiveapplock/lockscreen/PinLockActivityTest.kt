@@ -18,15 +18,10 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Activity.RESULT_OK
 import android.app.Application
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
-import android.content.pm.LauncherApps
 import android.os.Bundle
-import android.os.Process
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
@@ -40,9 +35,11 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addAppToPackageManager
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
-import com.android.car.sensitiveapplock.testing.TestHelpers
 import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.ui.core.CarUi
 import com.android.car.ui.core.CarUiInstaller
@@ -145,15 +142,12 @@ class PinLockActivityTest {
 
     @Test
     fun onCreate_actionShowSuspendedAppDetails_logsMetrics() = runTest {
-        val shadowLauncherApps =
-            shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
-        val launcherActivityInfo =
-            TestHelpers.buildLauncherActivityInfo(
-                TEST_PACKAGE_NAMES[0],
-                uid = 100,
-                ApplicationInfo.FLAG_SYSTEM,
-            )
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
+        addAppToPackageManager(
+            context,
+            TEST_PACKAGE_NAMES[0],
+            uid = 100,
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+        )
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         val pinLockIntent =
             Intent(context, PinLockActivity::class.java).apply {
@@ -293,7 +287,7 @@ class PinLockActivityTest {
         val intentFilter =
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         for (packageName in TEST_PACKAGE_NAMES) {
-            TestHelpers.addAppToPackageManager(context, packageName, intentFilter)
+            AppInstallationHelper.addAppToPackageManager(context, packageName, intentFilter)
             appSuspensionManager.setAppSuspensionState(packageName, true)
             appLockDataRepository.addLockedApp(packageName)
         }
@@ -323,25 +317,11 @@ class PinLockActivityTest {
 
     @Test
     fun onValidatePinRequestResult_calledFromSuspendDialog_logsMetrics() = runTest {
-        val shadowLauncherApps =
-            shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
-        val shadowPackageManager = shadowOf(context.packageManager)
-        val launcherActivityInfo =
-            TestHelpers.buildLauncherActivityInfo(
-                TEST_PACKAGE_NAMES[0],
-                uid = 100,
-                ApplicationInfo.FLAG_SYSTEM,
-            )
-        shadowLauncherApps.addActivity(Process.myUserHandle(), launcherActivityInfo)
-        shadowPackageManager.addOrUpdateActivity(
-            ActivityInfo().apply {
-                name = TEST_ACTIVITY_CLASS
-                packageName = TEST_PACKAGE_NAMES[0]
-            }
-        )
-        shadowPackageManager.addIntentFilterForActivity(
-            ComponentName(TEST_PACKAGE_NAMES[0], TEST_ACTIVITY_CLASS),
-            IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) },
+        addAppToPackageManager(
+            context,
+            TEST_PACKAGE_NAMES[0],
+            uid = 100,
+            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
         )
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         val pinLockIntent =

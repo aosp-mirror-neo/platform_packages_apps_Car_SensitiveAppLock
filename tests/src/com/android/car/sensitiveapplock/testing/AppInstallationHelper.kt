@@ -17,21 +17,29 @@ package com.android.car.sensitiveapplock.testing
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
+import android.content.pm.PackageInfo
 import android.os.Process
+import android.service.media.MediaBrowserService
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
 
-/** Object containing common test helper functions. */
-object TestHelpers {
+/** Object providing helper functions to install apps in testing. */
+object AppInstallationHelper {
+    const val DEFAULT_FLAGS = ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA
+    private val DEFAULT_INTENT_FILTER =
+        IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
+
     fun buildLauncherActivityInfo(
         packageName: String,
         uid: Int? = null,
-        flags: Int = 0,
+        flags: Int = DEFAULT_FLAGS,
     ): LauncherActivityInfo {
         val applicationInfo =
             ApplicationInfoBuilder.newBuilder().setPackageName(packageName).setFlags(flags).build()
@@ -45,7 +53,13 @@ object TestHelpers {
         return mockLauncherActivityInfo
     }
 
-    fun addAppToPackageManager(context: Context, packageName: String, intentFilter: IntentFilter) {
+    fun addAppToPackageManager(
+        context: Context,
+        packageName: String,
+        intentFilter: IntentFilter = DEFAULT_INTENT_FILTER,
+        flags: Int = DEFAULT_FLAGS,
+        uid: Int? = null,
+    ) {
         val shadowLauncherApps =
             shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
         val shadowPackageManager = shadowOf(context.packageManager)
@@ -53,9 +67,30 @@ object TestHelpers {
 
         shadowLauncherApps.addActivity(
             Process.myUserHandle(),
-            buildLauncherActivityInfo(componentName.packageName),
+            buildLauncherActivityInfo(packageName, uid, flags),
         )
         shadowPackageManager.addActivityIfNotPresent(componentName)
         shadowPackageManager.addIntentFilterForActivity(componentName, intentFilter)
+    }
+
+    fun addMediaAppToPackageManager(context: Context, packageName: String) {
+        val shadowPackageManager = shadowOf(context.packageManager)
+        val cmpName = ComponentName(packageName, "MediaBrowserService")
+        val intentFilter = IntentFilter(MediaBrowserService.SERVICE_INTERFACE)
+        val packageInfo =
+            PackageInfo().apply {
+                this.packageName = packageName
+                this.applicationInfo =
+                    ApplicationInfo().apply {
+                        this.packageName = packageName
+                        this.flags = ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA
+                    }
+            }
+
+        // Install package first so that `addServiceIfNotPresent` will reuse the ApplicationInfo
+        // from it
+        shadowPackageManager.installPackage(packageInfo)
+        shadowPackageManager.addServiceIfNotPresent(cmpName)
+        shadowPackageManager.addIntentFilterForService(cmpName, intentFilter)
     }
 }
