@@ -40,8 +40,9 @@
 
         <activity
             android:name=".settings.SettingsActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:exported="true">
+            android:exported="false">
             <!-- Mark activity as an injected setting. -->
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS"/>
@@ -68,7 +69,7 @@
         <activity
             android:name=".lockscreen.PinLockActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:permission="android.permission.SEND_SHOW_SUSPENDED_APP_DETAILS">
             <intent-filter>
                 <action android:name="android.intent.action.SHOW_SUSPENDED_APP_DETAILS" />
