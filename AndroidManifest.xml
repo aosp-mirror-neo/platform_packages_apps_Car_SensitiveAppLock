@@ -44,7 +44,7 @@
             android:name=".settings.SettingsActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:exported="false">
+            android:exported="true">
             <!-- Mark activity as an injected setting. -->
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS"/>
