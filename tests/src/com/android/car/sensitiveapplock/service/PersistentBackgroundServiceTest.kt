@@ -16,7 +16,11 @@
 
 package com.android.car.sensitiveapplock.service
 
+import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.os.UserManager
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValueIntoSet
@@ -27,14 +31,28 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.robolectric.Robolectric
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ServiceController
+import org.robolectric.shadows.ShadowUserManager
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class PersistentBackgroundServiceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
+    private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val shadowUserManager =
+        shadowOf(context.getSystemService(Context.USER_SERVICE) as UserManager).apply {
+            setSupportsMultipleUsers(true)
+            addUser(
+                ShadowUserManager.DEFAULT_SECONDARY_USER_ID,
+                "guest_user",
+                ShadowUserManager.FLAG_GUEST,
+            )
+        }
 
     private lateinit var serviceController: ServiceController<PersistentBackgroundService>
     private lateinit var service: PersistentBackgroundService
@@ -59,6 +77,16 @@ class PersistentBackgroundServiceTest {
     }
 
     @Test
+    fun onCreate_onGuestUser_doesNotStartServices() {
+        shadowUserManager.switchUser(ShadowUserManager.DEFAULT_SECONDARY_USER_ID)
+
+        serviceController.create()
+
+        verify(mockAppLockService1, never()).start()
+        verify(mockAppLockService2, never()).start()
+    }
+
+    @Test
     fun onBind_returnsBinder() {
         serviceController.create()
         val binder = service.onBind(Intent())
@@ -73,5 +101,16 @@ class PersistentBackgroundServiceTest {
 
         verify(mockAppLockService1).stop()
         verify(mockAppLockService2).stop()
+    }
+
+    @Test
+    fun onDestroy_onGuestUser_doesNotStopServices() {
+        shadowUserManager.switchUser(ShadowUserManager.DEFAULT_SECONDARY_USER_ID)
+
+        serviceController.create()
+        serviceController.destroy()
+
+        verify(mockAppLockService1, never()).stop()
+        verify(mockAppLockService2, never()).stop()
     }
 }

@@ -20,6 +20,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.os.UserManager
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -37,6 +38,11 @@ class PersistentBackgroundService : Hilt_PersistentBackgroundService() {
         super.onCreate()
 
         logger.v("onCreate")
+        if (isGuestUser()) {
+            logger.v("Early exit onCreate in guest user")
+            return
+        }
+
         for (service in appLockServices) {
             logger.v("Starting service:$service")
             service.start()
@@ -47,12 +53,22 @@ class PersistentBackgroundService : Hilt_PersistentBackgroundService() {
 
     override fun onDestroy() {
         logger.v("onDestroy")
+        if (isGuestUser()) {
+            logger.v("Early exit onDestroy in guest user")
+            super.onDestroy()
+            return
+        }
         for (service in appLockServices) {
             logger.v("Stopping service:$service")
             service.stop()
         }
 
         super.onDestroy()
+    }
+
+    private fun isGuestUser(): Boolean {
+        val userManager = getSystemService(UserManager::class.java)
+        return userManager.isGuestUser
     }
 
     private companion object {
