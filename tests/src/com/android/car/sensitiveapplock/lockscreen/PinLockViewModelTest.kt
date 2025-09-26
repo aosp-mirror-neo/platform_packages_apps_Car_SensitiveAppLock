@@ -41,10 +41,10 @@ import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
+import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addMediaAppToPackageManager
-import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

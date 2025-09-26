@@ -20,7 +20,7 @@ import android.car.Car
 import android.car.hardware.power.CarPowerManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.util.AppSuspensionManager
+import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.android.car.sensitiveapplock.util.Logger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext

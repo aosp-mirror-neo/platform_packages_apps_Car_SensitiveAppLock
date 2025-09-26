@@ -22,7 +22,6 @@ import android.os.Process
 import android.os.UserHandle
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

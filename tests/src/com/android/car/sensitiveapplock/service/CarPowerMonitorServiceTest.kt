@@ -23,7 +23,7 @@ import android.content.pm.PackageInfo
 import androidx.test.core.app.ApplicationProvider
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.util.AppSuspensionManager
+import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider

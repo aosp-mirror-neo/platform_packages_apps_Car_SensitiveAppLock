@@ -35,12 +35,12 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
+import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addAppToPackageManager
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
-import com.android.car.sensitiveapplock.util.AppSuspensionManager
 import com.android.car.ui.core.CarUi
 import com.android.car.ui.core.CarUiInstaller
 import com.android.car.ui.toolbar.NavButtonMode

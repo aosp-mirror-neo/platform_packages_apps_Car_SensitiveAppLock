@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.car.sensitiveapplock.util
+package com.android.car.sensitiveapplock.suspension
 
 import android.content.Context
 import android.content.pm.SuspendDialogInfo
 import android.content.pm.SuspendDialogInfo.BUTTON_ACTION_MORE_DETAILS
 import android.media.session.MediaSessionManager
 import com.android.car.sensitiveapplock.R
+import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -77,8 +78,7 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
     }
 
     private fun pauseMediaSessions(packageNames: HashSet<String>) {
-        val mediaSessions = mediaSessionManager
-            .getActiveSessions(null) // notificationListener
+        val mediaSessions = mediaSessionManager.getActiveSessions(null) // notificationListener
         for (session in mediaSessions) {
             if (packageNames.contains(session.packageName)) {
                 session.transportControls.pause()

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.car.sensitiveapplock.util
+package com.android.car.sensitiveapplock.suspension
 
 import android.app.Application
 import android.content.pm.PackageInfo
@@ -81,8 +81,7 @@ class AppSuspensionManagerTest {
         mediaController.transportControls.stop()
         appSuspensionManager.setAppSuspensionState(MEDIA_PACKAGE_INFO.packageName, false)
 
-        assertThat(shadowTransportControls.lastPerformedAction)
-            .isEqualTo(PlaybackState.ACTION_STOP)
+        assertThat(shadowTransportControls.lastPerformedAction).isEqualTo(PlaybackState.ACTION_STOP)
     }
 
     @Test
