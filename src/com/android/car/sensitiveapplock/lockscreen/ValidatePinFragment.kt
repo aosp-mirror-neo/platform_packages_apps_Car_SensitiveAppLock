@@ -199,8 +199,21 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
             startPinRecreateFlow()
             return
         }
-        val appNames = systemApps.joinToString(", ") { it.label }
-        val message = getString(R.string.clear_data_dialog_message) + " " + appNames
+        val lastApp = systemApps.last().label
+        val message =
+            when (systemApps.size) {
+                1 -> {
+                    getString(R.string.clear_data_dialog_single_app_message, lastApp)
+                }
+                2 -> {
+                    val firstApp = systemApps.first().label
+                    getString(R.string.clear_data_dialog_two_app_message, firstApp, lastApp)
+                }
+                else -> {
+                    val appNames = systemApps.dropLast(1).joinToString(", ") { it.label }
+                    getString(R.string.clear_data_dialog_message, appNames, lastApp)
+                }
+            }
         AlertDialog.Builder(context)
             .apply {
                 setTitle(R.string.clear_data_dialog_title)
