@@ -283,7 +283,7 @@ class PinLockActivityTest {
     @Test
     fun onValidatePinRequestResult_calledFromSuspendDialog_unlocksApp() = runTest {
         val shadowPackageManager = shadowOf(context.packageManager)
-        // Need to add an intent filter to have getlaunchIntentForPackage properly resolve
+        // Need to add an intent filter to have getLaunchIntentForPackage properly resolve
         val intentFilter =
             IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         for (packageName in TEST_PACKAGE_NAMES) {
