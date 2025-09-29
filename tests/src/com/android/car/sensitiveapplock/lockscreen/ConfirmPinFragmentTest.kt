@@ -33,7 +33,6 @@ import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.ConfirmPinFragment.Companion.USER_SIGNED_IN_BUNDLE_KEY
 import com.android.car.sensitiveapplock.metrics.SignInEvent
-import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
@@ -52,14 +51,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowAlertDialog
 
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-@Config(shadows = [ShadowResources::class])
 class ConfirmPinFragmentTest {
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
     @get:Rule(order = 1) val hiltTestActivityRule = HiltTestActivityRule()
@@ -76,8 +73,6 @@ class ConfirmPinFragmentTest {
     fun init() {
         CarUiInstaller.register(context)
         hiltRule.inject()
-
-        ShadowResources.reset()
     }
 
     @Test
@@ -95,29 +90,7 @@ class ConfirmPinFragmentTest {
     }
 
     @Test
-    fun onEnterKeyClick_pinMatches_recoveryDisabled_setsFragmentResult() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, false)
-        var actualResult: String? = null
-        launchFragmentInHiltContainer<ConfirmPinFragment>(
-            onActivity = { activity -> setupToolbar(activity) }
-        ) { fragment ->
-            fragment.parentFragmentManager.setFragmentResultListener(
-                PinLockActivity.USER_PIN_REQUEST_KEY,
-                fragment.requireActivity(),
-            ) { requestKey, bundle ->
-                actualResult = bundle.getString(PinLockActivity.USER_PIN_BUNDLE_KEY)
-            }
-            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
-
-            pinPadEnterKey.performClick()
-
-            assertThat(actualResult).isNotNull()
-        }
-    }
-
-    @Test
     fun onEnterKeyClick_pinMatches_userSignedIn_setsFragmentResult() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowAccountManager.addAccount(Account("com.test", accountType))
         var resultBundle: Bundle? = null
         launchFragmentInHiltContainer<ConfirmPinFragment>(
@@ -141,7 +114,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun onEnterKeyClick_pinMatches_userSignedIn_logsMetrics() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowAccountManager.addAccount(Account("com.test", accountType))
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
@@ -160,7 +132,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun onEnterKeyClick_pinMatches_userNotSignedIn_showsSignInDialog() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
         ) { fragment ->
@@ -178,7 +149,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInDialog_onDismiss_setsFragmentResult() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         var actualResult: String? = null
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
@@ -203,7 +173,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInDialog_onDismiss_logsMetrics() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
         ) { fragment ->
@@ -225,7 +194,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInDialog_onSignIn_launchesSignInActivity() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
@@ -245,7 +213,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInDialog_onSignIn_logsMetrics() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }
@@ -268,7 +235,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInActivity_onResult_setsFragmentResult() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
         var resultBundle = Bundle.EMPTY
         launchFragmentInHiltContainer<ConfirmPinFragment>(
@@ -297,7 +263,6 @@ class ConfirmPinFragmentTest {
 
     @Test
     fun signInActivity_onSignInSuccess_logsMetrics() {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         shadowOf(AccountManager.get(context)).addAuthenticator("com.google")
         launchFragmentInHiltContainer<ConfirmPinFragment>(
             onActivity = { activity -> setupToolbar(activity) }

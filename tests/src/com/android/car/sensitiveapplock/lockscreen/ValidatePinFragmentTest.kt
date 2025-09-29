@@ -40,7 +40,6 @@ import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.RecoveryEvent
 import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
-import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
@@ -71,7 +70,7 @@ import org.robolectric.shadows.ShadowAlertDialog
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowResources::class, ShadowActivityManager::class])
+@Config(shadows = [ShadowActivityManager::class])
 @OptIn(ExperimentalCoroutinesApi::class)
 class ValidatePinFragmentTest {
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
@@ -92,10 +91,8 @@ class ValidatePinFragmentTest {
 
         shadowOf(context).grantPermissions(SUSPEND_APPS)
 
-        ShadowResources.reset()
         ShadowActivityManager.reset()
 
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, true)
         CarUiInstaller.register(context)
     }
 
@@ -150,32 +147,6 @@ class ValidatePinFragmentTest {
             pinPadEnterKey.performClick()
 
             assertThat(receivedBundle).isNull()
-        }
-    }
-
-    @Test
-    fun onEnterKeyClick_pinIsValid_recoveryDisabled_setsFragmentResult() = runTest {
-        ShadowResources.setBoolean(R.bool.config_enablePinLockRecovery, false)
-        pinManager.setAppLockPin(USER_PIN)
-
-        var receivedBundle: Bundle? = null
-        launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
-            fragment.parentFragmentManager.setFragmentResultListener(
-                PinLockActivity.VALIDATE_PIN_REQUEST_KEY,
-                fragment.requireActivity(),
-            ) { requestKey, bundle ->
-                receivedBundle = bundle
-            }
-            val pinPadZeroKey = fragment.requireView().findViewById<TextView>(R.id.key_0)
-            val pinPadEnterKey = fragment.requireView().findViewById<ImageButton>(R.id.key_confirm)
-
-            // 4 digit pin before hitting enter
-            for (i in 0..3) {
-                pinPadZeroKey.performClick()
-            }
-            pinPadEnterKey.performClick()
-
-            assertThat(receivedBundle).isNotNull()
         }
     }
 

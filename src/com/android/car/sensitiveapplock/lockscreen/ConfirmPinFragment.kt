@@ -96,8 +96,7 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
         }
         logger.d("Pin matches")
         lifecycleScope.launch {
-            val recoveryEnabled = resources.getBoolean(R.bool.config_enablePinLockRecovery)
-            if (recoveryEnabled && !viewModel.enableReAuthRecoveryFlow()) {
+            if (!viewModel.enableReAuthRecoveryFlow()) {
                 logger.v("User not signed-in. Showing sign-in dialog.")
                 showSignInDialog()
                 return@launch
