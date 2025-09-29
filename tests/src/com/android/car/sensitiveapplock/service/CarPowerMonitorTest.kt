@@ -46,17 +46,18 @@ class CarPowerMonitorTest {
     @Inject @BackgroundContext lateinit var backgroundContext: CoroutineContext
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
-    @Inject lateinit var carPowerManager: CarPowerManager
     @Inject lateinit var car: Car
 
     private val powerStateListenerCaptor = argumentCaptor<CarPowerManager.CarPowerStateListener>()
 
     private lateinit var carPowerMonitorService: CarPowerMonitor
+    private lateinit var carPowerManager: CarPowerManager
 
     @Before
     fun init() {
         hiltRule.inject()
 
+        carPowerManager = car.getCarManager(CarPowerManager::class.java)!!
         carPowerMonitorService = CarPowerMonitor(car, backgroundContext)
     }
 

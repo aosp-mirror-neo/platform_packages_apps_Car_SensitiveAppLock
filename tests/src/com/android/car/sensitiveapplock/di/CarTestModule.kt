@@ -30,11 +30,10 @@ import org.mockito.kotlin.mock
 @Module
 @TestInstallIn(components = [SingletonComponent::class], replaces = [CarModule::class])
 internal object CarTestModule {
-    @Provides @Singleton fun provideMockCarPowerManager(): CarPowerManager = mock<CarPowerManager>()
-
     @Provides
     @Singleton
-    fun provideMockCar(carPowerManager: CarPowerManager): Car {
+    fun provideMockCar(): Car {
+        val carPowerManager = mock<CarPowerManager>()
         return mock<Car> {
             on { getCarManager(CarPowerManager::class.java) } doReturn carPowerManager
         }

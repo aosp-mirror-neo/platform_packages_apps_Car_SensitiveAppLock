@@ -17,7 +17,7 @@
 package com.android.car.sensitiveapplock.di
 
 import com.android.car.sensitiveapplock.service.AppLockService
-import com.android.car.sensitiveapplock.service.PackageRelockService
+import com.android.car.sensitiveapplock.suspension.PackageRelockService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

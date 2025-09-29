@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.car.sensitiveapplock.service
+package com.android.car.sensitiveapplock.suspension
 
+import android.car.Car
 import android.car.hardware.power.CarPowerManager
 import android.content.Context
 import android.content.Intent
@@ -24,7 +25,8 @@ import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
+import com.android.car.sensitiveapplock.service.CarPowerMonitor
+import com.android.car.sensitiveapplock.service.PackageChangeMonitor
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -57,7 +59,7 @@ class PackageRelockServiceTest {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var packageChangeMonitor: PackageChangeMonitor
     @Inject lateinit var carPowerMonitor: CarPowerMonitor
-    @Inject lateinit var carPowerManager: CarPowerManager
+    @Inject lateinit var car: Car
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val shadowPackageManager = shadowOf(context.packageManager)
@@ -66,6 +68,7 @@ class PackageRelockServiceTest {
     private lateinit var packageRelockService: PackageRelockService
     private lateinit var spyCarPowerMonitor: CarPowerMonitor
     private lateinit var spyPackageChangeMonitor: PackageChangeMonitor
+    private lateinit var carPowerManager: CarPowerManager
 
     @Before
     fun setup() {
@@ -73,6 +76,7 @@ class PackageRelockServiceTest {
 
         spyPackageChangeMonitor = spy(packageChangeMonitor)
         spyCarPowerMonitor = spy(carPowerMonitor)
+        carPowerManager = car.getCarManager(CarPowerManager::class.java)!!
         packageRelockService =
             PackageRelockService(
                 spyPackageChangeMonitor,
@@ -146,6 +150,7 @@ class PackageRelockServiceTest {
         val pkgSetting = shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAME)
         when (state) {
             CarPowerManager.STATE_SHUTDOWN_PREPARE -> assertThat(pkgSetting.isSuspended).isTrue()
+
             else -> assertThat(pkgSetting.isSuspended).isFalse()
         }
     }

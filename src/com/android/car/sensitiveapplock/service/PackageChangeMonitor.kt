@@ -32,7 +32,7 @@ import javax.inject.Singleton
  * This class registers a [BroadcastReceiver] to listen for [Intent.ACTION_PACKAGE_ADDED] broadcast.
  */
 @Singleton
-class PackageChangeMonitor @Inject constructor(@ApplicationContext val context: Context) {
+open class PackageChangeMonitor @Inject constructor(@ApplicationContext val context: Context) {
     private val listeners = mutableSetOf<Listener>()
     private val receiver =
         object : BroadcastReceiver() {
@@ -57,7 +57,7 @@ class PackageChangeMonitor @Inject constructor(@ApplicationContext val context: 
 
     /** Adds a [Listener] to be notified of package changes. */
     @Synchronized
-    fun addListener(listener: Listener) {
+    open fun addListener(listener: Listener) {
         val wasEmpty = listeners.isEmpty()
         if (listeners.add(listener) && wasEmpty) {
             registerReceiver()
@@ -66,7 +66,7 @@ class PackageChangeMonitor @Inject constructor(@ApplicationContext val context: 
 
     /** Removes a [Listener] from being notified of package changes. */
     @Synchronized
-    fun removeListener(listener: Listener) {
+    open fun removeListener(listener: Listener) {
         if (listeners.remove(listener) && listeners.isEmpty()) {
             unregisterReceiver()
         }

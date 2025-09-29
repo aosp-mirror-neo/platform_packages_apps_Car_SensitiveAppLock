@@ -28,7 +28,7 @@ import kotlinx.coroutines.asExecutor
 
 /** Monitors for car power state changes and notifies registered listeners. */
 @Singleton
-class CarPowerMonitor
+open class CarPowerMonitor
 @Inject
 constructor(private val car: Car?, @BackgroundContext backgroundContext: CoroutineContext) {
     private val listeners = mutableSetOf<Listener>()
@@ -47,7 +47,7 @@ constructor(private val car: Car?, @BackgroundContext backgroundContext: Corouti
 
     /** Adds a [Listener] to be notified of car power state changes. */
     @Synchronized
-    fun addListener(listener: Listener) {
+    open fun addListener(listener: Listener) {
         val wasEmpty = listeners.isEmpty()
         if (listeners.add(listener) && wasEmpty) {
             registerCarPowerListener()
@@ -56,7 +56,7 @@ constructor(private val car: Car?, @BackgroundContext backgroundContext: Corouti
 
     /** Removes a [Listener] from being notified of car power state changes. */
     @Synchronized
-    fun removeListener(listener: Listener) {
+    open fun removeListener(listener: Listener) {
         if (listeners.remove(listener) && listeners.isEmpty()) {
             unregisterCarPowerListener()
         }

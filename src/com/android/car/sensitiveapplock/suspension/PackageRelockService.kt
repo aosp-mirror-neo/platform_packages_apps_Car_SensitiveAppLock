@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-package com.android.car.sensitiveapplock.service
+package com.android.car.sensitiveapplock.suspension
 
 import android.car.hardware.power.CarPowerManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
+import com.android.car.sensitiveapplock.service.AppLockService
+import com.android.car.sensitiveapplock.service.CarPowerMonitor
+import com.android.car.sensitiveapplock.service.PackageChangeMonitor
 import com.android.car.sensitiveapplock.util.Logger
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /**
- * An [AppLockService] for relocking user apps.
+ * An [com.android.car.sensitiveapplock.service.AppLockService] for relocking user apps.
  *
  * This service relocks user apps when:
  * - The device is entering suspend to ram, hibernation or shutdown state.
  * - The user has unlocked the device.
  * - The user has reinstalled a locked app.
  */
+@Singleton
 class PackageRelockService
 @Inject
 constructor(
