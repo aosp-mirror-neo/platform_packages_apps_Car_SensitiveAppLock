@@ -39,7 +39,6 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.RecoveryEvent
-import com.android.car.sensitiveapplock.shadows.ShadowAccountManager
 import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
 import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
@@ -72,9 +71,7 @@ import org.robolectric.shadows.ShadowAlertDialog
 @HiltAndroidTest
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-@Config(
-    shadows = [ShadowResources::class, ShadowAccountManager::class, ShadowActivityManager::class]
-)
+@Config(shadows = [ShadowResources::class, ShadowActivityManager::class])
 @OptIn(ExperimentalCoroutinesApi::class)
 class ValidatePinFragmentTest {
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
