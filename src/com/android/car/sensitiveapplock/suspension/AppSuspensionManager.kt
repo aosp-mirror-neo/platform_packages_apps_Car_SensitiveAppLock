@@ -31,6 +31,7 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
     private val packageManager = applicationContext.packageManager
     private val mediaSessionManager =
         applicationContext.getSystemService(MediaSessionManager::class.java)
+    private val resources = applicationContext.resources
 
     /**
      * Sets the suspension state of an app.
@@ -49,27 +50,34 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
     fun setAppSuspensionState(packageNames: Array<String>, state: Boolean) {
         logger.d("Suspending ${packageNames.contentToString()} with state: $state")
 
-        val suspendDialogInfo =
-            SuspendDialogInfo.Builder()
-                .setTitle(R.string.suspend_dialog_title)
-                .setMessage(R.string.suspend_dialog_message)
-                .setNeutralButtonText(R.string.suspend_dialog_neutral_button_text)
-                .setNeutralButtonAction(BUTTON_ACTION_MORE_DETAILS)
-                .build()
+        for (packageName in packageNames) {
+            val packageLabel =
+                packageManager
+                    .getApplicationInfo(packageName, 0)
+                    .loadLabel(packageManager)
+                    .toString()
+            val suspendDialogInfo =
+                SuspendDialogInfo.Builder()
+                    .setTitle(resources.getString(R.string.suspend_dialog_title, packageLabel))
+                    .setMessage(R.string.suspend_dialog_message)
+                    .setNeutralButtonText(R.string.suspend_dialog_neutral_button_text)
+                    .setNeutralButtonAction(BUTTON_ACTION_MORE_DETAILS)
+                    .build()
 
-        packageManager
-            .setPackagesSuspended(
-                packageNames,
-                state,
-                null, // appExtras
-                null, // launcherExtras
-                suspendDialogInfo,
-            )
-            .also { errorPackages ->
-                if (errorPackages != null && errorPackages.size > 0) {
-                    logger.e("Failed to suspend: ${errorPackages.contentToString()}")
+            packageManager
+                .setPackagesSuspended(
+                    packageNames,
+                    state,
+                    null, // appExtras
+                    null, // launcherExtras
+                    suspendDialogInfo,
+                )
+                .also { errorPackages ->
+                    if (errorPackages != null && errorPackages.size > 0) {
+                        logger.e("Failed to suspend: ${errorPackages.contentToString()}")
+                    }
                 }
-            }
+        }
 
         // Only pause media session when packages are being suspended.
         if (state) {
