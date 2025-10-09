@@ -16,6 +16,7 @@
 package com.android.car.sensitiveapplock.suspension
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.SuspendDialogInfo
 import android.content.pm.SuspendDialogInfo.BUTTON_ACTION_MORE_DETAILS
 import android.media.session.MediaSessionManager
@@ -49,13 +50,8 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
      */
     fun setAppSuspensionState(packageNames: Array<String>, state: Boolean) {
         logger.d("Suspending ${packageNames.contentToString()} with state: $state")
-
         for (packageName in packageNames) {
-            val packageLabel =
-                packageManager
-                    .getApplicationInfo(packageName, 0)
-                    .loadLabel(packageManager)
-                    .toString()
+            val packageLabel = getPackageLabel(packageName) ?: continue
             val suspendDialogInfo =
                 SuspendDialogInfo.Builder()
                     .setTitle(resources.getString(R.string.suspend_dialog_title, packageLabel))
@@ -82,6 +78,20 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
         // Only pause media session when packages are being suspended.
         if (state) {
             pauseMediaSessions(packageNames.toHashSet())
+        }
+    }
+
+    private fun getPackageLabel(packageName: String): String? {
+        try {
+            val packageLabel =
+                packageManager
+                    .getApplicationInfo(packageName, 0)
+                    .loadLabel(packageManager)
+                    .toString()
+            return packageLabel
+        } catch (e: PackageManager.NameNotFoundException) {
+            logger.d("Failed to get label since package not found: $packageName", e)
+            return null
         }
     }
 
