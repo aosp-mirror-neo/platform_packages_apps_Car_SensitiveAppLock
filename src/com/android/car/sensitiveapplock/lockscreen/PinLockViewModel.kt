@@ -207,22 +207,10 @@ constructor(
         return userLockableApps.filter { apps.contains(it.packageName) }
     }
 
-    /** Gets the [AppInfo] of all locked user apps. */
-    suspend fun getLockedUserApps(): List<AppInfo> {
-        val lockedApps = getLockedApps()
-        return lockedApps.filter { !it.isBundledApp }
-    }
-
-    /** Gets the [AppInfo] of all locked system apps. */
-    suspend fun getLockedSystemApps(): List<AppInfo> {
-        val lockedApps = getLockedApps()
-        return lockedApps.filter { it.isBundledApp }
-    }
-
-    /** Clears the data for locked system apps. */
-    suspend fun clearSystemAppsData() {
-        val systemApps = getLockedSystemApps()
-        for (app in systemApps) {
+    /** Clears the data for locked user apps. */
+    suspend fun clearLockedAppsData() {
+        val apps = getLockedApps()
+        for (app in apps) {
             val ctx =
                 context.createPackageContext(
                     app.packageName, // packageName

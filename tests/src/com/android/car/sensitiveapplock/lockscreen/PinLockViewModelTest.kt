@@ -262,13 +262,13 @@ class PinLockViewModelTest {
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[2])
 
-        pinLockViewModel.clearSystemAppsData()
+        pinLockViewModel.clearLockedAppsData()
 
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val shadowAm = shadowOf(am) as ShadowActivityManager
 
         val dataClearedApps = shadowAm.getClearedApplicationUserDataPackages()
-        assertThat(dataClearedApps).containsExactly(TEST_PACKAGE_NAMES[0], TEST_PACKAGE_NAMES[1])
+        assertThat(dataClearedApps).isEqualTo(TEST_PACKAGE_NAMES)
     }
 
     private companion object {
