@@ -17,6 +17,7 @@ package com.android.car.sensitiveapplock.suspension
 
 import android.app.Application
 import android.content.pm.PackageInfo
+import android.content.pm.SuspendDialogInfo.BUTTON_ACTION_MORE_DETAILS
 import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
@@ -24,6 +25,7 @@ import android.media.session.PlaybackState
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.car.sensitiveapplock.R
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +35,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadow.api.Shadow
+import org.robolectric.shadows.ShadowSuspendDialogInfo
+import org.robolectric.util.ReflectionHelpers
 
 @HiltAndroidTest
 @SmallTest
@@ -60,6 +65,27 @@ class AppSuspensionManagerTest {
 
         assertThat(shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).isSuspended)
             .isTrue()
+    }
+
+    @Test
+    fun suspendApp_stateTrue_setsDialogInfo() {
+        appSuspensionManager.setAppSuspensionState(
+            arrayOf(PACKAGE_INFO.packageName, "com.missing.package"),
+            true,
+        )
+
+        val dialogInfo = shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).dialogInfo
+        val shadowDialogInfo =
+            Shadow.extract<ShadowSuspendDialogInfo>(
+                shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).dialogInfo
+            )
+        val dialogInfoTitle = ReflectionHelpers.callInstanceMethod<String>(dialogInfo, "getTitle")
+        assertThat(dialogInfoTitle)
+            .isEqualTo(context.getString(R.string.suspend_dialog_title, PACKAGE_INFO.packageName))
+        assertThat(shadowDialogInfo.dialogMessageResId).isEqualTo(R.string.suspend_dialog_message)
+        assertThat(shadowDialogInfo.neutralButtonTextResId)
+            .isEqualTo(R.string.suspend_dialog_neutral_button_text)
+        assertThat(shadowDialogInfo.neutralButtonAction).isEqualTo(BUTTON_ACTION_MORE_DETAILS)
     }
 
     @Test
