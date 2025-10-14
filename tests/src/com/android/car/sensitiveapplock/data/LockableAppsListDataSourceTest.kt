@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
+import android.provider.Settings.ACTION_SETTINGS
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -72,7 +73,8 @@ class LockableAppsListDataSourceTest {
                 TEST_MAPS_PACKAGE +
                 TEST_ASSISTANT_PACKAGE +
                 TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE +
-                TEST_DISALLOW_DATA_CLEARING_PACKAGE
+                TEST_DISALLOW_DATA_CLEARING_PACKAGE +
+                TEST_SETTINGS_PACKAGE
 
         assertThat(lockableApps).isNotEmpty()
         assertThat(lockableApps).containsNoneIn(unsuspendablePackages)
@@ -108,6 +110,7 @@ class LockableAppsListDataSourceTest {
         addAssistantApp(TEST_ASSISTANT_PACKAGE)
         addMapsApp(TEST_MAPS_PACKAGE)
         addAppsThatDisallowDataClearing()
+        addSettingsApp()
     }
 
     private fun addMediaLauncherActivities() {
@@ -140,6 +143,12 @@ class LockableAppsListDataSourceTest {
         )
     }
 
+    private fun addSettingsApp() {
+        val intentFilter =
+            IntentFilter(ACTION_SETTINGS).apply { addCategory(Intent.CATEGORY_DEFAULT) }
+        addAppToPackageManager(context, TEST_SETTINGS_PACKAGE, intentFilter)
+    }
+
     private companion object {
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
         val TEST_MEDIA_PACKAGES = listOf("com.package.media.1", "com.package.media.2")
@@ -149,5 +158,6 @@ class LockableAppsListDataSourceTest {
         const val TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE =
             "com.package.media.disallow.data.clearing"
         const val TEST_DISALLOW_DATA_CLEARING_PACKAGE = "com.package.disallow.data.clearing"
+        const val TEST_SETTINGS_PACKAGE = "com.package.settings"
     }
 }

@@ -25,6 +25,7 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Process
+import android.provider.Settings.ACTION_SETTINGS
 import android.service.media.MediaBrowserService
 import com.android.car.media.common.source.MediaSource
 import com.android.car.sensitiveapplock.R
@@ -61,6 +62,7 @@ constructor(@ApplicationContext private val context: Context) {
      * - Not marked unsuspendable in the deny list in the config
      * - Not an Assistant app
      * - Not a Maps app
+     * - Not CarSettings app
      * - Allows data clearing (FLAG_ALLOW_CLEAR_USER_DATA is not set to false)
      */
     fun getLockableApps(): List<AppInfo> {
@@ -71,6 +73,7 @@ constructor(@ApplicationContext private val context: Context) {
             addAll(packageManager.getUnsuspendablePackages(allAppPackageNames))
             addAll(getAssistantApps())
             addAll(getMapsApps())
+            addAll(getSettingsApp())
         }
         logger.d("Unsuspendable apps list: $unsuspendablePackages")
 
@@ -120,6 +123,14 @@ constructor(@ApplicationContext private val context: Context) {
             .queryIntentActivities(
                 Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MAPS),
                 0, // flags,
+            )
+            .map { it.activityInfo.packageName }
+
+    private fun getSettingsApp(): List<String> =
+        context.packageManager
+            .queryIntentActivities(
+                Intent(ACTION_SETTINGS).addCategory(Intent.CATEGORY_DEFAULT),
+                0, // flags
             )
             .map { it.activityInfo.packageName }
 
