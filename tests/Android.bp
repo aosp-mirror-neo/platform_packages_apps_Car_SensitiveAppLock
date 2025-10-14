@@ -1,0 +1,68 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_robolectric_test {
+    enabled: true,
+    name: "SensitiveAppLockRoboTests",
+    srcs: [
+        ":sensitive-app-lock-testing-srcs",
+        "src/com/android/car/sensitiveapplock/data/*.kt",
+        "src/com/android/car/sensitiveapplock/di/*.kt",
+        "src/com/android/car/sensitiveapplock/lockscreen/*.kt",
+        "src/com/android/car/sensitiveapplock/metrics/*.kt",
+        "src/com/android/car/sensitiveapplock/service/*.kt",
+        "src/com/android/car/sensitiveapplock/settings/*.kt",
+        "src/com/android/car/sensitiveapplock/shadows/*.kt",
+        "src/com/android/car/sensitiveapplock/suspension/*.kt",
+        "src/com/android/car/sensitiveapplock/testing/*.kt",
+        "src/com/android/car/sensitiveapplock/util/*.kt",
+    ],
+    java_resource_dirs: ["config"],
+    libs: [
+        "Robolectric_all-target",
+        "android.car-system-stubs",
+        "androidx.navigation_navigation-testing",
+        "androidx.test.core",
+        "androidx.test.ext.junit",
+        "androidx.test.rules",
+        "androidx.test.runner",
+        "flag-junit",
+        "hilt_android",
+        "hilt_android_testing",
+        "kotlinx_coroutines_test",
+        "mockito-kotlin2",
+        "mockito-robolectric-prebuilt",
+        "truth",
+    ],
+    visibility: ["//visibility:public"],
+    instrumentation_for: "SensitiveAppLock",
+    test_suites: ["general-tests"],
+    upstream: true,
+}
+
+android_test {
+    name: "SensitiveAppLockTests",
+    srcs: [
+        ":sensitive-app-lock-testing-srcs",
+        "src/com/android/car/sensitiveapplock/auth/*.kt",
+        "src/com/android/car/sensitiveapplock/di/*.kt",
+        "src/com/android/car/sensitiveapplock/instrumentation/*.kt",
+    ],
+    static_libs: [
+        "SensitiveAppLock-core",
+        "androidx.test.ext.junit",
+        "androidx.test.runner",
+        "hilt_android_testing",
+        "kotlinx_coroutines_test",
+        "truth",
+    ],
+    instrumentation_for: "SensitiveAppLock",
+    test_suites: [
+        "automotive-tests",
+        "device-tests",
+        "general-tests",
+    ],
+    manifest: "AndroidDeviceTestManifest.xml",
+    certificate: "platform",
+}

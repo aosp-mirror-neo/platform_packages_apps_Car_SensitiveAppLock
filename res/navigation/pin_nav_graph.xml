@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pin_nav_graph"
+    app:startDestination="@id/start">
+    <fragment
+        android:id="@+id/start"
+        android:name="androidx.fragment.app.Fragment"
+        android:label="Start">
+        <!-- Action to navigate from the empty Start screen to Create Pin. -->
+        <action
+            android:id="@+id/action_start_to_create_pin"
+            app:destination="@id/create_pin" />
+        <!-- Action to navigate from the empty Start screen to Validate Pin. -->
+        <action
+            android:id="@+id/action_start_to_validate_pin"
+            app:destination="@id/validate_pin" />
+    </fragment>
+    <fragment
+        android:id="@+id/validate_pin"
+        android:name="com.android.car.sensitiveapplock.lockscreen.ValidatePinFragment"
+        android:label="Validate Pin">
+    </fragment>
+    <fragment
+        android:id="@+id/create_pin"
+        android:name="com.android.car.sensitiveapplock.lockscreen.CreatePinFragment"
+        android:label="Create Pin">
+        <!-- Action to navigate from Create Pin to Confirm Pin. -->
+        <action
+            android:id="@+id/action_create_pin_to_confirm_pin"
+            app:destination="@id/confirm_pin" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirm_pin"
+        android:name="com.android.car.sensitiveapplock.lockscreen.ConfirmPinFragment"
+        android:label="Confirm Pin">
+        <!-- Action to navigate from Confirm Pin to Create Pin. -->
+        <action
+            android:id="@+id/action_confirm_pin_to_create_pin"
+            app:destination="@id/create_pin" />
+    </fragment>
+</navigation>
