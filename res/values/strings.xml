@@ -24,7 +24,7 @@
   <string name="protected_apps_category">My apps</string>
 
   <string name="legal_notice_summary">
-    Unlocked apps might still use data from your locked apps. For example, a social media app might upload photos or files from a locked app.\n\nAnyone that installs a new app that shares an account with a locked app, like a messaging app linked to your social media account, may be automatically signed in. This could potentially expose your data in the car.
+    App lock only disables the user interface and the app may still run in the background, including sharing data (e.g. photos or files) with other apps. Furthermore, anyone installing a new app which shares an account with a locked app may be automatically signed-in, potentially exposing your data in the vehicle.
   </string>
 
   <string name="validate_pin_title">Enter your PIN</string>
