@@ -62,7 +62,7 @@ class AppSuspensionManager @Inject constructor(@ApplicationContext applicationCo
 
             packageManager
                 .setPackagesSuspended(
-                    packageNames,
+                    arrayOf(packageName),
                     state,
                     null, // appExtras
                     null, // launcherExtras

@@ -68,24 +68,34 @@ class AppSuspensionManagerTest {
     }
 
     @Test
-    fun suspendApp_stateTrue_setsDialogInfo() {
-        appSuspensionManager.setAppSuspensionState(
-            arrayOf(PACKAGE_INFO.packageName, "com.missing.package"),
-            true,
-        )
+    fun suspendApp_stateTrue_setsDialogInfoPerApp() {
+        shadowPackageManager.installPackage(MEDIA_PACKAGE_INFO)
+        val packageNames = arrayOf(PACKAGE_INFO.packageName, MEDIA_PACKAGE_INFO.packageName)
+        appSuspensionManager.setAppSuspensionState(packageNames, true)
 
-        val dialogInfo = shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).dialogInfo
-        val shadowDialogInfo =
-            Shadow.extract<ShadowSuspendDialogInfo>(
-                shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).dialogInfo
-            )
-        val dialogInfoTitle = ReflectionHelpers.callInstanceMethod<String>(dialogInfo, "getTitle")
-        assertThat(dialogInfoTitle)
-            .isEqualTo(context.getString(R.string.suspend_dialog_title, PACKAGE_INFO.packageName))
-        assertThat(shadowDialogInfo.dialogMessageResId).isEqualTo(R.string.suspend_dialog_message)
-        assertThat(shadowDialogInfo.neutralButtonTextResId)
-            .isEqualTo(R.string.suspend_dialog_neutral_button_text)
-        assertThat(shadowDialogInfo.neutralButtonAction).isEqualTo(BUTTON_ACTION_MORE_DETAILS)
+        for (packageName in packageNames) {
+            val dialogInfo = shadowPackageManager.getPackageSetting(packageName).dialogInfo
+            val shadowDialogInfo =
+                Shadow.extract<ShadowSuspendDialogInfo>(
+                    shadowPackageManager.getPackageSetting(packageName).dialogInfo
+                )
+            val dialogInfoTitle =
+                ReflectionHelpers.callInstanceMethod<String>(dialogInfo, "getTitle")
+            assertThat(dialogInfoTitle)
+                .isEqualTo(context.getString(R.string.suspend_dialog_title, packageName))
+            assertThat(shadowDialogInfo.dialogMessageResId)
+                .isEqualTo(R.string.suspend_dialog_message)
+            assertThat(shadowDialogInfo.neutralButtonTextResId)
+                .isEqualTo(R.string.suspend_dialog_neutral_button_text)
+            assertThat(shadowDialogInfo.neutralButtonAction).isEqualTo(BUTTON_ACTION_MORE_DETAILS)
+        }
+    }
+
+    @Test
+    fun suspendApp_stateTrue_appNotInstalled_skipsPackage() {
+        appSuspensionManager.setAppSuspensionState(MISSING_PACKAGE_NAME, true)
+
+        assertThat(shadowPackageManager.getPackageSetting(MISSING_PACKAGE_NAME)).isNull()
     }
 
     @Test
@@ -131,6 +141,7 @@ class AppSuspensionManagerTest {
     }
 
     private companion object {
+        const val MISSING_PACKAGE_NAME = "com.missing.package"
         val PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.package" }
         val MEDIA_PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.media.package" }
     }
