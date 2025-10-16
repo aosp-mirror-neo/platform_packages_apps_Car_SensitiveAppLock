@@ -55,7 +55,11 @@ android_test {
         "androidx.test.runner",
         "hilt_android_testing",
         "kotlinx_coroutines_test",
+        "mockito-kotlin2",
         "truth",
+    ],
+    libs: [
+        "android.car-system-stubs",
     ],
     instrumentation_for: "SensitiveAppLock",
     test_suites: [
