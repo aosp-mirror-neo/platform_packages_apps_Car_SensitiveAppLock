@@ -16,9 +16,8 @@
 
 package com.android.car.sensitiveapplock.di
 
-import com.android.car.sensitiveapplock.service.AppInstallMonitorService
 import com.android.car.sensitiveapplock.service.AppLockService
-import com.android.car.sensitiveapplock.service.CarPowerMonitorService
+import com.android.car.sensitiveapplock.service.PackageRelockService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -29,9 +28,5 @@ import dagger.multibindings.IntoSet
 @Module
 @InstallIn(SingletonComponent::class)
 interface ServiceModule {
-    @Binds @IntoSet fun bindCarPowerManagerService(service: CarPowerMonitorService): AppLockService
-
-    @Binds
-    @IntoSet
-    fun bindAppReinstallMonitorService(service: AppInstallMonitorService): AppLockService
+    @Binds @IntoSet fun bindPackageRelockService(service: PackageRelockService): AppLockService
 }

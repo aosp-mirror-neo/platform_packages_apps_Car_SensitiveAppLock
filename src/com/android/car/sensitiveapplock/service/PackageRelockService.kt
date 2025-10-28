@@ -16,58 +16,66 @@
 
 package com.android.car.sensitiveapplock.service
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Context.RECEIVER_NOT_EXPORTED
-import android.content.Intent
-import android.content.IntentFilter
+import android.car.hardware.power.CarPowerManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.android.car.sensitiveapplock.util.Logger
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-/** An [AppLockService] for relocking apps that have been reinstalled. */
-class AppInstallMonitorService
+/**
+ * An [AppLockService] for relocking user apps.
+ *
+ * This service relocks user apps when:
+ * - The device is entering suspend to ram, hibernation or shutdown state.
+ * - The user has unlocked the device.
+ * - The user has reinstalled a locked app.
+ */
+class PackageRelockService
 @Inject
 constructor(
-    @ApplicationContext private val context: Context,
+    private val packageChangeMonitor: PackageChangeMonitor,
+    private val carPowerMonitor: CarPowerMonitor,
     private val appSuspensionManager: AppSuspensionManager,
     private val appLockDataRepository: AppLockDataRepository,
     @BackgroundContext backgroundContext: CoroutineContext,
-) : AppLockService, BroadcastReceiver() {
+) : AppLockService {
     private val backgroundScope = CoroutineScope(backgroundContext)
+
+    private val packageChangeListener =
+        object : PackageChangeMonitor.Listener {
+            override fun onPackageAdded(packageName: String) {
+                backgroundScope.launch { relockAppIfPreviouslyLocked(packageName) }
+            }
+        }
+
+    private val carPowerMonitorListener =
+        object : CarPowerMonitor.Listener {
+            override fun onPowerStateChange(powerState: Int) {
+                if (powerState == CarPowerManager.STATE_SHUTDOWN_PREPARE) {
+                    backgroundScope.launch { lockAllApps() }
+                }
+            }
+        }
 
     override fun start() {
         logger.v("Starting AppReinstallMonitorService.")
+        packageChangeMonitor.addListener(packageChangeListener)
+        carPowerMonitor.addListener(carPowerMonitorListener)
 
-        val intentFilter =
-            IntentFilter(Intent.ACTION_PACKAGE_ADDED).apply { addDataScheme("package") }
-        context.registerReceiver(this, intentFilter, RECEIVER_NOT_EXPORTED)
+        // Redundancy in case the BootReceiver does not relock apps
+        backgroundScope.launch { lockAllApps() }
     }
 
     override fun stop() {
         logger.v("Stopping AppReinstallMonitorService.")
-        context.unregisterReceiver(this)
+        packageChangeMonitor.removeListener(packageChangeListener)
+        carPowerMonitor.removeListener(carPowerMonitorListener)
         backgroundScope.cancel()
-    }
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        logger.v("Received PACKAGE_ADDED broadcast!")
-
-        val packageName = intent?.data?.schemeSpecificPart
-        if (packageName == null) {
-            logger.w("Received null package name.")
-            return
-        }
-        logger.v("$packageName was installed!")
-
-        backgroundScope.launch { relockAppIfPreviouslyLocked(packageName) }
     }
 
     private suspend fun relockAppIfPreviouslyLocked(packageName: String) {
@@ -77,7 +85,15 @@ constructor(
         }
     }
 
+    private suspend fun lockAllApps() {
+        val appList = appLockDataRepository.getLockedApps().toTypedArray()
+
+        logger.v("Locking user apps on boot:${appList.contentToString()}")
+
+        appSuspensionManager.setAppSuspensionState(appList, state = true)
+    }
+
     private companion object {
-        val logger = Logger(AppInstallMonitorService::class.java)
+        val logger = Logger(PackageRelockService::class.java)
     }
 }
