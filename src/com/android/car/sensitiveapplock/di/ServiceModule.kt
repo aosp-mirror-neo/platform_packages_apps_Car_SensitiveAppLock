@@ -16,6 +16,7 @@
 
 package com.android.car.sensitiveapplock.di
 
+import com.android.car.sensitiveapplock.notification.NotificationService
 import com.android.car.sensitiveapplock.service.AppLockService
 import com.android.car.sensitiveapplock.suspension.PackageRelockService
 import dagger.Binds
@@ -29,4 +30,6 @@ import dagger.multibindings.IntoSet
 @InstallIn(SingletonComponent::class)
 interface ServiceModule {
     @Binds @IntoSet fun bindPackageRelockService(service: PackageRelockService): AppLockService
+
+    @Binds @IntoSet fun bindNotificationService(service: NotificationService): AppLockService
 }

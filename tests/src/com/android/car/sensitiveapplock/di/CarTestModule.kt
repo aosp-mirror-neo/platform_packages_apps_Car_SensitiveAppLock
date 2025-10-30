@@ -17,6 +17,7 @@
 package com.android.car.sensitiveapplock.di
 
 import android.car.Car
+import android.car.drivingstate.CarUxRestrictionsManager
 import android.car.hardware.power.CarPowerManager
 import dagger.Module
 import dagger.Provides
@@ -34,8 +35,11 @@ internal object CarTestModule {
     @Singleton
     fun provideMockCar(): Car {
         val carPowerManager = mock<CarPowerManager>()
+        val carUxRestrictionsManager = mock<CarUxRestrictionsManager>()
         return mock<Car> {
             on { getCarManager(CarPowerManager::class.java) } doReturn carPowerManager
+            on { getCarManager(CarUxRestrictionsManager::class.java) } doReturn
+                carUxRestrictionsManager
         }
     }
 }

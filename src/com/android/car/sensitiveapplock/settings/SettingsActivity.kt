@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,7 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.sensitiveapplock.notification.NotificationService
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.CANCELED_PIN
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.VALID_PIN
 import com.android.car.sensitiveapplock.util.Logger
@@ -57,6 +59,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
             finish()
             return
         }
+        maybeDismissNotification(intent)
         setContentView(R.layout.activity_settings)
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
@@ -93,9 +96,17 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
     public override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
+        maybeDismissNotification(intent)
         lockSettingsIfPinSet()
         lifecycleScope.launch {
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
+        }
+    }
+
+    private fun maybeDismissNotification(intent: Intent) {
+        val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, DEFAULT_INT_EXTRA)
+        if (notificationId != DEFAULT_INT_EXTRA) {
+            NotificationService.dismissDiscoveryNotification(applicationContext)
         }
     }
 
@@ -122,5 +133,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
 
     private companion object {
         val logger = Logger(SettingsActivity::class.java)
+
+        const val DEFAULT_INT_EXTRA = -1
     }
 }

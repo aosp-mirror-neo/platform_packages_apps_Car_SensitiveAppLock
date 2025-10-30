@@ -76,6 +76,7 @@ android {
             kotlin.srcDirs(
                 commonTestDirs,
                 "tests/src/com/android/car/sensitiveapplock/data",
+                "tests/src/com/android/car/sensitiveapplock/discovery",
                 "tests/src/com/android/car/sensitiveapplock/lockscreen",
                 "tests/src/com/android/car/sensitiveapplock/metrics",
                 "tests/src/com/android/car/sensitiveapplock/service",
@@ -185,6 +186,7 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.lifecycle.service)
 
     implementation(libs.google.tink)
 

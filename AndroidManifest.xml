@@ -26,6 +26,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
     <uses-permission android:name="android.permission.QUERY_USERS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- System permission for clearing data for recovery -->
     <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
     <!-- System permission to control media playback of the active session -->
@@ -90,6 +91,9 @@
         </receiver>
 
         <service android:name=".service.PersistentBackgroundService"
+            android:exported="false" />
+
+        <service android:name=".notification.NotificationInteractionService"
             android:exported="false" />
 
         <provider
