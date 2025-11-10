@@ -1,0 +1,13 @@
+{
+  "auto-presubmit": [
+    {
+      "name": "SensitiveAppLockTests"
+    }
+  ],
+  "auto-robolectric-presubmit": [
+    {
+      "name": "SensitiveAppLockRoboTests",
+      "host": true
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+java_library {
+    name: "app_lock_data_proto_lite",
+    proto: {
+        type: "lite",
+    },
+    srcs: ["proto/*.proto"],
+    visibility: ["//visibility:private"],
+}
+
+filegroup {
+    name: "sensitive-app-lock-testing-srcs",
+    srcs: [
+        "src/com/android/car/sensitiveapplock/testing/**/*.kt",
+    ],
+    visibility: ["//packages/apps/Car/SensitiveAppLock/tests"],
+}
+
+android_library {
+    name: "SensitiveAppLock-core",
+    srcs: [
+        "src/**/*.kt",
+        "src/com/android/car/sensitiveapplock/metrics/SensitiveAppLockStatsLog.java",
+    ],
+    exclude_srcs: [":sensitive-app-lock-testing-srcs"],
+    resource_dirs: ["res"],
+    libs: [
+        "android.car-system-stubs",
+        "kotlin-annotations",
+    ],
+    static_libs: [
+        "androidx.activity_activity-ktx",
+        "androidx.annotation_annotation",
+        "androidx.appcompat_appcompat",
+        "androidx.core_core-ktx",
+        "androidx.datastore_datastore",
+        "androidx.datastore_datastore-preferences",
+        "androidx.lifecycle_lifecycle-extensions",
+        "androidx.lifecycle_lifecycle-livedata-ktx",
+        "androidx.lifecycle_lifecycle-service",
+        "androidx.lifecycle_lifecycle-viewmodel-ktx",
+        "androidx.navigation_navigation-common-ktx",
+        "androidx.navigation_navigation-fragment-ktx",
+        "androidx.navigation_navigation-runtime-ktx",
+        "androidx.navigation_navigation-ui-ktx",
+        "androidx.recyclerview_recyclerview",
+        "app_lock_data_proto_lite",
+        "car-media-common",
+        "car-ui-lib",
+        "hilt_android",
+        "jsr330",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "kotlinx_coroutines_android",
+        "libprotobuf-java-lite",
+        "tink-java",
+    ],
+    manifest: "AndroidManifest.xml",
+    min_sdk_version: "34",
+    sdk_version: "system_current",
+}
+
+android_app {
+    name: "SensitiveAppLock",
+
+    srcs: [],
+
+    resource_dirs: [],
+
+    sdk_version: "system_current",
+
+    certificate: "platform",
+
+    libs: [
+        "android.car-system-stubs",
+        "kotlin-annotations",
+    ],
+
+    static_libs: [
+        "SensitiveAppLock-core",
+    ],
+
+    min_sdk_version: "34",
+}
