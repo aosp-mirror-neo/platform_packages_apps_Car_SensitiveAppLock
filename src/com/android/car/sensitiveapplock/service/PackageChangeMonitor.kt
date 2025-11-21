@@ -46,8 +46,9 @@ open class PackageChangeMonitor @Inject constructor(@ApplicationContext val cont
 
                 when (intent.action) {
                     Intent.ACTION_PACKAGE_ADDED -> {
+                        val replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
                         for (listener in listeners) {
-                            listener.onPackageAdded(packageName)
+                            listener.onPackageAdded(packageName, replacing)
                         }
                     }
                     else -> logger.v("Unhandled intent action:${intent.action}")
@@ -84,8 +85,11 @@ open class PackageChangeMonitor @Inject constructor(@ApplicationContext val cont
 
     /** Interface for listeners interested in package change events. */
     interface Listener {
-        /** Called when a new package has been installed on the system. */
-        fun onPackageAdded(packageName: String) {}
+        /**
+         * Called when a new package has been installed on the system. If this is an update to an
+         * existing package [replacing] is true, false otherwise.
+         */
+        fun onPackageAdded(packageName: String, replacing: Boolean) {}
     }
 
     private companion object {

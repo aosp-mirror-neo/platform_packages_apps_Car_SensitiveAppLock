@@ -52,7 +52,7 @@ constructor(
 
     private val packageChangeListener =
         object : PackageChangeMonitor.Listener {
-            override fun onPackageAdded(packageName: String) {
+            override fun onPackageAdded(packageName: String, replacing: Boolean) {
                 backgroundScope.launch { relockAppIfPreviouslyLocked(packageName) }
             }
         }

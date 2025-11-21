@@ -29,6 +29,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
@@ -111,8 +112,25 @@ class PackageChangeMonitorTest {
         context.sendBroadcast(intent)
         shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-        verify(listener1).onPackageAdded(packageName)
-        verify(listener2).onPackageAdded(packageName)
+        verify(listener1).onPackageAdded(packageName, false)
+        verify(listener2).onPackageAdded(packageName, false)
+    }
+
+    @Test
+    fun onReceive_actionPackageAdded_onPackageReplaced_notifiesListener() {
+        val listener = mock<Listener>()
+        packageChangeMonitor.addListener(listener)
+
+        val packageName = "com.example.test"
+        val intent =
+            Intent(Intent.ACTION_PACKAGE_ADDED).apply {
+                data = Uri.fromParts("package", packageName, null)
+                putExtra(Intent.EXTRA_REPLACING, true)
+            }
+        context.sendBroadcast(intent)
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+        verify(listener).onPackageAdded(packageName, true)
     }
 
     @Test
@@ -124,7 +142,7 @@ class PackageChangeMonitorTest {
         context.sendBroadcast(intent)
         shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-        verify(listener, never()).onPackageAdded(anyString())
+        verify(listener, never()).onPackageAdded(anyString(), anyBoolean())
     }
 
     @Test
@@ -140,6 +158,6 @@ class PackageChangeMonitorTest {
         context.sendBroadcast(intent)
         shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-        verify(listener, never()).onPackageAdded(anyString())
+        verify(listener, never()).onPackageAdded(anyString(), anyBoolean())
     }
 }
