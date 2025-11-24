@@ -23,6 +23,8 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint(LifecycleService::class)
 class NotificationInteractionService : Hilt_NotificationInteractionService() {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -72,9 +75,15 @@ class NotificationInteractionService : Hilt_NotificationInteractionService() {
         val maxNotificationInteraction =
             resources.getInteger(R.integer.config_discovery_notification_max_interaction)
         val explicitDismiss = intent?.getBooleanExtra(EXTRA_NOTIFICATION_DISMISS, false)
-        if (interactionCount > maxNotificationInteraction && explicitDismiss == true) {
+        if (explicitDismiss != true) {
+            return
+        }
+        if (interactionCount > maxNotificationInteraction) {
             logger.v("Permanently dismissing discovery notification")
             appLockDataRepository.permanentlyDismissDiscoveryNotification()
+            metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_PERMANENTLY_DISMISSED)
+        } else {
+            metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_DISMISSED)
         }
     }
 

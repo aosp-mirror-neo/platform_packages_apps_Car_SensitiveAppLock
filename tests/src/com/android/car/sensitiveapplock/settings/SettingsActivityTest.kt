@@ -41,6 +41,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlin.collections.removeLastOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -173,6 +174,12 @@ class SettingsActivityTest {
                         NotificationInteractionService::class.qualifiedName
             }
         assertThat(notificationServices).hasSize(1)
+        val atoms = getAppLockAtoms().toMutableList()
+        atoms.removeLastOrNull()!! // AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED,
+        )
 
         scenario.close()
     }
@@ -215,7 +222,7 @@ class SettingsActivityTest {
     }
 
     @Test
-    fun onNewIntent_startedFromNotification_dismissesNotification() {
+    fun onNewIntent_startedFromNotification_dismissesNotificationAndLogsMetrics() {
         val settingsIntent =
             Intent(context, SettingsActivity::class.java).apply {
                 putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID)
@@ -235,6 +242,12 @@ class SettingsActivityTest {
                             NotificationInteractionService::class.qualifiedName
                 }
             assertThat(notificationServices).hasSize(1)
+            val atoms = getAppLockAtoms().toMutableList()
+            atoms.removeLastOrNull()!! // AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED,
+            )
         }
     }
 

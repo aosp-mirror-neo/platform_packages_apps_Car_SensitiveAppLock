@@ -24,9 +24,14 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.notification.NotificationInteractionService
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,6 +56,7 @@ class NotificationInteractionServiceTest {
     private val shadowNotificationManager = shadowOf(notificationManager)
 
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     private lateinit var serviceController: ServiceController<NotificationInteractionService>
     private lateinit var service: NotificationInteractionService
@@ -62,6 +68,7 @@ class NotificationInteractionServiceTest {
         serviceController = Robolectric.buildService(NotificationInteractionService::class.java)
         service = serviceController.get()
         service.appLockDataRepository = appLockDataRepository
+        service.metricsLogger = metricsLogger
     }
 
     @Test
@@ -121,6 +128,46 @@ class NotificationInteractionServiceTest {
                 .isEqualTo(3)
             assertThat(appLockDataRepository.discoveryNotificationPermanentlyDismissed()).isTrue()
         }
+
+    @Test
+    fun onStart_notMaxNotificationInteractionExceededAndDismiss_logsMetrics() = runTest {
+        val notificationId = 123
+        val intent =
+            Intent(context, NotificationInteractionService::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+                putExtra(EXTRA_NOTIFICATION_DISMISS, true)
+            }
+
+        service.onStartCommand(intent, 0, 1)
+
+        val atoms = getAppLockAtoms()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_DISMISSED,
+        )
+    }
+
+    @Test
+    fun onStart_maxNotificationInteractionExceededAndDismiss_logsMetrics() = runTest {
+        val notificationId = 123
+        val intent =
+            Intent(context, NotificationInteractionService::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+                putExtra(EXTRA_NOTIFICATION_DISMISS, true)
+            }
+        // Increment interaction count to maximum
+        val maxCount =
+            context.resources.getInteger(R.integer.config_discovery_notification_max_interaction)
+        repeat(maxCount) { appLockDataRepository.incrementDiscoveryNotificationInteractionCount() }
+
+        service.onStartCommand(intent, 0, 1)
+
+        val atoms = getAppLockAtoms()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_PERMANENTLY_DISMISSED,
+        )
+    }
 
     @Test
     fun onStart_withoutNotificationId_doesNotCancelOrIncrementAndStopsSelf() = runTest {

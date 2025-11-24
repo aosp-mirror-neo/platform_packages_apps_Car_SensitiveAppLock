@@ -35,6 +35,8 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.notification.NotificationInteractionService
 import com.android.car.sensitiveapplock.notification.NotificationService
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
@@ -42,6 +44,8 @@ import com.android.car.sensitiveapplock.service.CarPowerMonitor
 import com.android.car.sensitiveapplock.service.PackageChangeMonitor
 import com.android.car.sensitiveapplock.settings.SettingsActivity
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
+import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -73,6 +77,7 @@ class NotificationServiceTest {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var pinManager: PinManager
     @Inject lateinit var car: Car
+    @Inject lateinit var metricsLogger: MetricsLogger
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val notificationManager =
@@ -108,6 +113,7 @@ class NotificationServiceTest {
                 spyCarPowerMonitor,
                 appLockDataRepository,
                 pinManager,
+                metricsLogger,
                 car,
                 backgroundContext,
             )
@@ -168,7 +174,7 @@ class NotificationServiceTest {
     }
 
     @Test
-    fun onPackageAdded_notDriving_notifiesUser() = runTest {
+    fun onPackageAdded_notifiesUserAndLogsMetrics() = runTest {
         notificationService.start()
 
         // Simulate package install
@@ -176,6 +182,11 @@ class NotificationServiceTest {
         shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
         assertDiscoveryNotification()
+        val atoms = getAppLockAtoms()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_SHOWN,
+        )
     }
 
     @Test

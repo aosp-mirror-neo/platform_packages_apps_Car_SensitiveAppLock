@@ -35,6 +35,8 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
+import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.service.AppLockService
 import com.android.car.sensitiveapplock.service.CarPowerMonitor
 import com.android.car.sensitiveapplock.service.PackageChangeMonitor
@@ -68,6 +70,7 @@ constructor(
     private val carPowerMonitor: CarPowerMonitor,
     private val appLockDataRepository: AppLockDataRepository,
     private val pinManager: PinManager,
+    private val metricsLogger: MetricsLogger,
     car: Car?,
     @BackgroundContext backgroundContext: CoroutineContext,
 ) : AppLockService {
@@ -159,6 +162,7 @@ constructor(
 
         notificationShowInCurrentSession = true
         pendingNotification = false
+        metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_SHOWN)
     }
 
     private suspend fun createNotification(): Notification {

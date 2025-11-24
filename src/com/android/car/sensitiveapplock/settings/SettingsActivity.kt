@@ -59,7 +59,6 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
             finish()
             return
         }
-        maybeDismissNotification(intent)
         setContentView(R.layout.activity_settings)
         requireToolbar(this).navButtonMode = NavButtonMode.BACK
 
@@ -69,6 +68,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
             if (savedInstanceState == null) {
                 lockSettingsIfPinSet()
             }
+            maybeDismissNotification(intent)
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -96,34 +96,33 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
     public override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        maybeDismissNotification(intent)
-        lockSettingsIfPinSet()
         lifecycleScope.launch {
+            lockSettingsIfPinSet()
+            maybeDismissNotification(intent)
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
         }
     }
 
-    private fun maybeDismissNotification(intent: Intent) {
+    private suspend fun maybeDismissNotification(intent: Intent) {
         val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, DEFAULT_INT_EXTRA)
         if (notificationId != DEFAULT_INT_EXTRA) {
+            metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED)
             NotificationService.dismissDiscoveryNotification(applicationContext)
         }
     }
 
-    private fun lockSettingsIfPinSet() {
-        lifecycleScope.launch {
-            if (viewModel.isPinSet()) {
-                viewModel.lockSettings()
-                logger.d("Launching pin lock.")
-                val pinLockIntent =
-                    Intent(applicationContext, PinLockActivity::class.java).apply {
-                        action = PinLockActivity.ACTION_VALIDATE_PIN
-                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                startActivity(pinLockIntent)
-            } else {
-                viewModel.unlockSettings()
-            }
+    private suspend fun lockSettingsIfPinSet() {
+        if (viewModel.isPinSet()) {
+            viewModel.lockSettings()
+            logger.d("Launching pin lock.")
+            val pinLockIntent =
+                Intent(applicationContext, PinLockActivity::class.java).apply {
+                    action = PinLockActivity.ACTION_VALIDATE_PIN
+                    flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                }
+            startActivity(pinLockIntent)
+        } else {
+            viewModel.unlockSettings()
         }
     }
 
