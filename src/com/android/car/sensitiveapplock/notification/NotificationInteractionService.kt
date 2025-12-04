@@ -50,6 +50,14 @@ class NotificationInteractionService : Hilt_NotificationInteractionService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
+        val featureEnableDiscoveryNotification =
+            resources.getBoolean(R.bool.feature_enableDiscoveryNotification)
+        if (!featureEnableDiscoveryNotification) {
+            logger.v("Service started but feature is disabled")
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
+
         val notificationId = intent?.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
 
         if (notificationId == null || notificationId == -1) {
