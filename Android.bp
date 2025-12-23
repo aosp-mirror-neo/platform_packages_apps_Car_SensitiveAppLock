@@ -31,6 +31,7 @@ android_library {
     libs: [
         "android.car-system-stubs",
         "kotlin-annotations",
+        "token-shared-lib",
     ],
     static_libs: [
         "androidx.activity_activity-ktx",
@@ -57,6 +58,7 @@ android_library {
         "kotlinx-coroutines-core",
         "kotlinx_coroutines_android",
         "libprotobuf-java-lite",
+        "oem-token-lib",
         "tink-java",
     ],
     manifest: "EmptyManifest.xml",
@@ -78,6 +80,7 @@ android_app {
     libs: [
         "android.car-system-stubs",
         "kotlin-annotations",
+        "token-shared-lib",
     ],
 
     static_libs: [
