@@ -56,6 +56,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadow.api.Shadow
 
 @HiltAndroidTest
 @SmallTest
@@ -263,7 +264,7 @@ class PinLockViewModelTest {
         pinLockViewModel.clearLockedAppsData()
 
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val shadowAm = shadowOf(am) as ShadowActivityManager
+        val shadowAm = Shadow.extract<ShadowActivityManager>(am)
 
         val dataClearedApps = shadowAm.getClearedApplicationUserDataPackages()
         assertThat(dataClearedApps).isEqualTo(systemLockableApps + TEST_PACKAGE_NAMES[2])

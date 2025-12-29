@@ -55,6 +55,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadow.api.Shadow
 import org.robolectric.shadows.ShadowAlertDialog
 
 @HiltAndroidTest
@@ -385,7 +386,7 @@ class ValidatePinFragmentTest {
                 shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
                 val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                val shadowAm = shadowOf(am) as ShadowActivityManager
+                val shadowAm = Shadow.extract<ShadowActivityManager>(am)
                 assertThat(shadowAm.getClearedApplicationUserDataPackages())
                     .containsExactly(TEST_PACKAGE_NAMES[0], TEST_PACKAGE_NAMES[1])
 

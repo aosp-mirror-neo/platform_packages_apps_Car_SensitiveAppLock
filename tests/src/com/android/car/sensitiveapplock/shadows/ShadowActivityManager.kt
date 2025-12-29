@@ -28,13 +28,13 @@ import org.robolectric.util.ReflectionHelpers.ClassParameter
 
 /** Shadow of [ActivityManager]. */
 @Implements(ActivityManager::class)
-class ShadowActivityManager : org.robolectric.shadows.ShadowActivityManager() {
+class ShadowActivityManager {
     private lateinit var context: Context
 
     @RealObject lateinit var realObject: ActivityManager
 
     @Implementation
-    override fun __constructor__(context: Context, handler: Handler?) {
+    fun __constructor__(context: Context, handler: Handler?) {
         Shadow.invokeConstructor(
             ActivityManager::class.java,
             realObject,
