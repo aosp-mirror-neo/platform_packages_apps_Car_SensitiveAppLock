@@ -19,6 +19,9 @@ package com.android.car.sensitiveapplock.notification
 import android.app.NotificationManager
 import android.content.Intent
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.android.car.sensitiveapplock.R
@@ -26,6 +29,7 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
+import com.android.car.sensitiveapplock.notification.NotificationService.Companion.NOTIFICATION_POSTED_KEY
 import com.android.car.sensitiveapplock.util.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -46,6 +50,7 @@ import kotlinx.coroutines.launch
 class NotificationInteractionService : Hilt_NotificationInteractionService() {
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var metricsLogger: MetricsLogger
+    @Inject lateinit var sharedPreferences: DataStore<Preferences>
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -61,6 +66,7 @@ class NotificationInteractionService : Hilt_NotificationInteractionService() {
         lifecycleScope.launch {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(notificationId)
+            sharedPreferences.edit { it[NOTIFICATION_POSTED_KEY] = false }
             logger.v("Discovery notification dismissed")
             appLockDataRepository.incrementDiscoveryNotificationInteractionCount()
             maybePermanentlyDismissNotification(intent)

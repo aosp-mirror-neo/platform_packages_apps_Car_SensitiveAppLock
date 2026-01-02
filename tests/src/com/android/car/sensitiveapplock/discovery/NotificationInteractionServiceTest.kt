@@ -22,6 +22,10 @@ import android.app.Service.START_NOT_STICKY
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.car.sensitiveapplock.R
@@ -36,6 +40,8 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -57,6 +63,7 @@ class NotificationInteractionServiceTest {
 
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var metricsLogger: MetricsLogger
+    @Inject lateinit var sharedPreferences: DataStore<Preferences>
 
     private lateinit var serviceController: ServiceController<NotificationInteractionService>
     private lateinit var service: NotificationInteractionService
@@ -69,6 +76,7 @@ class NotificationInteractionServiceTest {
         service = serviceController.get()
         service.appLockDataRepository = appLockDataRepository
         service.metricsLogger = metricsLogger
+        service.sharedPreferences = sharedPreferences
     }
 
     @Test
@@ -148,6 +156,22 @@ class NotificationInteractionServiceTest {
     }
 
     @Test
+    fun onStart_setsNotificationPostedSharedPreferenceToFalse() = runTest {
+        val notificationId = 123
+        val intent =
+            Intent(context, NotificationInteractionService::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+                putExtra(EXTRA_NOTIFICATION_DISMISS, true)
+            }
+        sharedPreferences.edit { preferences -> preferences[NOTIFICATION_POSTED_KEY] = true }
+
+        service.onStartCommand(intent, 0, 1)
+
+        val posted = sharedPreferences.data.map { it[NOTIFICATION_POSTED_KEY] ?: false }.first()
+        assertThat(posted).isFalse()
+    }
+
+    @Test
     fun onStart_maxNotificationInteractionExceededAndDismiss_logsMetrics() = runTest {
         val notificationId = 123
         val intent =
@@ -184,5 +208,9 @@ class NotificationInteractionServiceTest {
         // Verify service stops itself
         assertThat(shadowOf(service).isStoppedBySelf).isTrue()
         assertThat(result).isEqualTo(START_NOT_STICKY)
+    }
+
+    private companion object {
+        val NOTIFICATION_POSTED_KEY = booleanPreferencesKey("notification_shown_key")
     }
 }

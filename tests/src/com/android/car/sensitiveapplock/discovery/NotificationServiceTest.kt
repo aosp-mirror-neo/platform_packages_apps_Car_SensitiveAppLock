@@ -29,6 +29,10 @@ import android.net.Uri
 import android.os.Looper
 import android.provider.Settings.ACTION_SETTINGS
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.car.sensitiveapplock.R
@@ -51,6 +55,8 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -76,6 +82,7 @@ class NotificationServiceTest {
     @Inject lateinit var carPowerMonitor: CarPowerMonitor
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
     @Inject lateinit var pinManager: PinManager
+    @Inject lateinit var sharedPreferences: DataStore<Preferences>
     @Inject lateinit var car: Car
     @Inject lateinit var metricsLogger: MetricsLogger
 
@@ -114,6 +121,7 @@ class NotificationServiceTest {
                 appLockDataRepository,
                 pinManager,
                 metricsLogger,
+                sharedPreferences,
                 car,
                 backgroundContext,
             )
@@ -125,11 +133,19 @@ class NotificationServiceTest {
     }
 
     @Test
-    fun init_createsNotificationChannel() {
+    fun init_createsImportanceHighNotificationChannel() {
         val channel = notificationManager.getNotificationChannel(IMPORTANCE_HIGH)
         assertThat(channel).isNotNull()
-        assertThat(channel.name).isEqualTo(NOTIFICATION_CHANNEL_NAME)
+        assertThat(channel.name).isEqualTo(NOTIFICATION_HIGH_CHANNEL_NAME)
         assertThat(channel.importance).isEqualTo(NotificationManager.IMPORTANCE_HIGH)
+    }
+
+    @Test
+    fun init_createsImportanceLowNotificationChannel() {
+        val channel = notificationManager.getNotificationChannel(IMPORTANCE_LOW)
+        assertThat(channel).isNotNull()
+        assertThat(channel.name).isEqualTo(NOTIFICATION_LOW_CHANNEL_NAME)
+        assertThat(channel.importance).isEqualTo(NotificationManager.IMPORTANCE_LOW)
     }
 
     @Test
@@ -164,6 +180,25 @@ class NotificationServiceTest {
     }
 
     @Test
+    fun onStart_whenNotificationPreviouslyShown_notifiesUserAgain() = runTest {
+        sharedPreferences.edit { preferences -> preferences[NOTIFICATION_POSTED_KEY] = true }
+
+        notificationService.start()
+
+        assertDiscoveryNotification()
+    }
+
+    @Test
+    fun onStart_whenNotificationNotPreviouslyShown_doesNotNotify() = runTest {
+        sharedPreferences.edit { preferences -> preferences[NOTIFICATION_POSTED_KEY] = false }
+
+        notificationService.start()
+
+        val notification = shadowNotificationManager.getNotification(DISCOVERY_NOTIFICATION_ID)
+        assertThat(notification).isNull()
+    }
+
+    @Test
     fun onStop_unregistersListeners() = runTest {
         notificationService.start()
         notificationService.stop()
@@ -187,6 +222,18 @@ class NotificationServiceTest {
             statsLogItem = atoms.last(),
             appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_SHOWN,
         )
+    }
+
+    @Test
+    fun onPackageAdded_whenNotifyingUser_updatesNotificationPostedSharedPreference() = runTest {
+        notificationService.start()
+
+        // Simulate package install
+        context.sendBroadcast(BROADCAST_INTENT)
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+        val posted = sharedPreferences.data.map { it[NOTIFICATION_POSTED_KEY] ?: false }.first()
+        assertThat(posted).isTrue()
     }
 
     @Test
@@ -481,13 +528,16 @@ class NotificationServiceTest {
 
     private companion object {
         const val IMPORTANCE_HIGH = "importance_high"
-        const val NOTIFICATION_CHANNEL_NAME = "Importance High"
+        const val IMPORTANCE_LOW = "importance_low"
+        const val NOTIFICATION_HIGH_CHANNEL_NAME = "Importance High"
+        const val NOTIFICATION_LOW_CHANNEL_NAME = "Importance Low"
         const val TEST_PACKAGE_NAME = "com.package.ok"
         const val NOTIFICATION_EXTRA_USE_LAUNCHER_ICON =
             "com.android.car.notification.EXTRA_USE_LAUNCHER_ICON"
         const val DISCOVERY_NOTIFICATION_ID = 1001
         const val SETTINGS_APP = "com.android.settings.app"
 
+        val NOTIFICATION_POSTED_KEY = booleanPreferencesKey("notification_shown_key")
         val SETTINGS_INTENT_FILTER =
             IntentFilter(ACTION_SETTINGS).apply { addCategory(Intent.CATEGORY_DEFAULT) }
         val BROADCAST_INTENT =

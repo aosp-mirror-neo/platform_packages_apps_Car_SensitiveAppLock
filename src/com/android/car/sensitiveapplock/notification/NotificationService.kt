@@ -31,6 +31,10 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_SETTINGS
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.graphics.drawable.toBitmap
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
@@ -48,6 +52,8 @@ import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -71,6 +77,7 @@ constructor(
     private val appLockDataRepository: AppLockDataRepository,
     private val pinManager: PinManager,
     private val metricsLogger: MetricsLogger,
+    private val sharedPreferences: DataStore<Preferences>,
     car: Car?,
     @BackgroundContext backgroundContext: CoroutineContext,
 ) : AppLockService {
@@ -129,6 +136,13 @@ constructor(
                 NotificationManager.IMPORTANCE_HIGH,
             )
         )
+        notificationManager.createNotificationChannel(
+            NotificationChannel(
+                IMPORTANCE_LOW, // id
+                "Importance Low", // name
+                NotificationManager.IMPORTANCE_LOW,
+            )
+        )
     }
 
     override fun start() {
@@ -140,6 +154,10 @@ constructor(
             carUxRestrictionsManager?.registerListener(uxRestrictionsListener)
             carPowerMonitor.addListener(carPowerMonitorListener)
             packageChangeMonitor.addListener(packageChangeListener)
+
+            // Notifications are dismissed on reboots. If a notification was posted before reboot,
+            // it must be posted again
+            notifyOnStart()
         }
     }
 
@@ -150,6 +168,14 @@ constructor(
         scope.cancel()
     }
 
+    private suspend fun notifyOnStart() {
+        val posted = sharedPreferences.data.map { it[NOTIFICATION_POSTED_KEY] ?: false }.first()
+        if (posted) {
+            val notification = createNotification(IMPORTANCE_LOW)
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
+    }
+
     private suspend fun notifyUser() {
         if (!shouldNotifyUser()) {
             logger.v("not notifying user")
@@ -157,15 +183,15 @@ constructor(
         }
 
         logger.v("notifying user")
-        val notification = createNotification()
+        val notification = createNotification(IMPORTANCE_HIGH)
         notificationManager.notify(NOTIFICATION_ID, notification)
-
+        sharedPreferences.edit { it[NOTIFICATION_POSTED_KEY] = true }
         notificationShowInCurrentSession = true
         pendingNotification = false
         metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_SHOWN)
     }
 
-    private suspend fun createNotification(): Notification {
+    private suspend fun createNotification(channelId: String): Notification {
         val positiveActionText =
             context.getString(R.string.discovery_notification_setup_button_text)
         val positiveAction =
@@ -188,7 +214,7 @@ constructor(
         val bodyText = context.getString(R.string.discovery_notification_message)
 
         val notification =
-            Notification.Builder(context, IMPORTANCE_HIGH)
+            Notification.Builder(context, channelId)
                 .setContentTitle(titleText)
                 .setContentText(bodyText)
                 .addAction(positiveAction)
@@ -305,12 +331,16 @@ constructor(
     companion object {
         private val logger = Logger(NotificationService::class.java)
         private const val IMPORTANCE_HIGH = "importance_high"
+        private const val IMPORTANCE_LOW = "importance_low"
         private const val NOTIFICATION_EXTRA_USE_LAUNCHER_ICON =
             "com.android.car.notification.EXTRA_USE_LAUNCHER_ICON"
         private const val NOTIFICATION_ID = 1001
 
         const val EXTRA_NOTIFICATION_DISMISS =
             "com.android.car.notification.EXTRA_NOTIFICATION_DISMISS"
+
+        // SharedPreference key to track if a notification was posted.
+        val NOTIFICATION_POSTED_KEY = booleanPreferencesKey("notification_shown_key")
 
         fun dismissDiscoveryNotification(context: Context) {
             val intent =
