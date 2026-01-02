@@ -175,6 +175,7 @@ dependencies {
     implementation(files(gradle.extra["lib_car_system_stubs"] as String))
     compileOnly(files(gradle.extra["lib_system_stubs"] as String))
 
+    implementation(project(":oem-token-lib"))
     implementation(project(":car-ui-lib"))
     implementation(project(":car-media-common"))
 
@@ -215,6 +216,11 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.mockito.kotlin)
 }
+
+android.aaptOptions.additionalParameters(
+    "-I",
+    "$projectDir/../libs/car-ui-lib/oem-tokens/shared-lib/prebuilt/token-shared-lib.apk",
+)
 
 hilt {
     // Cannot do classpath aggregation
