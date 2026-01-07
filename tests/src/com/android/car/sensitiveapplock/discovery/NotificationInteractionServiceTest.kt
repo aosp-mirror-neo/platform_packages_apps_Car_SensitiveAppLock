@@ -34,6 +34,7 @@ import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.notification.NotificationInteractionService
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
+import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.google.common.truth.Truth.assertThat
@@ -43,6 +44,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,9 +52,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ServiceController
+import org.robolectric.annotation.Config
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
+@Config(shadows = [ShadowResources::class])
 class NotificationInteractionServiceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -72,11 +76,41 @@ class NotificationInteractionServiceTest {
     fun init() = runTest {
         hiltRule.inject()
 
+        ShadowResources.setBoolean(R.bool.feature_enableDiscoveryNotification, true)
+
         serviceController = Robolectric.buildService(NotificationInteractionService::class.java)
         service = serviceController.get()
         service.appLockDataRepository = appLockDataRepository
         service.metricsLogger = metricsLogger
         service.sharedPreferences = sharedPreferences
+    }
+
+    @After
+    fun cleanUp() {
+        ShadowResources.reset()
+    }
+
+    @Test
+    fun onStart_featureFlagDisabled_doesNotCancelOrIncrementAndStopsSelf() = runTest {
+        ShadowResources.setBoolean(R.bool.feature_enableDiscoveryNotification, false)
+        val notificationId = 123
+        val intent =
+            Intent(context, NotificationInteractionService::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+                putExtra(EXTRA_NOTIFICATION_DISMISS, true)
+            }
+
+        val result = service.onStartCommand(intent, 0, 1)
+
+        // Verify no notification is cancelled
+        assertThat(shadowNotificationManager.size()).isEqualTo(0)
+
+        // Verify interaction count is NOT incremented
+        assertThat(appLockDataRepository.getDiscoveryNotificationInteractionCount()).isEqualTo(0)
+
+        // Verify service stops itself
+        assertThat(shadowOf(service).isStoppedBySelf).isTrue()
+        assertThat(result).isEqualTo(START_NOT_STICKY)
     }
 
     @Test
