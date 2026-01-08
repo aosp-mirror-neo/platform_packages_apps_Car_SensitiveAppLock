@@ -28,7 +28,7 @@
     <string name="config_recoveryAccountType" translatable="false">com.google</string>
 
     <!-- Feature flag for allowing discovery notification. -->
-    <bool name="feature_enableDiscoveryNotification">false</bool>
+    <bool name="feature_enableDiscoveryNotification">true</bool>
 
     <!-- Discovery notification max interaction count. After this interaction count is reached
          the user will be provided an option to permanently dismiss the notification. -->
