@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
+import com.android.car.ui.toolbar.MenuItem
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -123,12 +124,11 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     /** Gets the entered PIN. */
     fun getPin() = enteredPin.text.toString()
 
-    /** Sets up the UI button actions. */
-    fun setupUi(nextButton: NextButton? = null, onConfirmClick: () -> Unit = {}) {
-        nextButton?.setVisible(true)
+    /** Sets up the button actions. */
+    fun setupActionButtons(nextButton: MenuItem? = null, onConfirmClick: () -> Unit = {}) {
+        nextButton?.isVisible = true
 
         val pinPad = findViewById<PinPadView>(R.id.pin_pad)
-
         // Disable buttons until a valid format PIN is entered
         enteredPin.addTextChangedListener(
             object : TextWatcher {
@@ -142,14 +142,14 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
-                    val currHasValidFormat = pinManager.doesPinHaveValidFormat(s.toString())
+                    val currPinHasValidFormat = pinManager.doesPinHaveValidFormat(s.toString())
 
                     // Only change button states if there was a change
-                    if (currHasValidFormat != prevPinHasValidFormat) {
-                        nextButton?.setEnabled(currHasValidFormat)
-                        pinPad.setConfirmEnabled(currHasValidFormat)
+                    if (currPinHasValidFormat != prevPinHasValidFormat) {
+                        nextButton?.isEnabled = currPinHasValidFormat
+                        pinPad.setConfirmEnabled(currPinHasValidFormat)
 
-                        prevPinHasValidFormat = currHasValidFormat
+                        prevPinHasValidFormat = currPinHasValidFormat
                     }
 
                     // Only reset error if currently showing it
@@ -161,19 +161,7 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
         )
 
         pinPad.setupButtons(enteredPin, onConfirmClick)
-        nextButton?.setEnabled(false)
-        nextButton?.setOnClickListener { onConfirmClick() }
-    }
-
-    /** An interface for the Next button on pin screens. */
-    interface NextButton {
-        /** Sets the enabled state of the button. */
-        fun setEnabled(enabled: Boolean)
-
-        /** Sets an onClickListener for the button. */
-        fun setOnClickListener(listener: () -> Unit)
-
-        /** Sets the visibility of the button. */
-        fun setVisible(visible: Boolean)
+        nextButton?.isEnabled = false
+        nextButton?.onClickListener = MenuItem.OnClickListener { onConfirmClick() }
     }
 }

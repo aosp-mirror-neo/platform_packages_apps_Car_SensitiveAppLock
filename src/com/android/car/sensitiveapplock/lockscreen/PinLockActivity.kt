@@ -70,9 +70,7 @@ class PinLockActivity : Hilt_PinLockActivity() {
                 }
             }
             ACTION_CREATE_PIN -> {
-                if (isPortrait(this)) {
-                    createToolbarNextButton()
-                }
+                createToolbarNextButton()
                 setCreatePinResultListener()
                 if (savedInstanceState == null) {
                     findNavController().navigate(R.id.action_start_to_create_pin)
