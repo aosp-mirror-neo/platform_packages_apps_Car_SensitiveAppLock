@@ -64,7 +64,7 @@
 
     <com.android.car.sensitiveapplock.lockscreen.PinPadView
         android:id="@+id/pin_pad"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/pin_lock_screen_pin_area_top_margin_default_portrait"
         app:layout_constraintTop_toBottomOf="@id/entered_pin"
