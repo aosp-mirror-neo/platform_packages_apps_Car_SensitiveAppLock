@@ -2,17 +2,17 @@ package com.android.car.sensitiveapplock.lockscreen
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.EditText
-import android.widget.GridLayout
+import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.android.car.sensitiveapplock.R
 
 /** A custom view for a Pin Pad. */
-class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
+class PinPadView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
     init {
         inflate(context, R.layout.pin_pad, this)
         // Adding an onClickListener automatically enables the button so disable it after
@@ -53,34 +53,30 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
     }
 
     fun applyPinPadConfig(config: PinPadConfig) {
-        val pinKeys =
-            DIGIT_KEY_ID_VALUE_MAP.map { it.key } + listOf(R.id.key_backspace, R.id.key_confirm)
+        val pinLayout = findViewById<ConstraintLayout>(R.id.pin_layout)
 
-        val rowSpacingDp = resources.getDimensionPixelSize(config.rowSpacingDpResId)
-        val keyHeightDp = resources.getDimensionPixelSize(config.keyHeightDpResId)
-        // Margins are halved to counteract doubling since each key will have them
-        val pinKeyMargin = rowSpacingDp / 2
-        for (id in pinKeys) {
-            val pinKey = findViewById<View>(id)
-            val params =
-                (pinKey.layoutParams as GridLayout.LayoutParams).apply {
-                    topMargin = pinKeyMargin
-                    bottomMargin = pinKeyMargin
-                    height = keyHeightDp
-                }
-            pinKey.layoutParams = params
+        val rowSpacingPx = resources.getDimensionPixelSize(config.rowSpacingDpResId)
+        val keyHeightPx = resources.getDimensionPixelSize(config.keyHeightDpResId)
+        ConstraintSet().apply {
+            clone(pinLayout)
+            applyRowSpacing(rowSpacingPx, this)
+            applyKeyHeight(keyHeightPx, this)
+            applyTo(pinLayout)
         }
+    }
 
-        // Layout margin is negative to offset the added margin from the PIN Keys
-        // Since each key gets the row spacing we divide by 2
-        val layoutMargin = -(rowSpacingDp / 2)
-        val gridLayout = findViewById<GridLayout>(R.id.grid_layout)
-        val layoutParams =
-            (gridLayout.layoutParams as LayoutParams).apply {
-                topMargin = layoutMargin
-                bottomMargin = layoutMargin
-            }
-        gridLayout.layoutParams = layoutParams
+    private fun applyRowSpacing(rowSpacingPx: Int, constraintSet: ConstraintSet) {
+        val rowIds = listOf(R.id.key_4, R.id.key_7, R.id.key_backspace)
+        for (id in rowIds) {
+            constraintSet.setMargin(id, ConstraintSet.TOP, rowSpacingPx)
+        }
+    }
+
+    private fun applyKeyHeight(heightPx: Int, constraintSet: ConstraintSet) {
+        val pinKeys = DIGIT_KEY_ID_VALUE_MAP.map { it.key } + ACTION_KEY_ID_VALUE_SET
+        for (id in pinKeys) {
+            constraintSet.constrainHeight(id, heightPx)
+        }
     }
 
     enum class PinPadConfig(
@@ -98,7 +94,7 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
 
     private companion object {
         val DIGIT_KEY_ID_VALUE_MAP =
-            hashMapOf<Int, String>(
+            hashMapOf(
                 R.id.key_0 to "0",
                 R.id.key_1 to "1",
                 R.id.key_2 to "2",
@@ -110,5 +106,6 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
                 R.id.key_8 to "8",
                 R.id.key_9 to "9",
             )
+        val ACTION_KEY_ID_VALUE_SET = setOf(R.id.key_backspace, R.id.key_confirm)
     }
 }
