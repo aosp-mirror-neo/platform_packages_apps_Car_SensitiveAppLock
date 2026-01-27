@@ -27,7 +27,6 @@ import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.metrics.MetricsLogger.Companion.NULL_PACKAGE_UID
 import com.android.car.sensitiveapplock.util.Logger
-import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi.requireToolbar
 import com.android.car.ui.toolbar.MenuItem
 import com.android.car.ui.toolbar.NavButtonMode

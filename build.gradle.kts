@@ -173,6 +173,7 @@ androidComponents {
 
 dependencies {
     implementation(files(gradle.extra["lib_car_system_stubs"] as String))
+    implementation(libs.androidx.constraintlayout)
     compileOnly(files(gradle.extra["lib_system_stubs"] as String))
 
     implementation(project(":oem-token-lib"))

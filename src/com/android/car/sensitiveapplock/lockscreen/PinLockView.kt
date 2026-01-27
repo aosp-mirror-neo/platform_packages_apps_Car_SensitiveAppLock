@@ -25,11 +25,16 @@ import android.util.TypedValue
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
-import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
+import com.android.car.sensitiveapplock.util.Logger
+import com.android.car.sensitiveapplock.util.ScreenSizeUtils
+import com.android.car.sensitiveapplock.util.ScreenSizeUtils.getUsableBounds
 import com.android.car.ui.toolbar.MenuItem
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -45,16 +50,28 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     private var prevPinHasValidFormat = false
 
     private val enteredPin: EditText
+    private val title: TextView
     private val subtitle: TextView
+    private val footer: TextView
+    private val pinPad: PinPadView
+    private val isPortrait: Boolean = ScreenSizeUtils.isPortrait(context)
 
     init {
-        if (isPortrait(context)) {
+        if (isPortrait) {
+            logger.d("Inflating portrait layout.")
             inflate(context, R.layout.pin_lock_screen_portrait, this)
         } else {
+            logger.d("Inflating landscape layout.")
             inflate(context, R.layout.pin_lock_screen, this)
         }
-        enteredPin = findViewById<EditText>(R.id.entered_pin)
-        subtitle = findViewById<TextView>(R.id.subtitle)
+
+        enteredPin = findViewById(R.id.entered_pin)
+        title = findViewById(R.id.title)
+        subtitle = findViewById(R.id.subtitle)
+        footer = findViewById(R.id.button_recovery)
+        pinPad = findViewById(R.id.pin_pad)
+
+        applyLayoutFromDimensions()
     }
 
     /** Sets the view title. */
@@ -128,7 +145,6 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     fun setupActionButtons(nextButton: MenuItem? = null, onConfirmClick: () -> Unit = {}) {
         nextButton?.isVisible = true
 
-        val pinPad = findViewById<PinPadView>(R.id.pin_pad)
         // Disable buttons until a valid format PIN is entered
         enteredPin.addTextChangedListener(
             object : TextWatcher {
@@ -163,5 +179,251 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
         pinPad.setupButtons(enteredPin, onConfirmClick)
         nextButton?.isEnabled = false
         nextButton?.onClickListener = MenuItem.OnClickListener { onConfirmClick() }
+    }
+
+    private fun applyLayoutFromDimensions() {
+        val (usableWidth, usableHeight) = getUsableBounds(context)
+        logger.d("Usable width = $usableWidth, usableHeight = $usableHeight")
+
+        if (isPortrait) {
+            applyPortraitLayoutFromDimensions(usableHeight)
+        } else {
+            applyLandscapeLayoutFromDimensions(usableHeight, usableWidth)
+        }
+    }
+
+    private fun applyPortraitLayoutFromDimensions(height: Int) {
+        val (textAreaConfig, pinAreaConfig) =
+            when {
+                height >= PORTRAIT_UNCONSTRAINED_THRESHOLD -> {
+                    TextAreaConfig.UNCONSTRAINED_PORTRAIT to PinAreaConfig.UNCONSTRAINED_PORTRAIT
+                }
+                height >= PORTRAIT_DEFAULT_THRESHOLD -> {
+                    TextAreaConfig.DEFAULT_PORTRAIT to PinAreaConfig.DEFAULT_PORTRAIT
+                }
+                else -> {
+                    TextAreaConfig.COMPACT_PORTRAIT to PinAreaConfig.COZY_PORTRAIT
+                }
+            }
+        applyLayoutConfig(textAreaConfig, pinAreaConfig)
+    }
+
+    private fun applyLandscapeLayoutFromDimensions(height: Int, width: Int) {
+        val (textAreaConfig, pinAreaConfig) =
+            when {
+                height >= UNCONSTRAINED_THRESHOLD ->
+                    TextAreaConfig.UNCONSTRAINED to PinAreaConfig.UNCONSTRAINED
+                height >= DEFAULT_THRESHOLD -> {
+                    if (width >= WIDTH_THRESHOLD) {
+                        TextAreaConfig.UNCONSTRAINED to PinAreaConfig.DEFAULT
+                    } else {
+                        TextAreaConfig.DEFAULT to PinAreaConfig.DEFAULT
+                    }
+                }
+                height >= COMPACT_THRESHOLD -> TextAreaConfig.COMPACT to PinAreaConfig.COZY
+                else -> TextAreaConfig.COMPACT to PinAreaConfig.COMPACT
+            }
+        applyLayoutConfig(
+            textAreaConfig,
+            pinAreaConfig,
+            isWidescreen = width >= WIDESCREEN_THRESHOLD,
+        )
+    }
+
+    private fun applyLayoutConfig(
+        textAreaConfig: TextAreaConfig,
+        pinAreaConfig: PinAreaConfig,
+        isWidescreen: Boolean = false,
+    ) {
+        logger.i(
+            "applyLayoutConfig: textAreaConfig = $textAreaConfig, " +
+                "pinAreaConfig = $pinAreaConfig, isPortrait = $isPortrait," +
+                " isWideScreen = $isWidescreen"
+        )
+        if (isPortrait) {
+            val layout = findViewById<ConstraintLayout>(R.id.pin_lock_screen_portrait_layout)
+            ConstraintSet().apply {
+                clone(layout)
+                applyTextAreaConfig(textAreaConfig, this)
+                applyPinAreaConfig(pinAreaConfig, this)
+                applyTo(layout)
+            }
+        } else {
+            val leftLayout = findViewById<ConstraintLayout>(R.id.layout_left)
+            val rightLayout = findViewById<ConstraintLayout>(R.id.layout_right)
+
+            ConstraintSet().apply {
+                clone(leftLayout)
+                applyTextAreaConfig(textAreaConfig, this)
+                applyTo(leftLayout)
+            }
+            ConstraintSet().apply {
+                clone(rightLayout)
+                applyPinAreaConfig(pinAreaConfig, this)
+                applyTo(rightLayout)
+            }
+
+            if (isWidescreen) {
+                val rootLayout = findViewById<ConstraintLayout>(R.id.pin_lock_screen_layout)
+                val leftMarginPx =
+                    resources.getDimensionPixelSize(R.dimen.pin_lock_screen_widescreen_left_margin)
+                ConstraintSet().apply {
+                    clone(rootLayout)
+                    setHorizontalBias(R.id.layout_left, LEFT_BIAS)
+                    setMargin(R.id.layout_left, ConstraintSet.START, leftMarginPx)
+                    applyTo(rootLayout)
+                }
+            }
+        }
+    }
+
+    private fun applyTextAreaConfig(textAreaConfig: TextAreaConfig, constraintSet: ConstraintSet) {
+        applyTextConfig(textAreaConfig.textConfig)
+        constraintSet.setMargin(
+            R.id.title,
+            ConstraintSet.TOP,
+            resources.getDimensionPixelSize(textAreaConfig.topMarginDpResId),
+        )
+
+        val recoveryButtonId = R.id.button_recovery
+        val recoveryButtonMarginPx =
+            resources.getDimensionPixelSize(textAreaConfig.recoveryButtonMarginDpResId)
+        if (isPortrait) {
+            constraintSet.setMargin(recoveryButtonId, ConstraintSet.TOP, recoveryButtonMarginPx)
+            return
+        }
+
+        constraintSet.apply {
+            clear(recoveryButtonId, ConstraintSet.TOP)
+            clear(recoveryButtonId, ConstraintSet.BOTTOM)
+
+            // If compact, the recovery button should be anchored to the bottom of the screen
+            // instead of to the pin entry box.
+            if (textAreaConfig == TextAreaConfig.COMPACT) {
+                connect(
+                    recoveryButtonId,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                )
+                setMargin(recoveryButtonId, ConstraintSet.BOTTOM, recoveryButtonMarginPx)
+            } else {
+                connect(recoveryButtonId, ConstraintSet.TOP, R.id.entered_pin, ConstraintSet.BOTTOM)
+                setMargin(recoveryButtonId, ConstraintSet.TOP, recoveryButtonMarginPx)
+            }
+        }
+    }
+
+    private fun applyPinAreaConfig(pinAreaConfig: PinAreaConfig, constraintSet: ConstraintSet) {
+        constraintSet.setMargin(
+            R.id.pin_pad,
+            ConstraintSet.TOP,
+            resources.getDimensionPixelSize(pinAreaConfig.pinPadMarginDpResId),
+        )
+        pinPad.applyPinPadConfig(pinAreaConfig.pinPadConfig)
+    }
+
+    private fun applyTextConfig(textConfig: TextConfig) {
+        title.textSize = resources.getDimensionPixelSize(textConfig.titleSizeResId).toFloat()
+        subtitle.textSize = resources.getDimensionPixelSize(textConfig.subtitleSizeResId).toFloat()
+        footer.textSize = resources.getDimensionPixelSize(textConfig.footerSizeResId).toFloat()
+    }
+
+    private enum class TextAreaConfig(
+        val textConfig: TextConfig,
+        @param:DimenRes val topMarginDpResId: Int,
+        @param:DimenRes val recoveryButtonMarginDpResId: Int,
+    ) {
+        UNCONSTRAINED(
+            TextConfig.DEFAULT,
+            R.dimen.pin_lock_screen_text_area_top_margin_unconstrained,
+            R.dimen.pin_lock_screen_recovery_button_margin_unconstrained,
+        ),
+        DEFAULT(
+            TextConfig.DEFAULT,
+            R.dimen.pin_lock_screen_text_area_top_margin_default,
+            R.dimen.pin_lock_screen_recovery_button_margin_default,
+        ),
+        COMPACT(
+            TextConfig.COMPACT,
+            R.dimen.pin_lock_screen_text_area_top_margin_compact,
+            R.dimen.pin_lock_screen_recovery_button_margin_compact,
+        ),
+        UNCONSTRAINED_PORTRAIT(
+            TextConfig.DEFAULT,
+            R.dimen.pin_lock_screen_text_area_top_margin_unconstrained_portrait,
+            R.dimen.pin_lock_screen_recovery_button_margin_unconstrained_portrait,
+        ),
+        DEFAULT_PORTRAIT(
+            TextConfig.DEFAULT,
+            R.dimen.pin_lock_screen_text_area_top_margin_default_portrait,
+            R.dimen.pin_lock_screen_recovery_button_margin_default_portrait,
+        ),
+        COMPACT_PORTRAIT(
+            TextConfig.COMPACT,
+            R.dimen.pin_lock_screen_text_area_top_margin_compact_portrait,
+            R.dimen.pin_lock_screen_recovery_button_margin_compact_portrait,
+        ),
+    }
+
+    private enum class PinAreaConfig(
+        val pinPadConfig: PinPadView.PinPadConfig,
+        @param:DimenRes val pinPadMarginDpResId: Int,
+    ) {
+        UNCONSTRAINED(
+            PinPadView.PinPadConfig.UNCONSTRAINED,
+            R.dimen.pin_lock_screen_pin_area_top_margin_unconstrained,
+        ),
+        DEFAULT(
+            PinPadView.PinPadConfig.DEFAULT,
+            R.dimen.pin_lock_screen_pin_area_top_margin_default,
+        ),
+        COZY(PinPadView.PinPadConfig.COZY, R.dimen.pin_lock_screen_pin_area_top_margin_cozy),
+        COMPACT(
+            PinPadView.PinPadConfig.COMPACT,
+            R.dimen.pin_lock_screen_pin_area_top_margin_compact,
+        ),
+        UNCONSTRAINED_PORTRAIT(
+            PinPadView.PinPadConfig.UNCONSTRAINED,
+            R.dimen.pin_lock_screen_pin_area_top_margin_unconstrained_portrait,
+        ),
+        DEFAULT_PORTRAIT(
+            PinPadView.PinPadConfig.DEFAULT,
+            R.dimen.pin_lock_screen_pin_area_top_margin_default_portrait,
+        ),
+        COZY_PORTRAIT(
+            PinPadView.PinPadConfig.COZY,
+            R.dimen.pin_lock_screen_pin_area_top_margin_cozy_portrait,
+        ),
+    }
+
+    private enum class TextConfig(
+        @param:DimenRes val titleSizeResId: Int,
+        @param:DimenRes val subtitleSizeResId: Int,
+        @param:DimenRes val footerSizeResId: Int,
+    ) {
+        DEFAULT(
+            R.dimen.pin_lock_screen_title_text_size_default,
+            R.dimen.pin_lock_screen_subtitle_text_size_default,
+            R.dimen.pin_lock_screen_footer_text_size_default,
+        ),
+        COMPACT(
+            R.dimen.pin_lock_screen_title_text_size_compact,
+            R.dimen.pin_lock_screen_subtitle_text_size_compact,
+            R.dimen.pin_lock_screen_footer_text_size_compact,
+        ),
+    }
+
+    private companion object {
+        val logger = Logger(PinLockView::class.java)
+
+        const val LEFT_BIAS = 0f
+        const val WIDESCREEN_THRESHOLD = 1584
+        const val PORTRAIT_UNCONSTRAINED_THRESHOLD = 1080
+        const val PORTRAIT_DEFAULT_THRESHOLD = 968
+        const val UNCONSTRAINED_THRESHOLD = 696
+        const val DEFAULT_THRESHOLD = 608
+        const val WIDTH_THRESHOLD = 1224
+        const val COMPACT_THRESHOLD = 480
     }
 }
