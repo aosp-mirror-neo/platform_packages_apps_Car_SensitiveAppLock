@@ -75,7 +75,7 @@ class ValidatePinFragment : Hilt_ValidatePinFragment(R.layout.fragment_pin_scree
         pinLockView =
             view.findViewById<PinLockView>(R.id.pin_lock_view).apply {
                 setTitle(R.string.validate_pin_title)
-                setupUi { validatePin() }
+                setupActionButtons { validatePin() }
                 setRecoveryAction { recoverPin() }
             }
     }
