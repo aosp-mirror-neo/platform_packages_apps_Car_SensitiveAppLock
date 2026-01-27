@@ -70,12 +70,16 @@ class AppLockDataRepositoryTest {
             setPin(USER_PIN)
             addLockedApp(LOCKED_APP)
             setReAuthPinRecoveryAccount(RECOVERY_ACCOUNT)
+            incrementDiscoveryNotificationInteractionCount()
+            permanentlyDismissDiscoveryNotification()
             clearData()
         }
 
         assertThat(appLockDataRepository.getPin()).isEmpty()
         assertThat(appLockDataRepository.getLockedApps()).isEmpty()
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+        assertThat(appLockDataRepository.getDiscoveryNotificationInteractionCount()).isEqualTo(0)
+        assertThat(appLockDataRepository.discoveryNotificationPermanentlyDismissed()).isFalse()
     }
 
     @Test
@@ -111,6 +115,20 @@ class AppLockDataRepositoryTest {
     @Test
     fun reAuthPinRecoveryEnabled_whenNotEnabled_returnsFalse() = runTest {
         assertThat(appLockDataRepository.reAuthPinRecoveryEnabled()).isFalse()
+    }
+
+    @Test
+    fun incrementDiscoveryNotificationInteractionCount_updatesData() = runTest {
+        appLockDataRepository.incrementDiscoveryNotificationInteractionCount()
+
+        assertThat(appLockDataRepository.getDiscoveryNotificationInteractionCount()).isEqualTo(1)
+    }
+
+    @Test
+    fun permanentlyDismissDiscoveryNotification_updatesData() = runTest {
+        appLockDataRepository.permanentlyDismissDiscoveryNotification()
+
+        assertThat(appLockDataRepository.discoveryNotificationPermanentlyDismissed()).isTrue()
     }
 
     private companion object {

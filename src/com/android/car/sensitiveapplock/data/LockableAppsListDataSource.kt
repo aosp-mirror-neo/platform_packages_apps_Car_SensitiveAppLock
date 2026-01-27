@@ -25,7 +25,6 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Process
-import android.provider.Settings.ACTION_SETTINGS
 import android.service.media.MediaBrowserService
 import com.android.car.media.common.source.MediaSource
 import com.android.car.sensitiveapplock.R
@@ -47,8 +46,8 @@ import javax.inject.Singleton
 class LockableAppsListDataSource
 @Inject
 constructor(@ApplicationContext private val context: Context) {
-    private val unsuspendablePackages =
-        mutableSetOf(*context.resources.getStringArray(R.array.unsuspendable_packages))
+    private val systemLockablePackages =
+        mutableSetOf(*context.resources.getStringArray(R.array.system_lockable_packages))
     private val packageManager = context.packageManager
     private val launcherApps =
         context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
@@ -59,21 +58,26 @@ constructor(@ApplicationContext private val context: Context) {
      *
      * An app is deemed to be lockable if it clears the following criteria:
      * - Not unsuspendable by Package Manager
-     * - Not marked unsuspendable in the deny list in the config
      * - Not an Assistant app
      * - Not a Maps app
-     * - Not CarSettings app
      * - Allows data clearing (FLAG_ALLOW_CLEAR_USER_DATA is not set to false)
+     * - Exempted system app defined in the config [R.array.system_lockable_packages]
      */
     fun getLockableApps(): List<AppInfo> {
         val allApps = (getLauncherApps() + getMediaApps()).distinctBy { it.packageName }
         val allAppPackageNames = allApps.map(AppInfo::packageName).toTypedArray()
 
+        // System apps are not lockable by default unless exempted
+        val unsuspendablePackages =
+            allApps
+                .filter { it.isBundledApp and !systemLockablePackages.contains(it.packageName) }
+                .map { it.packageName }
+                .toMutableSet()
+
         unsuspendablePackages.apply {
             addAll(packageManager.getUnsuspendablePackages(allAppPackageNames))
             addAll(getAssistantApps())
             addAll(getMapsApps())
-            addAll(getSettingsApp())
         }
         logger.d("Unsuspendable apps list: $unsuspendablePackages")
 
@@ -123,14 +127,6 @@ constructor(@ApplicationContext private val context: Context) {
             .queryIntentActivities(
                 Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MAPS),
                 0, // flags,
-            )
-            .map { it.activityInfo.packageName }
-
-    private fun getSettingsApp(): List<String> =
-        context.packageManager
-            .queryIntentActivities(
-                Intent(ACTION_SETTINGS).addCategory(Intent.CATEGORY_DEFAULT),
-                0, // flags
             )
             .map { it.activityInfo.packageName }
 

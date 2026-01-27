@@ -9,6 +9,7 @@ android_robolectric_test {
         ":sensitive-app-lock-testing-srcs",
         "src/com/android/car/sensitiveapplock/data/*.kt",
         "src/com/android/car/sensitiveapplock/di/*.kt",
+        "src/com/android/car/sensitiveapplock/discovery/*.kt",
         "src/com/android/car/sensitiveapplock/lockscreen/*.kt",
         "src/com/android/car/sensitiveapplock/metrics/*.kt",
         "src/com/android/car/sensitiveapplock/service/*.kt",
@@ -19,9 +20,8 @@ android_robolectric_test {
         "src/com/android/car/sensitiveapplock/util/*.kt",
     ],
     java_resource_dirs: ["config"],
-    libs: [
+    static_libs: [
         "Robolectric_all-target",
-        "android.car-system-stubs",
         "androidx.navigation_navigation-testing",
         "androidx.test.core",
         "androidx.test.ext.junit",
@@ -31,9 +31,14 @@ android_robolectric_test {
         "hilt_android",
         "hilt_android_testing",
         "kotlinx_coroutines_test",
-        "mockito-kotlin2",
         "mockito-robolectric-prebuilt",
+        "oem-token-lib",
         "truth",
+    ],
+    libs: [
+        "android.car-system-stubs",
+        "mockito-kotlin2",
+        "token-shared-lib",
     ],
     visibility: ["//visibility:public"],
     instrumentation_for: "SensitiveAppLock",
@@ -60,6 +65,7 @@ android_test {
     ],
     libs: [
         "android.car-system-stubs",
+        "token-shared-lib",
     ],
     instrumentation_for: "SensitiveAppLock",
     test_suites: [

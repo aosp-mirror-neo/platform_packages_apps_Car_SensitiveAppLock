@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package com.android.car.sensitiveapplock.service
+package com.android.car.sensitiveapplock.suspension
 
-import android.app.Application
 import android.car.Car
 import android.car.hardware.power.CarPowerManager
-import android.content.pm.PackageInfo
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
-import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
+import com.android.car.sensitiveapplock.service.CarPowerMonitor
+import com.android.car.sensitiveapplock.service.PackageChangeMonitor
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider
@@ -32,91 +36,121 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestParameterInjector
 import org.robolectric.Shadows.shadowOf
 
 @HiltAndroidTest
 @RunWith(RobolectricTestParameterInjector::class)
-class CarPowerMonitorServiceTest {
+class PackageRelockServiceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @Inject @BackgroundContext lateinit var backgroundContext: CoroutineContext
     @Inject lateinit var appSuspensionManager: AppSuspensionManager
     @Inject lateinit var appLockDataRepository: AppLockDataRepository
+    @Inject lateinit var packageChangeMonitor: PackageChangeMonitor
+    @Inject lateinit var carPowerMonitor: CarPowerMonitor
+    @Inject lateinit var car: Car
 
-    private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val context: Context = ApplicationProvider.getApplicationContext()
     private val shadowPackageManager = shadowOf(context.packageManager)
-    private val carPowerManager = mock<CarPowerManager>()
-    private val car =
-        mock<Car> { on { getCarManager(CarPowerManager::class.java) } doReturn carPowerManager }
     private val powerStateListenerCaptor = argumentCaptor<CarPowerManager.CarPowerStateListener>()
 
-    private lateinit var carPowerMonitorService: CarPowerMonitorService
+    private lateinit var packageRelockService: PackageRelockService
+    private lateinit var spyCarPowerMonitor: CarPowerMonitor
+    private lateinit var spyPackageChangeMonitor: PackageChangeMonitor
+    private lateinit var carPowerManager: CarPowerManager
 
     @Before
-    fun init() {
+    fun setup() {
         hiltRule.inject()
 
-        shadowPackageManager.installPackage(PACKAGE_INFO)
-        runTest { appLockDataRepository.addLockedApp(PACKAGE_INFO.packageName) }
-        carPowerMonitorService =
-            CarPowerMonitorService(
-                car,
+        spyPackageChangeMonitor = spy(packageChangeMonitor)
+        spyCarPowerMonitor = spy(carPowerMonitor)
+        carPowerManager = car.getCarManager(CarPowerManager::class.java)!!
+        packageRelockService =
+            PackageRelockService(
+                spyPackageChangeMonitor,
+                spyCarPowerMonitor,
                 appSuspensionManager,
                 appLockDataRepository,
                 backgroundContext,
             )
+        packageRelockService.start()
 
-        carPowerMonitorService.start()
-        verify(carPowerManager).setListener(any(), powerStateListenerCaptor.capture())
+        AppInstallationHelper.addAppToPackageManager(context, TEST_PACKAGE_NAME)
+    }
+
+    @After
+    fun cleanup() {
+        packageRelockService.stop()
     }
 
     @Test
-    fun start_locksApps() {
-        // Verify apps are locked
-        assertThat(shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).isSuspended)
-            .isTrue()
+    fun onStart_relocksAllApps() = runTest {
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAME)
+
+        packageRelockService.start()
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+        assertThat(shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAME).isSuspended).isTrue()
     }
 
     @Test
-    fun stop_disconnectsCar() {
-        carPowerMonitorService.stop()
-
-        verify(car).disconnect()
+    fun onStart_registersListeners() {
+        verify(spyPackageChangeMonitor, times(1)).addListener(any())
+        verify(spyCarPowerMonitor, times(1)).addListener(any())
     }
 
     @Test
-    fun stop_cancelsScope() {
-        carPowerMonitorService.stop()
-        appSuspensionManager.setAppSuspensionState(PACKAGE_INFO.packageName, false)
+    fun onStop_unregistersListeners() {
+        packageRelockService.stop()
 
-        powerStateListenerCaptor.firstValue.onStateChanged(CarPowerManager.STATE_SUSPEND_EXIT)
+        verify(spyPackageChangeMonitor, times(1)).removeListener(any())
+        verify(spyCarPowerMonitor, times(1)).removeListener(any())
+    }
 
-        // Apps are still unlocked because scope was cancelled
-        assertThat(shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName).isSuspended)
-            .isFalse()
+    @Test
+    fun onReceive_packageAdded_previouslyLocked_relocksPackage() = runTest {
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAME)
+
+        context.sendBroadcast(BROADCAST_INTENT)
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+        assertThat(shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAME).isSuspended).isTrue()
+    }
+
+    @Test
+    fun onReceive_packageAdded_notPreviouslyLocked_doesNotRelockPackage() {
+        context.sendBroadcast(BROADCAST_INTENT)
+        shadowOf(Looper.getMainLooper()).runToEndOfTasks()
+
+        assertThat(shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAME).isSuspended).isFalse()
     }
 
     @Test
     fun powerStateListener_onPowerStateChange_updatesAppLockSuspensionStatus(
         @TestParameter(valuesProvider = CarPowerStateValuesProvider::class) state: Int
-    ) {
-        appSuspensionManager.setAppSuspensionState(PACKAGE_INFO.packageName, false)
+    ) = runTest {
+        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAME)
+        appSuspensionManager.setAppSuspensionState(TEST_PACKAGE_NAME, false)
 
+        verify(carPowerManager).setListener(any(), powerStateListenerCaptor.capture())
         powerStateListenerCaptor.firstValue.onStateChanged(state)
 
-        val pkgSetting = shadowPackageManager.getPackageSetting(PACKAGE_INFO.packageName)
+        val pkgSetting = shadowPackageManager.getPackageSetting(TEST_PACKAGE_NAME)
         when (state) {
             CarPowerManager.STATE_SHUTDOWN_PREPARE -> assertThat(pkgSetting.isSuspended).isTrue()
+
             else -> assertThat(pkgSetting.isSuspended).isFalse()
         }
     }
@@ -143,6 +177,9 @@ class CarPowerMonitorServiceTest {
     }
 
     private companion object {
-        val PACKAGE_INFO = PackageInfo().apply { packageName = "com.test.package" }
+        const val TEST_PACKAGE_NAME = "com.package.ok"
+
+        val BROADCAST_INTENT =
+            Intent(Intent.ACTION_PACKAGE_ADDED).setData(Uri.parse("package:$TEST_PACKAGE_NAME"))
     }
 }

@@ -81,4 +81,11 @@
   <!-- Guest Users -->
   <string name="guest_user_exit_toast_message">App lock isn\'t available in guest profile.</string>
 
+  <!-- Discovery Notification -->
+  <string name="discovery_notification_title">Protect personal info with app lock</string>
+  <string name="discovery_notification_message">Create a PIN to lock your apps</string>
+  <string name="discovery_notification_setup_button_text">Get started</string>
+  <string name="discovery_notification_dismiss_button_text">Not now</string>
+  <string name="discovery_notification_permanent_dismiss_button_text">Don\'t show again</string>
+
 </resources>

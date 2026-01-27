@@ -19,11 +19,18 @@
     <!-- Config for allowing locking of media apps. -->
     <bool name="config_enableMediaAppsLocking">true</bool>
 
-    <!--A customizable list of unsuspendable packages that should not show up in the App Lock settings. -->
-    <string-array name="unsuspendable_packages">
-        <item>com.android.car.settings</item>
+    <!--A customizable list of system packages that should show up in the App Lock settings. -->
+    <string-array name="system_lockable_packages">
+        <item>com.android.car.calendar</item>
     </string-array>
 
     <!-- Default account type used for recovering pin. -->
     <string name="config_recoveryAccountType" translatable="false">com.google</string>
+
+    <!-- Feature flag for allowing discovery notification. -->
+    <bool name="feature_enableDiscoveryNotification">false</bool>
+
+    <!-- Discovery notification max interaction count. After this interaction count is reached
+         the user will be provided an option to permanently dismiss the notification. -->
+    <integer name="config_discovery_notification_max_interaction">1</integer>
 </resources>

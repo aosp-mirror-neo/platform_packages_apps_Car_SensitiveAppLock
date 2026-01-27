@@ -20,7 +20,6 @@ import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
@@ -37,7 +36,6 @@ import com.android.car.sensitiveapplock.settings.SettingsLockManager
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus
 import com.android.car.sensitiveapplock.suspension.AppSuspensionManager
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
-import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addAppToPackageManager
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
@@ -142,12 +140,7 @@ class PinLockActivityTest {
 
     @Test
     fun onCreate_actionShowSuspendedAppDetails_logsMetrics() = runTest {
-        addAppToPackageManager(
-            context,
-            TEST_PACKAGE_NAMES[0],
-            uid = 100,
-            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-        )
+        addAppToPackageManager(context, TEST_PACKAGE_NAMES[0], uid = 100)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         val pinLockIntent =
             Intent(context, PinLockActivity::class.java).apply {
@@ -317,12 +310,7 @@ class PinLockActivityTest {
 
     @Test
     fun onValidatePinRequestResult_calledFromSuspendDialog_logsMetrics() = runTest {
-        addAppToPackageManager(
-            context,
-            TEST_PACKAGE_NAMES[0],
-            uid = 100,
-            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-        )
+        addAppToPackageManager(context, TEST_PACKAGE_NAMES[0], uid = 100)
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         val pinLockIntent =
             Intent(context, PinLockActivity::class.java).apply {
@@ -379,7 +367,6 @@ class PinLockActivityTest {
         const val SPLITSCREEN_MULTITASKING_FEATURE = "android.software.car.splitscreen_multitasking"
         const val USER_PIN = "1234"
         const val MENU_ITEM_COUNT = 1
-        const val TEST_ACTIVITY_CLASS = "test.activity.class"
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
     }
 }
