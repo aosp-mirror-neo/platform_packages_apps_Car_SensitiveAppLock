@@ -36,18 +36,19 @@
     <dimen name="pin_lock_screen_column_width_max">612dp</dimen>
     <dimen name="pin_lock_screen_column_width_min">375dp</dimen>
 
-    <dimen name="pin_lock_screen_title_text_size_default">44sp</dimen>
+    <dimen name="pin_lock_screen_title_text_size_default">45sp</dimen>
     <dimen name="pin_lock_screen_title_text_size_compact">36sp</dimen>
 
-    <dimen name="pin_lock_screen_subtitle_text_size_default">36sp</dimen>
+    <dimen name="pin_lock_screen_subtitle_text_size_default">32sp</dimen>
     <dimen name="pin_lock_screen_subtitle_text_size_compact">28sp</dimen>
 
-    <dimen name="pin_lock_screen_footer_text_size_default">36sp</dimen>
+    <dimen name="pin_lock_screen_footer_text_size_default">32sp</dimen>
     <dimen name="pin_lock_screen_footer_text_size_compact">28sp</dimen>
 
     <dimen name="pin_lock_screen_pin_area_side_margin">16dp</dimen>
 
     <dimen name="pin_lock_screen_pin_area_top_margin_unconstrained">56dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_unconstrained_tall">128dp</dimen>
     <dimen name="pin_lock_screen_pin_area_top_margin_default">24dp</dimen>
     <dimen name="pin_lock_screen_pin_area_top_margin_cozy">8dp</dimen>
     <dimen name="pin_lock_screen_pin_area_top_margin_compact">8dp</dimen>
@@ -64,6 +65,7 @@
     <dimen name="pin_lock_screen_entered_pin_width_portrait">400dp</dimen>
 
     <dimen name="pin_lock_screen_text_area_top_margin_unconstrained">56dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_unconstrained_tall">128dp</dimen>
     <dimen name="pin_lock_screen_text_area_top_margin_default">24dp</dimen>
     <dimen name="pin_lock_screen_text_area_top_margin_compact">0dp</dimen>
 

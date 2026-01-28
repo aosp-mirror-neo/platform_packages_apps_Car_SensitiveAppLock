@@ -211,8 +211,12 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     private fun applyLandscapeLayoutFromDimensions(height: Int, width: Int) {
         val (textAreaConfig, pinAreaConfig) =
             when {
-                height >= UNCONSTRAINED_THRESHOLD ->
+                height >= UNCONSTRAINED_TALL_THRESHOLD -> {
+                    TextAreaConfig.UNCONSTRAINED_TALL to PinAreaConfig.UNCONSTRAINED_TALL
+                }
+                height >= UNCONSTRAINED_THRESHOLD -> {
                     TextAreaConfig.UNCONSTRAINED to PinAreaConfig.UNCONSTRAINED
+                }
                 height >= DEFAULT_THRESHOLD -> {
                     if (width >= WIDTH_THRESHOLD) {
                         TextAreaConfig.UNCONSTRAINED to PinAreaConfig.DEFAULT
@@ -220,8 +224,12 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
                         TextAreaConfig.DEFAULT to PinAreaConfig.DEFAULT
                     }
                 }
-                height >= COMPACT_THRESHOLD -> TextAreaConfig.COMPACT to PinAreaConfig.COZY
-                else -> TextAreaConfig.COMPACT to PinAreaConfig.COMPACT
+                height >= COMPACT_THRESHOLD -> {
+                    TextAreaConfig.COMPACT to PinAreaConfig.COZY
+                }
+                else -> {
+                    TextAreaConfig.COMPACT to PinAreaConfig.COMPACT
+                }
             }
         applyLayoutConfig(
             textAreaConfig,
@@ -339,8 +347,13 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
             R.dimen.pin_lock_screen_text_area_top_margin_unconstrained,
             R.dimen.pin_lock_screen_recovery_button_margin_unconstrained,
         ),
-        DEFAULT(
+        UNCONSTRAINED_TALL(
             TextConfig.DEFAULT,
+            R.dimen.pin_lock_screen_text_area_top_margin_unconstrained_tall,
+            R.dimen.pin_lock_screen_recovery_button_margin_unconstrained,
+        ),
+        DEFAULT(
+            TextConfig.COMPACT,
             R.dimen.pin_lock_screen_text_area_top_margin_default,
             R.dimen.pin_lock_screen_recovery_button_margin_default,
         ),
@@ -373,6 +386,10 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
         UNCONSTRAINED(
             PinPadView.PinPadConfig.UNCONSTRAINED,
             R.dimen.pin_lock_screen_pin_area_top_margin_unconstrained,
+        ),
+        UNCONSTRAINED_TALL(
+            PinPadView.PinPadConfig.UNCONSTRAINED,
+            R.dimen.pin_lock_screen_pin_area_top_margin_unconstrained_tall,
         ),
         DEFAULT(
             PinPadView.PinPadConfig.DEFAULT,
@@ -422,6 +439,7 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
         const val PORTRAIT_UNCONSTRAINED_THRESHOLD = 1080
         const val PORTRAIT_DEFAULT_THRESHOLD = 968
         const val UNCONSTRAINED_THRESHOLD = 696
+        const val UNCONSTRAINED_TALL_THRESHOLD = 856
         const val DEFAULT_THRESHOLD = 608
         const val WIDTH_THRESHOLD = 1224
         const val COMPACT_THRESHOLD = 480
