@@ -332,9 +332,20 @@ class PinLockView @Inject constructor(context: Context, attrs: AttributeSet) :
     }
 
     private fun applyTextConfig(textConfig: TextConfig) {
-        title.textSize = resources.getDimensionPixelSize(textConfig.titleSizeResId).toFloat()
-        subtitle.textSize = resources.getDimensionPixelSize(textConfig.subtitleSizeResId).toFloat()
-        footer.textSize = resources.getDimensionPixelSize(textConfig.footerSizeResId).toFloat()
+        // `setTextSize` without a unit defined will assume SP but `getDimension` converts the input
+        // SP to PX. We specify PX here to avoid a double conversion.
+        title.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            resources.getDimension(textConfig.titleSizeResId),
+        )
+        subtitle.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            resources.getDimension(textConfig.subtitleSizeResId),
+        )
+        footer.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            resources.getDimension(textConfig.footerSizeResId),
+        )
     }
 
     private enum class TextAreaConfig(

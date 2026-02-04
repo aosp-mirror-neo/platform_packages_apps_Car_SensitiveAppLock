@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.android.car.sensitiveapplock.R
+import kotlin.math.roundToInt
 
 /* Object containing util functions for the screen size. */
 object ScreenSizeUtils {
@@ -41,13 +42,18 @@ object ScreenSizeUtils {
             windowManager.currentWindowMetrics.windowInsets.getInsetsIgnoringVisibility(
                 WindowInsets.Type.systemBars()
             )
-
         val defaultToolbarHeight =
             context.resources.getDimensionPixelSize(R.dimen.toolbar_height_default)
+        val density = context.resources.displayMetrics.density
+
         val usableHeight =
-            (windowMetrics.height() - insets.top - insets.bottom - defaultToolbarHeight)
+            ((windowMetrics.height() - insets.top - insets.bottom - defaultToolbarHeight) / density)
+                .roundToInt()
                 .coerceAtLeast(0)
-        val usableWidth = (windowMetrics.width() - insets.left - insets.right).coerceAtLeast(0)
+        val usableWidth =
+            ((windowMetrics.width() - insets.left - insets.right) / density)
+                .roundToInt()
+                .coerceAtLeast(0)
         return Pair(usableWidth, usableHeight)
     }
 }
