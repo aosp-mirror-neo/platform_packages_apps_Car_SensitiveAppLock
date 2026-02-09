@@ -56,6 +56,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadow.api.Shadow
 
 @HiltAndroidTest
 @SmallTest
@@ -242,33 +243,31 @@ class PinLockViewModelTest {
     }
 
     @Test
-    fun clearSystemAppsData_clearsDataForLockedSystemApps() = runTest {
-        AppInstallationHelper.addAppToPackageManager(
-            context,
-            packageName = TEST_PACKAGE_NAMES[0],
-            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-        )
-        AppInstallationHelper.addAppToPackageManager(
-            context,
-            packageName = TEST_PACKAGE_NAMES[1],
-            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-        )
+    fun clearLockedAppsData_clearsDataForLockedApps() = runTest {
+        val systemLockableApps =
+            context.resources.getStringArray(R.array.system_lockable_packages).toList()
+        for (packageName in systemLockableApps) {
+            AppInstallationHelper.addAppToPackageManager(
+                context,
+                packageName = packageName,
+                flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+            )
+            appLockDataRepository.addLockedApp(packageName)
+        }
         AppInstallationHelper.addAppToPackageManager(
             context,
             packageName = TEST_PACKAGE_NAMES[2],
             flags = DEFAULT_FLAGS,
         )
-        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
-        appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[1])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[2])
 
         pinLockViewModel.clearLockedAppsData()
 
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val shadowAm = shadowOf(am) as ShadowActivityManager
+        val shadowAm = Shadow.extract<ShadowActivityManager>(am)
 
         val dataClearedApps = shadowAm.getClearedApplicationUserDataPackages()
-        assertThat(dataClearedApps).isEqualTo(TEST_PACKAGE_NAMES)
+        assertThat(dataClearedApps).isEqualTo(systemLockableApps + TEST_PACKAGE_NAMES[2])
     }
 
     private companion object {

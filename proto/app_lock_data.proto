@@ -28,6 +28,10 @@ message AppLockData {
     repeated string locked_apps = 2;
     // ReAuth pin recovery account
     RecoveryAccount re_auth_recovery_account = 3;
+    // Discovery notification interaction count
+    int32 discovery_notification_interaction_count = 4;
+    // Discovery notification permanently dismissed
+    bool discovery_notification_permanently_dismissed = 5;
 }
 
 message RecoveryAccount {

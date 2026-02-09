@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.UserManager
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ActivityScenario
@@ -32,6 +33,7 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.auth.PinManager
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
+import com.android.car.sensitiveapplock.notification.NotificationInteractionService
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
 import com.android.car.ui.core.CarUiInstaller
@@ -39,6 +41,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import kotlin.collections.removeLastOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -58,6 +61,7 @@ class SettingsActivityTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
+    private val shadowApplication = shadowOf(context as Application)
     private val shadowUserManager =
         shadowOf(context.getSystemService(Context.USER_SERVICE) as UserManager).apply {
             setSupportsMultipleUsers(true)
@@ -150,6 +154,46 @@ class SettingsActivityTest {
     }
 
     @Test
+    fun onCreate_startedFromNotification_dismissesNotification() {
+        // Launch an activity scenario with an intent similar to being launched via the pending
+        // intent in a notification.
+        val intent =
+            Intent(context, SettingsActivity::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID)
+            }
+
+        // The existing activity scenario does not conflict with this because it does not have
+        // the intent extra EXTRA_NOTIFICATION_ID
+        val scenario = ActivityScenario.launch<SettingsActivity>(intent)
+
+        val startedServices = shadowApplication.allStartedServices
+        val notificationServices =
+            startedServices.filter { intent ->
+                intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1) == NOTIFICATION_ID &&
+                    intent.component?.className ==
+                        NotificationInteractionService::class.qualifiedName
+            }
+        assertThat(notificationServices).hasSize(1)
+        val atoms = getAppLockAtoms().toMutableList()
+        atoms.removeLastOrNull()!! // AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED,
+        )
+
+        scenario.close()
+    }
+
+    @Test
+    fun onCreate_logsMetrics() {
+        val atoms = getAppLockAtoms()
+        assertSensitiveAppLockEventAtom(
+            statsLogItem = atoms.last(),
+            appLockEvent = AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED,
+        )
+    }
+
+    @Test
     fun onNewIntent_pinSet_startsPinLockActivity() {
         activityScenario.onActivity { activity ->
             shadowOf(activity).clearNextStartedActivities()
@@ -164,15 +208,6 @@ class SettingsActivityTest {
     }
 
     @Test
-    fun onCreate_logsMetrics() {
-        val atoms = getAppLockAtoms()
-        assertSensitiveAppLockEventAtom(
-            statsLogItem = atoms.last(),
-            appLockEvent = AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED,
-        )
-    }
-
-    @Test
     fun onNewIntent_pinUnset_initializesUi() = runTest {
         activityScenario.onActivity { activity ->
             shadowOf(activity).clearNextStartedActivities()
@@ -183,6 +218,36 @@ class SettingsActivityTest {
             val fragments = activity.supportFragmentManager.fragments
             assertThat(fragments.size).isEqualTo(1)
             assertThat(fragments[0]).isInstanceOf(SettingsFragment::class.java)
+        }
+    }
+
+    @Test
+    fun onNewIntent_startedFromNotification_dismissesNotificationAndLogsMetrics() {
+        val settingsIntent =
+            Intent(context, SettingsActivity::class.java).apply {
+                putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID)
+            }
+
+        activityScenario.onActivity { activity ->
+            shadowOf(activity).clearNextStartedActivities()
+            activity.lifecycleScope.launch { pinManager.clearAppLockPin() }
+
+            activity.onNewIntent(settingsIntent)
+
+            val startedServices = shadowApplication.allStartedServices
+            val notificationServices =
+                startedServices.filter { intent ->
+                    intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1) == NOTIFICATION_ID &&
+                        intent.component?.className ==
+                            NotificationInteractionService::class.qualifiedName
+                }
+            assertThat(notificationServices).hasSize(1)
+            val atoms = getAppLockAtoms().toMutableList()
+            atoms.removeLastOrNull()!! // AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED
+            assertSensitiveAppLockEventAtom(
+                statsLogItem = atoms.last(),
+                appLockEvent = AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED,
+            )
         }
     }
 
@@ -224,5 +289,6 @@ class SettingsActivityTest {
 
     private companion object {
         const val USER_PIN = "1111"
+        const val NOTIFICATION_ID = 1001
     }
 }

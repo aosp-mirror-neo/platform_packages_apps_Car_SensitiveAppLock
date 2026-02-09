@@ -17,17 +17,15 @@ package com.android.car.sensitiveapplock.data
 
 import android.Manifest.permission.SUSPEND_APPS
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
-import android.content.pm.LauncherApps
-import android.provider.Settings.ACTION_SETTINGS
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.shadows.ShadowResources
+import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addAppToPackageManager
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper.addMediaAppToPackageManager
 import com.google.common.truth.Truth.assertThat
@@ -50,9 +48,6 @@ class LockableAppsListDataSourceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private val context = ApplicationProvider.getApplicationContext<Application>()
-    private val shadowLauncherApps =
-        shadowOf(context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps)
-    private val shadowPackageManager = shadowOf(context.packageManager)
 
     @Inject lateinit var lockableAppsListDataSource: LockableAppsListDataSource
 
@@ -69,15 +64,16 @@ class LockableAppsListDataSourceTest {
         val lockableApps = lockableAppsListDataSource.getLockableApps().map { it.packageName }
 
         val unsuspendablePackages =
-            context.resources.getStringArray(R.array.unsuspendable_packages) +
+            TEST_SYSTEM_PACKAGE_NAMES +
                 TEST_MAPS_PACKAGE +
                 TEST_ASSISTANT_PACKAGE +
                 TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE +
-                TEST_DISALLOW_DATA_CLEARING_PACKAGE +
-                TEST_SETTINGS_PACKAGE
+                TEST_DISALLOW_DATA_CLEARING_PACKAGE
 
         assertThat(lockableApps).isNotEmpty()
         assertThat(lockableApps).containsNoneIn(unsuspendablePackages)
+        val systemLockableApps = context.resources.getStringArray(R.array.system_lockable_packages)
+        assertThat(lockableApps).containsAtLeastElementsIn(systemLockableApps.toList())
     }
 
     @Test
@@ -101,16 +97,28 @@ class LockableAppsListDataSourceTest {
     }
 
     private fun addLauncherActivities() {
-        val unsuspendablePackages = context.resources.getStringArray(R.array.unsuspendable_packages)
-        val packages = TEST_PACKAGE_NAMES.toMutableList().also { it.addAll(unsuspendablePackages) }
+        val packages = TEST_PACKAGE_NAMES.toMutableList()
 
         for (packageName in packages) {
             addAppToPackageManager(context, packageName)
         }
+        addSystemApps()
         addAssistantApp(TEST_ASSISTANT_PACKAGE)
         addMapsApp(TEST_MAPS_PACKAGE)
         addAppsThatDisallowDataClearing()
-        addSettingsApp()
+    }
+
+    private fun addSystemApps() {
+        val systemLockableApps = context.resources.getStringArray(R.array.system_lockable_packages)
+        val packages =
+            TEST_SYSTEM_PACKAGE_NAMES.toMutableList().also { it.addAll(systemLockableApps) }
+        for (packageName in packages) {
+            addAppToPackageManager(
+                context,
+                packageName,
+                flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
+            )
+        }
     }
 
     private fun addMediaLauncherActivities() {
@@ -143,21 +151,15 @@ class LockableAppsListDataSourceTest {
         )
     }
 
-    private fun addSettingsApp() {
-        val intentFilter =
-            IntentFilter(ACTION_SETTINGS).apply { addCategory(Intent.CATEGORY_DEFAULT) }
-        addAppToPackageManager(context, TEST_SETTINGS_PACKAGE, intentFilter)
-    }
-
     private companion object {
         val TEST_PACKAGE_NAMES = listOf("com.package.1", "com.package.2", "com.package.3")
         val TEST_MEDIA_PACKAGES = listOf("com.package.media.1", "com.package.media.2")
+        val TEST_SYSTEM_PACKAGE_NAMES = listOf("com.system.package.1", "com.system.package.2")
 
         const val TEST_MAPS_PACKAGE = "com.package.maps"
         const val TEST_ASSISTANT_PACKAGE = "com.package.assistant"
         const val TEST_MEDIA_DISALLOW_DATA_CLEARING_PACKAGE =
             "com.package.media.disallow.data.clearing"
         const val TEST_DISALLOW_DATA_CLEARING_PACKAGE = "com.package.disallow.data.clearing"
-        const val TEST_SETTINGS_PACKAGE = "com.package.settings"
     }
 }

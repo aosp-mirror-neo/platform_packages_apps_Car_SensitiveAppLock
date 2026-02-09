@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,7 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.lockscreen.PinLockActivity
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
+import com.android.car.sensitiveapplock.notification.NotificationService
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.CANCELED_PIN
 import com.android.car.sensitiveapplock.settings.SettingsLockStatus.VALID_PIN
 import com.android.car.sensitiveapplock.util.Logger
@@ -66,6 +68,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
             if (savedInstanceState == null) {
                 lockSettingsIfPinSet()
             }
+            maybeDismissNotification(intent)
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -93,26 +96,33 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
     public override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        lockSettingsIfPinSet()
         lifecycleScope.launch {
+            lockSettingsIfPinSet()
+            maybeDismissNotification(intent)
             metricsLogger.logAppLockEvent(AppLockEvent.APP_LOCK_SETTINGS_SCREEN_OPENED)
         }
     }
 
-    private fun lockSettingsIfPinSet() {
-        lifecycleScope.launch {
-            if (viewModel.isPinSet()) {
-                viewModel.lockSettings()
-                logger.d("Launching pin lock.")
-                val pinLockIntent =
-                    Intent(applicationContext, PinLockActivity::class.java).apply {
-                        action = PinLockActivity.ACTION_VALIDATE_PIN
-                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                startActivity(pinLockIntent)
-            } else {
-                viewModel.unlockSettings()
-            }
+    private suspend fun maybeDismissNotification(intent: Intent) {
+        val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, DEFAULT_INT_EXTRA)
+        if (notificationId != DEFAULT_INT_EXTRA) {
+            metricsLogger.logAppLockEvent(AppLockEvent.DISCOVERY_NOTIFICATION_CLICKED)
+            NotificationService.dismissDiscoveryNotification(applicationContext)
+        }
+    }
+
+    private suspend fun lockSettingsIfPinSet() {
+        if (viewModel.isPinSet()) {
+            viewModel.lockSettings()
+            logger.d("Launching pin lock.")
+            val pinLockIntent =
+                Intent(applicationContext, PinLockActivity::class.java).apply {
+                    action = PinLockActivity.ACTION_VALIDATE_PIN
+                    flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                }
+            startActivity(pinLockIntent)
+        } else {
+            viewModel.unlockSettings()
         }
     }
 
@@ -122,5 +132,7 @@ class SettingsActivity : Hilt_SettingsActivity(), InsetsChangedListener {
 
     private companion object {
         val logger = Logger(SettingsActivity::class.java)
+
+        const val DEFAULT_INT_EXTRA = -1
     }
 }

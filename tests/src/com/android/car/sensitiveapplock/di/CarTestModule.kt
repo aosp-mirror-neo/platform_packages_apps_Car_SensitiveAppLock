@@ -17,16 +17,29 @@
 package com.android.car.sensitiveapplock.di
 
 import android.car.Car
+import android.car.drivingstate.CarUxRestrictionsManager
+import android.car.hardware.power.CarPowerManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
 /** Test Module to provide mock car-lib dependencies. */
 @Module
 @TestInstallIn(components = [SingletonComponent::class], replaces = [CarModule::class])
 internal object CarTestModule {
-    @Provides @Singleton fun provideMockCar(): Car = mock<Car>()
+    @Provides
+    @Singleton
+    fun provideMockCar(): Car {
+        val carPowerManager = mock<CarPowerManager>()
+        val carUxRestrictionsManager = mock<CarUxRestrictionsManager>()
+        return mock<Car> {
+            on { getCarManager(CarPowerManager::class.java) } doReturn carPowerManager
+            on { getCarManager(CarUxRestrictionsManager::class.java) } doReturn
+                carUxRestrictionsManager
+        }
+    }
 }

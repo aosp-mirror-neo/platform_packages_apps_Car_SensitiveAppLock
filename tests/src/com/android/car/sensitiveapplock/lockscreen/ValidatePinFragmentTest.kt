@@ -24,7 +24,6 @@ import android.app.AlertDialog
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.os.Looper
 import android.widget.ImageButton
@@ -38,7 +37,6 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.metrics.RecoveryEvent
 import com.android.car.sensitiveapplock.shadows.ShadowActivityManager
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
-import com.android.car.sensitiveapplock.testing.AppInstallationHelper.DEFAULT_FLAGS
 import com.android.car.sensitiveapplock.testing.FakeActivityResultRegistry
 import com.android.car.sensitiveapplock.testing.HiltTestActivityRule
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
@@ -57,6 +55,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadow.api.Shadow
 import org.robolectric.shadows.ShadowAlertDialog
 
 @HiltAndroidTest
@@ -331,11 +330,7 @@ class ValidatePinFragmentTest {
 
     @Test
     fun clearDataDialog_onDismiss_showsSecurityResetDialog() = runTest {
-        AppInstallationHelper.addAppToPackageManager(
-            context,
-            packageName = TEST_PACKAGE_NAMES[0],
-            flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
-        )
+        AppInstallationHelper.addAppToPackageManager(context, packageName = TEST_PACKAGE_NAMES[0])
         appLockDataRepository.addLockedApp(TEST_PACKAGE_NAMES[0])
         launchFragmentInHiltContainer<ValidatePinFragment> { fragment ->
             val recoverKey = fragment.requireView().findViewById<TextView>(R.id.button_recovery)
@@ -367,7 +362,6 @@ class ValidatePinFragmentTest {
             AppInstallationHelper.addAppToPackageManager(
                 context,
                 packageName = TEST_PACKAGE_NAMES[0],
-                flags = ApplicationInfo.FLAG_SYSTEM or DEFAULT_FLAGS,
             )
             AppInstallationHelper.addAppToPackageManager(
                 context,
@@ -392,7 +386,7 @@ class ValidatePinFragmentTest {
                 shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
                 val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                val shadowAm = shadowOf(am) as ShadowActivityManager
+                val shadowAm = Shadow.extract<ShadowActivityManager>(am)
                 assertThat(shadowAm.getClearedApplicationUserDataPackages())
                     .containsExactly(TEST_PACKAGE_NAMES[0], TEST_PACKAGE_NAMES[1])
 

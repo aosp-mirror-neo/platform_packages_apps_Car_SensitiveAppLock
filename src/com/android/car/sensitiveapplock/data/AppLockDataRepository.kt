@@ -92,6 +92,31 @@ class AppLockDataRepository @Inject constructor(private val dataStore: DataStore
         return dataStore.data.first().reAuthRecoveryAccount != RecoveryAccount.getDefaultInstance()
     }
 
+    /** Gets the number of times the discovery notification has been interacted with. */
+    suspend fun getDiscoveryNotificationInteractionCount(): Int {
+        return dataStore.data.first().discoveryNotificationInteractionCount
+    }
+
+    /** Increments the number of times the discovery notification has been interacted with. */
+    suspend fun incrementDiscoveryNotificationInteractionCount() {
+        dataStore.updateData { appLockData ->
+            val count = appLockData.discoveryNotificationInteractionCount + 1
+            appLockData.toBuilder().setDiscoveryNotificationInteractionCount(count).build()
+        }
+    }
+
+    /** Stores user's preference to permanently dismiss the discovery notification. */
+    suspend fun permanentlyDismissDiscoveryNotification() {
+        dataStore.updateData { appLockData ->
+            appLockData.toBuilder().setDiscoveryNotificationPermanentlyDismissed(true).build()
+        }
+    }
+
+    /** Gets whether the discovery notification has been permanently dismissed. */
+    suspend fun discoveryNotificationPermanentlyDismissed(): Boolean {
+        return dataStore.data.first().discoveryNotificationPermanentlyDismissed
+    }
+
     /** Clears the user's App Lock data. */
     suspend fun clearData() {
         dataStore.updateData { appLockData -> AppLockData.getDefaultInstance() }
