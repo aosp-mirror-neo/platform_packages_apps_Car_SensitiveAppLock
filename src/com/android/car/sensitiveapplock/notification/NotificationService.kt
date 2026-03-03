@@ -89,8 +89,6 @@ constructor(
     private val carPowerManager = car?.getCarManager(CarPowerManager::class.java)
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    private val featureEnableDiscoveryNotification =
-        context.resources.getBoolean(R.bool.feature_enableDiscoveryNotification)
 
     private val uxRestrictionsListener =
         CarUxRestrictionsManager.OnUxRestrictionsChangedListener {
@@ -164,9 +162,6 @@ constructor(
     }
 
     override fun stop() {
-        if (!featureEnableDiscoveryNotification) {
-            return
-        }
         carUxRestrictionsManager?.unregisterListener()
         carPowerMonitor.removeListener(carPowerMonitorListener)
         packageChangeMonitor.removeListener(packageChangeListener)
@@ -286,10 +281,6 @@ constructor(
     }
 
     private suspend fun shouldInitService(): Boolean {
-        if (!featureEnableDiscoveryNotification) {
-            logger.v("Not initializing service; Feature is disabled")
-            return false
-        }
         if (pinManager.getAppLockPinState() == PinManager.PinState.SET) {
             logger.v("Not initializing service; Pin is set")
             return false
