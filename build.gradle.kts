@@ -76,9 +76,9 @@ android {
             kotlin.srcDirs(
                 commonTestDirs,
                 "tests/src/com/android/car/sensitiveapplock/data",
-                "tests/src/com/android/car/sensitiveapplock/discovery",
                 "tests/src/com/android/car/sensitiveapplock/lockscreen",
                 "tests/src/com/android/car/sensitiveapplock/metrics",
+                "tests/src/com/android/car/sensitiveapplock/notification",
                 "tests/src/com/android/car/sensitiveapplock/service",
                 "tests/src/com/android/car/sensitiveapplock/settings",
                 "tests/src/com/android/car/sensitiveapplock/shadows",
@@ -173,6 +173,7 @@ androidComponents {
 
 dependencies {
     implementation(files(gradle.extra["lib_car_system_stubs"] as String))
+    implementation(libs.androidx.constraintlayout)
     compileOnly(files(gradle.extra["lib_system_stubs"] as String))
 
     implementation(project(":oem-token-lib"))

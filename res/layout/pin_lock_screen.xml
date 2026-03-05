@@ -13,48 +13,58 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pin_lock_screen_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/start_column"
+        android:id="@+id/layout_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingEnd="32dp">
+        app:layout_constraintWidth_min="@dimen/pin_lock_screen_column_width_min"
+        app:layout_constraintWidth_max="@dimen/pin_lock_screen_column_width_max"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/layout_right"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="116dp"
             android:labelFor="@id/entered_pin"
-            android:textSize="44sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/pin_lock_screen_title_text_size_default"
             tools:text="Title"
-            android:layout_marginTop="24dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="@dimen/pin_lock_screen_text_area_top_margin_default"
+            android:layout_marginStart="@dimen/pin_lock_screen_text_area_side_margin"
+            android:layout_marginEnd="@dimen/pin_lock_screen_text_area_side_margin" />
 
         <TextView
             android:id="@+id/subtitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
+            android:layout_marginTop="@dimen/pin_lock_screen_subtitle_top_margin"
+            android:textSize="@dimen/pin_lock_screen_subtitle_text_size_default"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="Subtitle" />
+            tools:text="Subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="@dimen/pin_lock_screen_text_area_side_margin" />
 
         <EditText
             android:id="@+id/entered_pin"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_height="@dimen/pin_lock_screen_entered_pin_height"
+            android:layout_marginTop="@dimen/pin_lock_screen_entered_pin_top_margin"
             android:autofillHints=""
             android:clickable="false"
             android:contextClickable="false"
@@ -62,51 +72,50 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:inputType="numberPassword"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/subtitle"
             app:layout_constraintTop_toBottomOf="@+id/subtitle"
             android:textAlignment="viewStart"
-            tools:text="1234" />
-
-        <Button
-            android:id="@+id/button_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:enabled="false"
-            android:text="@string/pin_screen_next_button_label"
-            app:layout_constraintStart_toStartOf="@+id/entered_pin"
-            app:layout_constraintTop_toBottomOf="@+id/entered_pin"
-            android:visibility="gone" />
+            tools:text="1234"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="@dimen/pin_lock_screen_text_area_side_margin" />
 
         <TextView
             android:id="@+id/button_recovery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/pin_lock_screen_recovery_button_margin_default"
             android:text="@string/pin_screen_recovery_label"
-            android:textSize="28sp"
+            android:textSize="@dimen/pin_lock_screen_footer_text_size_default"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/button_next" />
+            app:layout_constraintTop_toBottomOf="@+id/entered_pin"
+            android:layout_marginEnd="@dimen/pin_lock_screen_text_area_side_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/end_column"
+        android:id="@+id/layout_right"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingStart="32dp">
+        app:layout_constraintWidth_min="@dimen/pin_lock_screen_column_width_min"
+        app:layout_constraintWidth_max="@dimen/pin_lock_screen_column_width_max"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_left"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0">
 
         <com.android.car.sensitiveapplock.lockscreen.PinPadView
             android:id="@+id/pin_pad"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="142dp"
-            android:layout_marginEnd="226dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="@dimen/pin_lock_screen_pin_area_top_margin_default"
+            android:layout_marginStart="@dimen/pin_lock_screen_pin_area_side_margin"
+            android:layout_marginEnd="@dimen/pin_lock_screen_pin_area_side_margin" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

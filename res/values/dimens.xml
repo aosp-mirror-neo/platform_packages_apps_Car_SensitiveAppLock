@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2025 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,32 +14,78 @@
   ~ limitations under the License.
   -->
 <resources>
-    <!--  Dimensions for condensed portrait view -->
-    <dimen name="pin_lock_screen_title_text_size">36sp</dimen>
-    <dimen name="pin_lock_screen_subtitle_text_size">24sp</dimen>
-    <dimen name="pin_lock_screen_title_margin">0dp</dimen>
-    <dimen name="pin_lock_screen_subtitle_margin">24dp</dimen>
-    <dimen name="pin_lock_screen_entered_pin_margin">8dp</dimen>
-    <dimen name="pin_lock_screen_pin_pad_margin">48dp</dimen>
-    <dimen name="pin_lock_screen_recovery_button_margin">24dp</dimen>
+    <dimen name="pin_pad_key_max_width">120dp</dimen>
+    <dimen name="pin_pad_key_min_width">98dp</dimen>
+    <dimen name="pin_pad_key_text_size">40sp</dimen>
+    <dimen name="pin_pad_digit_key_padding">0dp</dimen>
+    <dimen name="pin_pad_action_key_padding">24dp</dimen>
+    <dimen name="pin_pad_col_spacing">24dp</dimen>
 
-    <!-- Dimensions for condensed PIN pad view -->
-    <dimen name="pin_pad_key_height">80dp</dimen>
-    <dimen name="pin_pad_key_width">96dp</dimen>
-    <dimen name="pin_pad_key_text_size">32sp</dimen>
-    <dimen name="pin_pad_key_padding">24dp</dimen>
-    <dimen name="pin_pad_row_spacing">8dp</dimen>
-    <dimen name="pin_pad_row_spacing_negative">-8dp</dimen>
-    <dimen name="pin_pad_col_spacing">12dp</dimen>
-    <dimen name="pin_pad_col_spacing_negative">-12dp</dimen>
+    <!-- PinPadView supports four sizes so these values correspond to them.
+         Refer to PinLockView to see how these sizes are used. -->
+    <dimen name="pin_pad_key_height_unconstrained">96dp</dimen>
+    <dimen name="pin_pad_key_height_default">96dp</dimen>
+    <dimen name="pin_pad_key_height_cozy">80dp</dimen>
+    <dimen name="pin_pad_key_height_compact">64dp</dimen>
 
-    <!-- Default dimensions for landscape PIN pad view -->
-    <dimen name="pin_pad_key_height_land">96dp</dimen>
-    <dimen name="pin_pad_key_width_land">96dp</dimen>
-    <dimen name="pin_pad_key_text_size_land">32sp</dimen>
-    <dimen name="pin_pad_key_padding_land">24dp</dimen>
-    <dimen name="pin_pad_row_spacing_land">8dp</dimen>
-    <dimen name="pin_pad_row_spacing_negative_land">-8dp</dimen>
-    <dimen name="pin_pad_col_spacing_land">12dp</dimen>
-    <dimen name="pin_pad_col_spacing_negative_land">-12dp</dimen>
+    <dimen name="pin_pad_row_spacing_unconstrained">32dp</dimen>
+    <dimen name="pin_pad_row_spacing_default">24dp</dimen>
+    <dimen name="pin_pad_row_spacing_cozy">16dp</dimen>
+    <dimen name="pin_pad_row_spacing_compact">8dp</dimen>
+
+    <dimen name="pin_lock_screen_column_width_max">612dp</dimen>
+    <dimen name="pin_lock_screen_column_width_min">375dp</dimen>
+
+    <dimen name="pin_lock_screen_title_text_size_default">45sp</dimen>
+    <dimen name="pin_lock_screen_title_text_size_compact">36sp</dimen>
+
+    <dimen name="pin_lock_screen_subtitle_text_size_default">32sp</dimen>
+    <dimen name="pin_lock_screen_subtitle_text_size_compact">28sp</dimen>
+
+    <dimen name="pin_lock_screen_footer_text_size_default">32sp</dimen>
+    <dimen name="pin_lock_screen_footer_text_size_compact">28sp</dimen>
+
+    <dimen name="pin_lock_screen_pin_area_side_margin">16dp</dimen>
+
+    <dimen name="pin_lock_screen_pin_area_top_margin_unconstrained">56dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_unconstrained_tall">128dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_default">24dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_cozy">8dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_compact">8dp</dimen>
+
+    <dimen name="pin_lock_screen_pin_area_top_margin_unconstrained_portrait">64dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_default_portrait">56dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_cozy_portrait">56dp</dimen>
+
+    <dimen name="pin_lock_screen_text_area_side_margin">32dp</dimen>
+    <dimen name="pin_lock_screen_subtitle_top_margin">16dp</dimen>
+    <dimen name="pin_lock_screen_entered_pin_top_margin">24dp</dimen>
+    <dimen name="pin_lock_screen_entered_pin_height">80dp</dimen>
+    <!-- Width for entered PIN is only static on portrait layout. -->
+    <dimen name="pin_lock_screen_entered_pin_width_portrait">400dp</dimen>
+
+    <dimen name="pin_lock_screen_text_area_top_margin_unconstrained">56dp</dimen>
+    <dimen name="pin_lock_screen_pin_area_top_margin_unconstrained_tall">128dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_default">24dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_compact">0dp</dimen>
+
+    <!-- Portrait mode is an inline single column but the same naming is reused. -->
+    <dimen name="pin_lock_screen_text_area_top_margin_unconstrained_portrait">64dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_default_portrait">0dp</dimen>
+    <dimen name="pin_lock_screen_text_area_top_margin_compact_portrait">0dp</dimen>
+
+    <dimen name="pin_lock_screen_recovery_button_margin_unconstrained">128dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin_default">96dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin_compact">24dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin_unconstrained_portrait">64dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin_default_portrait">56dp</dimen>
+    <dimen name="pin_lock_screen_recovery_button_margin_compact_portrait">56dp</dimen>
+
+    <dimen name="pin_lock_screen_widescreen_left_margin">192dp</dimen>
+
+    <!-- Screen size thresholds for the portrait layout. -->
+    <dimen name="portrait_width_max_threshold">1584dp</dimen>
+    <dimen name="portrait_height_min_threshold">856dp</dimen>
+
+    <dimen name="toolbar_height_default">96dp</dimen>
 </resources>
