@@ -19,7 +19,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -33,7 +32,6 @@ import com.android.car.sensitiveapplock.R
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
 import com.android.car.sensitiveapplock.metrics.SignInEvent
 import com.android.car.sensitiveapplock.util.Logger
-import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 import com.android.car.ui.core.CarUi
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -76,16 +74,12 @@ class ConfirmPinFragment : Hilt_ConfirmPinFragment(R.layout.fragment_pin_screen)
                 setTitle(R.string.confirm_pin_title)
                 setSubtitle(R.string.confirm_pin_subtitle)
 
-                setupUi(getNextButton()) { confirmPin() }
+                setupActionButtons(
+                    nextButton = CarUi.requireToolbar(requireActivity()).menuItems.first()
+                ) {
+                    confirmPin()
+                }
             }
-    }
-
-    private fun getNextButton(): PinLockView.NextButton {
-        if (isPortrait(requireContext())) {
-            return CarUi.requireToolbar(requireActivity()).menuItems.first().asNextButton()
-        }
-
-        return requireView().findViewById<Button>(R.id.button_next).asNextButton()
     }
 
     private fun confirmPin() {

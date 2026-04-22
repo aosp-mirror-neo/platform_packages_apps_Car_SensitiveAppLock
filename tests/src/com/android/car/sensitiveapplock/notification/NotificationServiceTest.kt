@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.car.sensitiveapplock.discovery
+package com.android.car.sensitiveapplock.notification
 
 import android.app.Application
 import android.app.NotificationManager
@@ -41,13 +41,10 @@ import com.android.car.sensitiveapplock.data.AppLockDataRepository
 import com.android.car.sensitiveapplock.di.qualifiers.BackgroundContext
 import com.android.car.sensitiveapplock.metrics.AppLockEvent
 import com.android.car.sensitiveapplock.metrics.MetricsLogger
-import com.android.car.sensitiveapplock.notification.NotificationInteractionService
-import com.android.car.sensitiveapplock.notification.NotificationService
 import com.android.car.sensitiveapplock.notification.NotificationService.Companion.EXTRA_NOTIFICATION_DISMISS
 import com.android.car.sensitiveapplock.service.CarPowerMonitor
 import com.android.car.sensitiveapplock.service.PackageChangeMonitor
 import com.android.car.sensitiveapplock.settings.SettingsActivity
-import com.android.car.sensitiveapplock.shadows.ShadowResources
 import com.android.car.sensitiveapplock.testing.AppInstallationHelper
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.assertSensitiveAppLockEventAtom
 import com.android.car.sensitiveapplock.testing.MetricsTestHelper.getAppLockAtoms
@@ -72,11 +69,9 @@ import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowResources::class])
 class NotificationServiceTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -116,8 +111,6 @@ class NotificationServiceTest {
         // This is needed because the notification icon is resolved from the installed settings app
         AppInstallationHelper.addAppToPackageManager(context, SETTINGS_APP, SETTINGS_INTENT_FILTER)
 
-        ShadowResources.setBoolean(R.bool.feature_enableDiscoveryNotification, true)
-
         notificationService =
             NotificationService(
                 context,
@@ -135,7 +128,6 @@ class NotificationServiceTest {
     @After
     fun cleanUp() {
         notificationService.stop()
-        ShadowResources.reset()
     }
 
     @Test
@@ -161,28 +153,6 @@ class NotificationServiceTest {
         verify(spyPackageChangeMonitor).addListener(any())
         verify(spyCarPowerMonitor).addListener(any())
         verify(carUxRestrictionsManager).registerListener(any())
-    }
-
-    @Test
-    fun onStart_featureFlagDisabled_doesNotRegisterListeners() = runTest {
-        ShadowResources.setBoolean(R.bool.feature_enableDiscoveryNotification, false)
-        notificationService =
-            NotificationService(
-                context,
-                spyPackageChangeMonitor,
-                spyCarPowerMonitor,
-                appLockDataRepository,
-                pinManager,
-                metricsLogger,
-                car,
-                backgroundContext,
-            )
-
-        notificationService.start()
-
-        verify(spyPackageChangeMonitor, never()).addListener(any())
-        verify(spyCarPowerMonitor, never()).addListener(any())
-        verify(carUxRestrictionsManager, never()).registerListener(any())
     }
 
     @Test
@@ -234,28 +204,6 @@ class NotificationServiceTest {
         verify(spyPackageChangeMonitor).removeListener(any())
         verify(spyCarPowerMonitor).removeListener(any())
         verify(carUxRestrictionsManager).unregisterListener()
-    }
-
-    @Test
-    fun onStop_featureFlagDisabled_doesNotUnregisterListeners() {
-        ShadowResources.setBoolean(R.bool.feature_enableDiscoveryNotification, false)
-        notificationService =
-            NotificationService(
-                context,
-                spyPackageChangeMonitor,
-                spyCarPowerMonitor,
-                appLockDataRepository,
-                pinManager,
-                metricsLogger,
-                car,
-                backgroundContext,
-            )
-
-        notificationService.stop()
-
-        verify(spyPackageChangeMonitor, never()).removeListener(any())
-        verify(spyCarPowerMonitor, never()).removeListener(any())
-        verify(carUxRestrictionsManager, never()).unregisterListener()
     }
 
     @Test

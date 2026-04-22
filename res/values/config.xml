@@ -27,9 +27,6 @@
     <!-- Default account type used for recovering pin. -->
     <string name="config_recoveryAccountType" translatable="false">com.google</string>
 
-    <!-- Feature flag for allowing discovery notification. -->
-    <bool name="feature_enableDiscoveryNotification">false</bool>
-
     <!-- Discovery notification max interaction count. After this interaction count is reached
          the user will be provided an option to permanently dismiss the notification. -->
     <integer name="config_discovery_notification_max_interaction">1</integer>

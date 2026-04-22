@@ -3,21 +3,18 @@ package com.android.car.sensitiveapplock.lockscreen
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.android.car.sensitiveapplock.R
-import com.android.car.sensitiveapplock.util.OrientationUtils.isPortrait
 
 /** A custom view for a Pin Pad. */
-class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-
+class PinPadView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
     init {
-        if (isPortrait(context)) {
-            inflate(context, R.layout.pin_pad_portrait, this)
-        } else {
-            inflate(context, R.layout.pin_pad, this)
-        }
+        inflate(context, R.layout.pin_pad, this)
         // Adding an onClickListener automatically enables the button so disable it after
         setConfirmEnabled(false)
     }
@@ -55,9 +52,49 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
         findViewById<ImageButton>(R.id.key_confirm).setOnClickListener { onConfirmClick() }
     }
 
+    fun applyPinPadConfig(config: PinPadConfig) {
+        val pinLayout = findViewById<ConstraintLayout>(R.id.pin_layout)
+
+        val rowSpacingPx = resources.getDimensionPixelSize(config.rowSpacingDpResId)
+        val keyHeightPx = resources.getDimensionPixelSize(config.keyHeightDpResId)
+        ConstraintSet().apply {
+            clone(pinLayout)
+            applyRowSpacing(rowSpacingPx, this)
+            applyKeyHeight(keyHeightPx, this)
+            applyTo(pinLayout)
+        }
+    }
+
+    private fun applyRowSpacing(rowSpacingPx: Int, constraintSet: ConstraintSet) {
+        val rowIds = listOf(R.id.key_4, R.id.key_7, R.id.key_backspace)
+        for (id in rowIds) {
+            constraintSet.setMargin(id, ConstraintSet.TOP, rowSpacingPx)
+        }
+    }
+
+    private fun applyKeyHeight(heightPx: Int, constraintSet: ConstraintSet) {
+        val pinKeys = DIGIT_KEY_ID_VALUE_MAP.map { it.key } + ACTION_KEY_ID_VALUE_SET
+        for (id in pinKeys) {
+            constraintSet.constrainHeight(id, heightPx)
+        }
+    }
+
+    enum class PinPadConfig(
+        @param:DimenRes val keyHeightDpResId: Int,
+        @param:DimenRes val rowSpacingDpResId: Int,
+    ) {
+        UNCONSTRAINED(
+            R.dimen.pin_pad_key_height_unconstrained,
+            R.dimen.pin_pad_row_spacing_unconstrained,
+        ),
+        DEFAULT(R.dimen.pin_pad_key_height_default, R.dimen.pin_pad_row_spacing_default),
+        COZY(R.dimen.pin_pad_key_height_cozy, R.dimen.pin_pad_row_spacing_cozy),
+        COMPACT(R.dimen.pin_pad_key_height_compact, R.dimen.pin_pad_row_spacing_compact),
+    }
+
     private companion object {
         val DIGIT_KEY_ID_VALUE_MAP =
-            hashMapOf<Int, String>(
+            hashMapOf(
                 R.id.key_0 to "0",
                 R.id.key_1 to "1",
                 R.id.key_2 to "2",
@@ -69,5 +106,6 @@ class PinPadView(context: Context, attrs: AttributeSet) : LinearLayout(context, 
                 R.id.key_8 to "8",
                 R.id.key_9 to "9",
             )
+        val ACTION_KEY_ID_VALUE_SET = setOf(R.id.key_backspace, R.id.key_confirm)
     }
 }

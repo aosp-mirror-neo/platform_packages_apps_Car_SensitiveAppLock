@@ -83,6 +83,12 @@ android_app {
         "token-shared-lib",
     ],
 
+    optional_uses_libs: [
+        "androidx.window.extensions",
+        "androidx.window.sidecar",
+        "com.android.oem.tokens",
+    ],
+
     static_libs: [
         "SensitiveAppLock-core",
     ],
