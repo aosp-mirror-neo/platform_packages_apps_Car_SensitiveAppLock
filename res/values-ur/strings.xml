@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"حساس ایپ لاک"</string>
+    <string name="setting_title" msgid="7121031924096985436">"ایپ لاک"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"دوسرے لوگوں کو ایپس کھولنے سے روکنے کے لیے انہیں مقفل کریں"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"ایپ لاک استعمال کریں"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"کچھ ایپس کو PIN کے ساتھ مقفل رکھیں"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"میری ایپس"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"ایپ لاک صرف صارف انٹرفیس کو غیر فعال کرتا ہے اور ایپ اب بھی پس منظر میں چل سکتی ہے، بشمول دیگر ایپس کے ساتھ ڈیٹا (جیسے تصاویر یا فائلز) کا اشتراک کرنا۔ مزید برآں، کوئی بھی شخص جو ایک ایسی نئی ایپ انسٹال کر رہا ہے جو مقفل ایپ کے ساتھ اکاؤنٹ کا اشتراک کرتی ہے وہ خودکار طور پر سائن ان ہو سکتا ہے، جس سے ممکنہ طور پر گاڑی میں آپ کا ڈیٹا افشاء ہو سکتا ہے۔"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"اپنا PIN درج کریں"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"مقفل ایپس کے لیے ایک PIN تخلیق کریں"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"‫PIN میں کم از کم 4 ہندسے ہونے چاہئیں"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"اپنے PIN کی توثیق کریں"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"اپنا PIN دوبارہ درج کریں"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"‫%1$s مقفل ہے"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"اگر آپ کار میں موجود لوگوں کو اپنی معلومات دکھانے سے ٹھیک ہیں تو اپنا PIN درج کرنے کے لیے "<b>"ایپ کو غیر مقفل کریں"</b>" کو منتخب کریں"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"ایپ کو غیر مقفل کریں"</string>
+    <string name="pin_error" msgid="4785936746400538934">"غلط PIN"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"اگلا"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"اپنا PIN بھول گئے؟"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"بیک اسپیس"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"تصدیق کریں"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"اپنا PIN تبدیل کرنا آسان بنائیں"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"اگر آپ اپنا PIN بھول جاتے ہیں تو اسے محفوظ طریقے سے تبدیل کرنے کے لیے اپنے Google اکاؤنٹ میں سائن ان کریں"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"نہیں شکریہ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"سائن ان کریں"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"اپنا PIN بھول گئے؟"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"اپنا PIN تبدیل کرنے اور اپنی معلومات کو محفوظ رکھنے میں مدد کے لیے، آپ کو ان ایپس کو حذف کرنا ہوگا جنہیں آپ نے مقفل کیا ہے یا ان میں موجود ڈیٹا کو حذف کرنا ہوگا"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"منسوخ کریں"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"اگلا"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"اپنی ایپس میں ڈیٹا حذف کریں؟"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"آپ %1$s اور %2$s میں ڈیٹا حذف کر دیں گے"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"آپ %1$s میں ڈیٹا حذف کر دیں گے"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"آپ %1$s اور %2$s میں ڈیٹا حذف کر دیں گے"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"منسوخ کریں"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"حذف کریں"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"ایپ لاک مہمان پروفائل میں دستیاب نہیں ہے۔"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"ایپ لاک کے ساتھ ذاتی معلومات کی حفاظت کریں"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"اپنی ایپس کو مقفل کرنے کے لیے ایک PIN تخلیق کریں"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"شروع کریں"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"ابھی نہیں"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"دوبارہ نہ دکھائیں"</string>
+</resources>

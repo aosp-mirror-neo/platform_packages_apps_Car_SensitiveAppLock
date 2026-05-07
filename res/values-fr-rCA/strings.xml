@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Sensitive App Lock"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Verrouillage d\'appli"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Verrouillez des applis pour empêcher d\'autres personnes de les ouvrir"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Utiliser le verrouillage d\'appli"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Gardez certaines applis verrouillées à l\'aide d\'un NIP"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Mes applis"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Le verrouillage d\'appli désactive uniquement l\'interface utilisateur, et l\'appli peut toujours s\'exécuter en arrière-plan, et peut aussi partager des données (p. ex. des photos ou des fichiers) avec d\'autres applis. De plus, toute personne installant une nouvelle appli qui partage un compte avec une appli verrouillée peut être automatiquement connectée, ce qui peut potentiellement exposer vos données dans le véhicule."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Entrer votre NIP"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Créer un NIP pour les applis verrouillées"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"Le NIP doit contenir au moins 4 chiffres"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Confirmer votre NIP"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Entrez votre NIP à nouveau"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s verrouillé"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Sélectionnez "<b>"Déverrouiller l\'appli"</b>" pour saisir votre NIP si vous acceptez que les personnes présentes dans la voiture voient vos renseignements"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Déverrouiller l\'appli"</string>
+    <string name="pin_error" msgid="4785936746400538934">"NIP incorrect"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Suivant"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"NIP oublié?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Retour arrière"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Confirmer"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Faciliter la modification de votre NIP"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Connectez-vous à votre compte Google pour modifier votre NIP en toute sécurité si vous l\'oubliez"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Non merci"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Se connecter"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"NIP oublié?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Pour modifier votre NIP et contribuer à la sécurité de vos renseignements, vous devrez supprimer les applis que vous avez verrouillées ou les données qu\'elles contiennent"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Annuler"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Suivant"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Supprimer les données de vos applis?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Vous supprimerez les données dans %1$s et %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Vous supprimerez les données dans %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Vous supprimerez les données dans %1$s et %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Annuler"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Supprimer"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Le verrouillage d\'applis n\'est pas accessible dans le profil d\'invité."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Protéger vos renseignements personnels avec le verrouillage d\'appli"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Créez un NIP pour verrouiller vos applis"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Commencer"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Pas maintenant"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Ne plus afficher"</string>
+</resources>

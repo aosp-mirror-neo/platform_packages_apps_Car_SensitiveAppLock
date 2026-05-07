@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"ການລັອກແອັບທີ່ລະອຽດອ່ອນ"</string>
+    <string name="setting_title" msgid="7121031924096985436">"ການລັອກແອັບ"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"ລັອກແອັບເພື່ອບໍ່ໃຫ້ຄົນອື່ນເປີດແອັບ"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"ໃຊ້ການລັອກແອັບ"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"ລັອກບາງແອັບດ້ວຍ PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"ແອັບຂອງຂ້ອຍ"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"ການລັອກແອັບຈະປິດການນຳໃຊ້ສະເພາະສ່ວນຕິດຕໍ່ຜູ້ໃຊ້ ແລະ ແອັບອາດຍັງຄົງເຮັດວຽກໃນພື້ນຫຼັງ, ຮວມທັງການແບ່ງປັນຂໍ້ມູນ (ເຊັ່ນ: ຮູບພາບ ຫຼື ໄຟລ໌) ກັບແອັບອື່ນໆ. ນອກຈາກນີ້, ທຸກຄົນທີ່ຕິດຕັ້ງແອັບໃໝ່ເຊິ່ງແບ່ງປັນບັນຊີກັບແອັບທີ່ລັອກໄວ້ອາດຈະເຂົ້າສູ່ລະບົບໂດຍອັດຕະໂນມັດ, ເຊິ່ງອາດເຮັດໃຫ້ຂໍ້ມູນຂອງທ່ານໃນລົດຖືກເປີດເຜີຍໄດ້."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"ໃສ່ລະຫັດ PIN ຂອງທ່ານ"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"ສ້າງ PIN ສຳລັບແອັບທີ່ລັອກໄວ້"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN ຕ້ອງມີຢ່າງໜ້ອຍ 4 ຕົວເລກ"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"ຢືນຢັນ PIN ຂອງທ່ານ"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"ໃສ່ PIN ຂອງທ່ານອີກເທື່ອໜຶ່ງ"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s ລັອກຢູ່"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"ເລືອກ "<b>"ແອັບປົດລັອກ"</b>" ເພື່ອໃສ່ PIN ຂອງທ່ານ, ຫາກທ່ານບໍ່ລັງເລໃຈທີ່ຈະໃຫ້ຜູ້ທີ່ຢູ່ໃນລົດເຫັນຂໍ້ມູນຂອງທ່ານ"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"ປົດລັອກແອັບ"</string>
+    <string name="pin_error" msgid="4785936746400538934">"PIN ບໍ່ຖືກຕ້ອງ"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"ຕໍ່ໄປ"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"ລືມ PIN ຂອງທ່ານບໍ?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"ຢືນຢັນ"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"ເຮັດໃຫ້ການປ່ຽນ PIN ຂອງທ່ານງ່າຍຂຶ້ນ"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"ເຂົ້າສູ່ລະບົບບັນຊີ Google ຂອງທ່ານເພື່ອປ່ຽນ PIN ຂອງທ່ານຢ່າງປອດໄພ, ໃນກໍລະນີທີ່ທ່ານລືມ"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"ບໍ່, ຂອບໃຈ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"ເຂົ້າສູ່ລະບົບ"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"ລືມ PIN ຂອງທ່ານບໍ?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"ເພື່ອປ່ຽນ PIN ຂອງທ່ານ ແລະ ຊ່ວຍຮັກສາຂໍ້ມູນຂອງທ່ານໃຫ້ປອດໄພ, ທ່ານຈະຕ້ອງລຶບແອັບທີ່ທ່ານລັອກໄວ້ ຫຼື ຂໍ້ມູນໃນແອັບເຫຼົ່ານັ້ນ"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"ຍົກເລີກ"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"ຕໍ່ໄປ"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"ລຶບຂໍ້ມູນໃນແອັບຂອງທ່ານບໍ?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"ທ່ານຈະລຶບຂໍ້ມູນໃນ %1$s ແລະ %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"ທ່ານຈະລຶບຂໍ້ມູນໃນ %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"ທ່ານຈະລຶບຂໍ້ມູນໃນ %1$s ແລະ %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"ຍົກເລີກ"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"ລຶບ"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"ການລັອກແອັບບໍ່ພ້ອມໃຫ້ນຳໃຊ້ໃນໂປຣໄຟລ໌ແຂກ."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"ປົກປ້ອງຂໍ້ມູນສ່ວນຕົວດ້ວຍການລັອກແອັບ"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"ສ້າງ PIN ເພື່ອລັອກແອັບຂອງທ່ານ"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"ເລີ່ມຕົ້ນ"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"ບໍ່ຟ້າວເທື່ອ"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"ບໍ່ຕ້ອງສະແດງອີກ"</string>
+</resources>

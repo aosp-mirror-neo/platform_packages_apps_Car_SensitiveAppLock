@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Acceso protegido a aplicaciones sensibles"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Acceso protegido a aplicaciones"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Protege el acceso a aplicaciones para evitar que otras personas las abran"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Usar acceso protegido a aplicaciones"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Protege el acceso a algunas aplicaciones con un PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Mis aplicaciones"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"El acceso protegido a aplicaciones solo inhabilita la interfaz de usuario, por lo que la aplicación puede seguir ejecutándose en segundo plano, lo que incluye compartir datos (por ejemplo, fotos o archivos) con otras aplicaciones. Además, si alguien instala una aplicación nueva que comparta cuenta con otra protegida, la sesión podría iniciarse automáticamente, lo que dejaría tus datos expuestos ante cualquier persona que esté en el vehículo."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Introduce tu PIN"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Crea un PIN para las aplicaciones con acceso protegido"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"El PIN debe tener al menos 4 dígitos"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Confirma tu PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Vuelve a introducir tu PIN"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s con acceso protegido"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Selecciona "<b>"Acceder a aplicación"</b>" e introduce tu PIN si no te importa que el resto de personas del coche vean tu información"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Acceder a aplicación"</string>
+    <string name="pin_error" msgid="4785936746400538934">"PIN incorrecto"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Siguiente"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"¿Has olvidado el PIN?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Retroceso"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Confirmar"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Cambia tu PIN más fácilmente"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Inicia sesión en tu cuenta de Google para cambiar tu PIN de forma segura si lo olvidas"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"No, gracias"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Iniciar sesión"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"¿Has olvidado el PIN?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Para cambiar tu PIN y proteger tu información, tendrás que eliminar las aplicaciones que tengan el acceso protegido o sus datos"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Cancelar"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Siguiente"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"¿Eliminar datos de tus aplicaciones?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Eliminarás datos de %1$s y %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Eliminarás datos de %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Eliminarás datos de %1$s y %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Cancelar"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Eliminar"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"El acceso protegido a aplicaciones no está disponible en el perfil de invitado."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Protege la información personal con el acceso protegido a aplicaciones"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Crea un PIN para proteger el acceso a tus aplicaciones"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Empezar"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Ahora no"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"No volver a mostrar"</string>
+</resources>

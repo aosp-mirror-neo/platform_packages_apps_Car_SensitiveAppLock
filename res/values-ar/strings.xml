@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"قفل التطبيقات الحساسة"</string>
+    <string name="setting_title" msgid="7121031924096985436">"قفل التطبيقات"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"يمكنك قفل التطبيقات لمنع الآخرين من فتحها"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"استخدام قفل التطبيقات"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"يمكنك قفل بعض التطبيقات باستخدام رقم تعريف شخصي"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"تطبيقاتي"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"عند تفعيل قفل التطبيق، يتم إيقاف واجهة المستخدم فقط، ولكن التطبيق قد يستمر في العمل في الخلفية، بما في ذلك مشاركة البيانات (مثل الصور أو الملفات) مع تطبيقات أخرى. بالإضافة إلى ذلك، قد يتم تلقائيًا تسجيل دخول أي مستخدم يثبّت تطبيقًا جديدًا يشارك حسابًا مع تطبيق مقفل، ما قد يعرّض بياناتك للخطر في السيارة."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"يجب إدخال رقم التعريف الشخصي"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"إنشاء رقم تعريف شخصي للتطبيقات المقفلة"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"يجب أن يتكوّن رقم التعريف الشخصي من 4 أرقام على الأقل"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"تأكيد رقم التعريف الشخصي"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"يُرجى إدخال رقم التعريف الشخصي مرة أخرى"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"تم قفل \"%1$s\""</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"يُرجى النقر على "<b>"فتح قفل التطبيق"</b>" لإدخال رقم التعريف الشخصي في حال موافقتك على أن يطّلع الأشخاص في السيارة على معلوماتك"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"فتح قفل التطبيق"</string>
+    <string name="pin_error" msgid="4785936746400538934">"رقم التعريف الشخصي غير صحيح"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"التالي"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"هل نسيت رقم التعريف الشخصي؟"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"مفتاح Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"تأكيد"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"غيِّر رقم التعريف الشخصي بسهولة أكبر"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"يمكنك تسجيل الدخول إلى حسابك على Google لتغيير رقم التعريف الشخصي بأمان في حال نسيانه"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"لا، شكرًا"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"تسجيل الدخول"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"هل نسيت رقم التعريف الشخصي؟"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"لتغيير رقم التعريف الشخصي والمساعدة في الحفاظ على أمان معلوماتك، عليك حذف التطبيقات التي قفلتها أو البيانات التي تتضمّنها"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"إلغاء"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"التالي"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"حذف البيانات في تطبيقاتك؟"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"سيتم حذف البيانات في \"%1$s\" و\"%2$s\""</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"سيتم حذف البيانات في \"%1$s\""</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"سيتم حذف البيانات في \"%1$s\" و\"%2$s\""</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"إلغاء"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"حذف"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"ميزة قفل التطبيقات غير متاحة في الملف الشخصي للضيف."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"احمِ معلوماتك الشخصية باستخدام ميزة قفل التطبيقات"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"يمكنك إنشاء رقم تعريف شخصي لقفل تطبيقاتك"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"البدء"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"لاحقًا"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"عدم الإظهار مرة أخرى"</string>
+</resources>

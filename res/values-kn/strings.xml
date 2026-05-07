@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"ಸೂಕ್ಷ್ಮ ಆ್ಯಪ್ ಲಾಕ್"</string>
+    <string name="setting_title" msgid="7121031924096985436">"ಆ್ಯಪ್ ಲಾಕ್"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"ಇತರ ಜನರು ಆ್ಯಪ್‌ಗಳನ್ನು ತೆರೆಯುವುದನ್ನು ತಡೆಯಲು ಅವುಗಳನ್ನು ಲಾಕ್ ಮಾಡಿ"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"ಆ್ಯಪ್ ಲಾಕ್ ಬಳಸಿ"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"ಕೆಲವು ಆ್ಯಪ್‌ಗಳನ್ನು ಪಿನ್ ಮೂಲಕ ಲಾಕ್ ಮಾಡಿ"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"ನನ್ನ ಆ್ಯಪ್‌ಗಳು"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"ಆ್ಯಪ್ ಲಾಕ್ ಬಳಕೆದಾರರ ಇಂಟರ್‌ಫೇಸ್ ಅನ್ನು ಮಾತ್ರ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ ಮತ್ತು ಇತರ ಆ್ಯಪ್‌ಗಳೊಂದಿಗೆ ಡೇಟಾ (ಉದಾ. ಫೋಟೋಗಳು ಅಥವಾ ಫೈಲ್‌ಗಳು) ಹಂಚಿಕೊಳ್ಳುವುದು ಸೇರಿದಂತೆ ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಆ್ಯಪ್ ರನ್ ಆಗುತ್ತಿರಬಹುದು. ಇದಲ್ಲದೆ, ಲಾಕ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ನೊಂದಿಗೆ ಖಾತೆಯನ್ನು ಹಂಚಿಕೊಳ್ಳುವ ಹೊಸ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವ ಯಾರಾದರೂ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೈನ್-ಇನ್ ಮಾಡಬಹುದು, ಹಾಗಾಗಿ ವಾಹನದಲ್ಲಿನ ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಬಹಿರಂಗಪಡಿಸುವ ಸಾಧ್ಯತೆಯಿರುತ್ತದೆ."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"ನಿಮ್ಮ ಪಿನ್ ನಮೂದಿಸಿ"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"ಲಾಕ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳಿಗೆ ಪಿನ್ ರಚಿಸಿ"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"ಪಿನ್ ಕನಿಷ್ಠ 4 ಅಂಕಿಗಳನ್ನು ಹೊಂದಿರಬೇಕು"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ದೃಢೀಕರಿಸಿ"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ಮತ್ತೊಮ್ಮೆ ನಮೂದಿಸಿ"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s ಲಾಕ್ ಆಗಿದೆ"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"ಕಾರ್‌ನಲ್ಲಿರುವ ಜನರು ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ನೋಡುವುದಕ್ಕೆ ನಿಮಗೆ ಅಭ್ಯಂತರವಿಲ್ಲದಿದ್ದರೆ, ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಲು "<b>"ಆ್ಯಪ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ"</b>" ಎಂಬುದನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"ಆ್ಯಪ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ"</string>
+    <string name="pin_error" msgid="4785936746400538934">"ಪಿನ್ ತಪ್ಪಾಗಿದೆ"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"ಮುಂದಿನದು"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ಮರೆತಿದ್ದೀರಾ?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"ದೃಢೀಕರಿಸಿ"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"ನಿಮ್ಮ ಪಿನ್ ಬದಲಾಯಿಸುವುದನ್ನು ಸುಲಭವಾಗಿಸಿ"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ನೀವು ಮರೆತರೆ, ಅದನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಬದಲಾಯಿಸಲು ನಿಮ್ಮ Google ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"ಬೇಡ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"ಸೈನ್ ಇನ್ ಮಾಡಿ"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ಮರೆತಿದ್ದೀರಾ?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"ನಿಮ್ಮ ಪಿನ್ ಅನ್ನು ಬದಲಾಯಿಸಲು ಮತ್ತು ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ಸಹಾಯ ಮಾಡಲು, ನೀವು ಲಾಕ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಅಥವಾ ಅವುಗಳಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ನೀವು ಅಳಿಸಬೇಕಾಗುತ್ತದೆ"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"ರದ್ದುಮಾಡಿ"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"ಮುಂದಿನದು"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳಲ್ಲಿನ ಡೇಟಾವನ್ನು ಅಳಿಸಬೇಕೆ?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"ನೀವು %1$s ಮತ್ತು %2$s ನಲ್ಲಿ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತೀರಿ"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"ನೀವು %1$s ನಲ್ಲಿ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತೀರಿ"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"ನೀವು %1$s ಮತ್ತು %2$s ನಲ್ಲಿ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತೀರಿ"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"ರದ್ದುಮಾಡಿ"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"ಅಳಿಸಿ"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"ಅತಿಥಿ ಪ್ರೊಫೈಲ್‌ನಲ್ಲಿ ಆ್ಯಪ್ ಲಾಕ್ ಲಭ್ಯವಿಲ್ಲ."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"ಆ್ಯಪ್ ಲಾಕ್ ಮೂಲಕ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ರಕ್ಷಿಸಿ"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳನ್ನು ಲಾಕ್ ಮಾಡಲು ಪಿನ್ ರಚಿಸಿ"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"ಪ್ರಾರಂಭಿಸಿ"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"ಈಗ ಬೇಡ"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"ಮತ್ತೊಮ್ಮೆ ತೋರಿಸಬೇಡಿ"</string>
+</resources>

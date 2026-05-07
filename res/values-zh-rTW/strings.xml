@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"敏感應用程式鎖定"</string>
+    <string name="setting_title" msgid="7121031924096985436">"應用程式鎖定"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"鎖定應用程式，禁止其他人開啟"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"使用應用程式鎖定功能"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"使用 PIN 碼鎖定部分應用程式"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"我的應用程式"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"應用程式鎖定功能只會停用使用者介面，應用程式可能仍會在背景執行，包括與其他應用程式分享資料 (例如相片或檔案)。此外，如果新安裝的應用程式與鎖定的應用程式共用帳戶，系統可能會自動登入，導致車內資料外洩。"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"輸入 PIN 碼"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"建立 PIN 碼存取鎖定的應用程式"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN 碼至少要有 4 個數字"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"確認 PIN 碼"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"再次輸入 PIN 碼"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"「%1$s」已鎖定"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"如果你不介意車上其他人看到你的資訊，請選取「解鎖應用程式」"<b></b>"，然後輸入 PIN 碼"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"解鎖應用程式"</string>
+    <string name="pin_error" msgid="4785936746400538934">"PIN 碼錯誤"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"繼續"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"忘記 PIN 碼？"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"確認"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"變更 PIN 碼更輕鬆"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"如果忘記 PIN 碼，請登入 Google 帳戶就能安全變更"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"不用了，謝謝"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"登入"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"忘記 PIN 碼？"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"如要變更 PIN 碼並保護資訊安全，請刪除鎖定的應用程式或當中的資料"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"取消"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"繼續"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"要刪除應用程式中的資料嗎？"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"你將刪除「%1$s」和「%2$s」中的資料"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"你將刪除「%1$s」中的資料"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"你將刪除「%1$s」和「%2$s」中的資料"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"取消"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"刪除"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"訪客無法使用應用程式鎖定功能。"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"使用應用程式鎖定功能保護個人資訊"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"建立 PIN 碼以鎖定應用程式"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"開始設定"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"暫時不要"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"不要再顯示"</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"ការចាក់សោកម្មវិធីរសើប"</string>
+    <string name="setting_title" msgid="7121031924096985436">"ការចាក់សោកម្មវិធី"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"ចាក់សោកម្មវិធី ដើម្បីកុំឱ្យអ្នកដទៃបើកកម្មវិធីទាំងនោះ"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"ប្រើការចាក់សោកម្មវិធី"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"បន្តចាក់សោកម្មវិធីមួយចំនួនដោយប្រើកូដ PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"កម្មវិធីរបស់ខ្ញុំ"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"ការចាក់សោកម្មវិធីបិទតែផ្ទៃប៉ះប៉ុណ្ណោះ ហើយកម្មវិធីនៅតែអាចដំណើរការនៅផ្ទៃខាងក្រោយ រួមទាំងការចែករំលែកទិន្នន័យ (ឧ. រូបថត ឬឯកសារ) ជាមួយកម្មវិធីផ្សេងទៀត។ លើសពីនេះ អ្នកដែលដំឡើងកម្មវិធីថ្មីដែលប្រើគណនីដូចគ្នានឹងកម្មវិធីដែលបានចាក់សោ អាចត្រូវបាននាំចូលគណនីដោយស្វ័យប្រវត្តិ ដែលអាចបញ្ចេញទិន្នន័យរបស់អ្នកនៅក្នុងយានជំនិះ។"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"បញ្ចូល​កូដ PIN របស់​អ្នក"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"បង្កើតកូដ PIN សម្រាប់កម្មវិធីដែលបានចាក់សោ"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"កូដ PIN ត្រូវមានយ៉ាងតិច 4 ខ្ទង់"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"បញ្ជាក់​កូដ PIN របស់​អ្នក"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"បញ្ចូលកូដ PIN របស់អ្នកម្ដងទៀត"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"បានចាក់សោ %1$s"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"ជ្រើសរើស "<b>"\"ដោះសោកម្មវិធី\""</b>" ដើម្បីបញ្ចូលកូដ PIN របស់អ្នក ប្រសិនបើអ្នកគ្មានបញ្ហាទេ ពេលអ្នកផ្សេងទៀតនៅក្នុងរថយន្តមើលឃើញព័ត៌មានរបស់អ្នក"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"ដោះសោកម្មវិធី"</string>
+    <string name="pin_error" msgid="4785936746400538934">"កូដ PIN មិន​ត្រឹមត្រូវទេ"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"បន្ទាប់"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"ភ្លេចកូដ PIN របស់អ្នកឬ?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"បញ្ជាក់"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"ធ្វើឱ្យការផ្លាស់ប្ដូរកូដ PIN របស់អ្នកកាន់តែងាយស្រួល"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"ចូលគណនី Google របស់អ្នក ដើម្បីផ្លាស់ប្ដូរកូដ PIN របស់អ្នកដោយសុវត្ថិភាព ប្រសិនបើអ្នកភ្លេចវា"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"ទេ អរគុណ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"ចូលគណនី"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"ភ្លេចកូដ PIN របស់អ្នកឬ?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"ដើម្បីប្ដូរកូដ PIN របស់អ្នក និងជួយរក្សាសុវត្ថិភាពព័ត៌មានរបស់អ្នក អ្នកនឹងត្រូវលុបកម្មវិធីដែលអ្នកបានចាក់សោ ឬទិន្នន័យនៅក្នុងកម្មវិធីទាំងនោះ"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"បោះបង់"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"បន្ទាប់"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"លុបទិន្នន័យនៅក្នុងកម្មវិធីរបស់អ្នកឬ?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"អ្នកនឹងលុបទិន្នន័យនៅក្នុង %1$s និង %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"អ្នកនឹងលុបទិន្នន័យនៅក្នុង %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"អ្នកនឹងលុបទិន្នន័យនៅក្នុង %1$s និង %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"បោះបង់"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"លុប"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"មិនអាចចាក់សោកម្មវិធីនៅក្នុងកម្រងព័ត៌មានភ្ញៀវបានទេ។"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"ការពារព័ត៌មានផ្ទាល់ខ្លួនដោយប្រើការចាក់សោកម្មវិធី"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"បង្កើតកូដ PIN ដើម្បីចាក់សោកម្មវិធីរបស់អ្នក"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"ចាប់ផ្ដើម"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"កុំទាន់"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"កុំបង្ហាញម្ដងទៀត"</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Khoá ứng dụng nhạy cảm"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Khoá ứng dụng"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Khoá ứng dụng để người khác không mở được"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Dùng tính năng khoá ứng dụng"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Khoá một số ứng dụng bằng mã PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Ứng dụng của tôi"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Tính năng khoá ứng dụng chỉ vô hiệu hoá giao diện người dùng và ứng dụng vẫn có thể chạy trong nền, bao gồm cả việc chia sẻ dữ liệu (ví dụ: ảnh hoặc tệp) với các ứng dụng khác. Ngoài ra, bất kỳ ai cài đặt một ứng dụng mới có dùng chung tài khoản với một ứng dụng đã bị khoá đều có thể tự động đăng nhập, dẫn đến nguy cơ làm lộ dữ liệu của bạn trên xe."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Nhập mã PIN của bạn"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Tạo mã PIN cho các ứng dụng được khoá"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"Mã PIN phải có ít nhất 4 chữ số"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Xác nhận mã PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Nhập lại mã PIN"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s đã khoá"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Chọn "<b>"Mở khoá ứng dụng"</b>" để nhập mã PIN nếu bạn không ngại việc những người khác trên xe có thể nhìn thấy thông tin của mình"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Mở khoá ứng dụng"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Mã PIN không đúng"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Tiếp theo"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Bạn quên mã PIN?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Phím Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Xác nhận"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Giúp bạn dễ dàng thay đổi mã PIN"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Đăng nhập vào Tài khoản Google để thay đổi mã PIN một cách an toàn nếu bạn quên mã PIN"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Không, cảm ơn"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Đăng nhập"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Bạn quên mã PIN?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Để thay đổi mã PIN và giúp bảo mật thông tin của bạn, bạn cần xoá các ứng dụng mà bạn đã khoá hoặc dữ liệu trong các ứng dụng đó"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Huỷ"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Tiếp theo"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Xoá dữ liệu trong các ứng dụng của bạn?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Bạn sẽ xoá dữ liệu trong %1$s và %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Bạn sẽ xoá dữ liệu trong %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Bạn sẽ xoá dữ liệu trong %1$s và %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Huỷ"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Xoá"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Tính năng khoá ứng dụng không hoạt động trong hồ sơ khách."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Bảo vệ thông tin cá nhân bằng tính năng khoá ứng dụng"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Tạo mã PIN để khoá ứng dụng"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Bắt đầu"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Để sau"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Không hiện lại"</string>
+</resources>
