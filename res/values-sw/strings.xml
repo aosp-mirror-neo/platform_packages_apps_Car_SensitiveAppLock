@@ -17,7 +17,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="3145012753431925035">"Kufunga Programu zenye Maudhui Nyeti"</string>
+    <string name="app_name" msgid="3145012753431925035">"Kufunga Programu Nyeti"</string>
     <string name="setting_title" msgid="7121031924096985436">"Kufunga programu"</string>
     <string name="setting_summary" msgid="6570520942958337147">"Funga programu ili uzuie watu wengine wasizifungue"</string>
     <string name="app_lock_switch" msgid="7624924448599158727">"Tumia kipengele cha kufunga programu"</string>

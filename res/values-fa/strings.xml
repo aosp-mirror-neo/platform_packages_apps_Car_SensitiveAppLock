@@ -35,19 +35,19 @@
     <string name="pin_error" msgid="4785936746400538934">"پین اشتباه است"</string>
     <string name="pin_screen_next_button_label" msgid="8204603373847864253">"بعدی"</string>
     <string name="pin_screen_recovery_label" msgid="8499693805435069869">"پین را فراموش کرده‌اید؟"</string>
-    <string name="one" msgid="9097727560590311762">"1"</string>
-    <string name="two" msgid="6484484778906539494">"2"</string>
-    <string name="three" msgid="4497718647147083375">"3"</string>
-    <string name="four" msgid="8381888478587998606">"4"</string>
-    <string name="five" msgid="5387527073203907044">"5"</string>
-    <string name="six" msgid="7210728949196465791">"6"</string>
-    <string name="seven" msgid="1895948161285446624">"7"</string>
-    <string name="eight" msgid="6906734992705730694">"8"</string>
-    <string name="nine" msgid="922224265251477502">"9"</string>
-    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="one" msgid="9097727560590311762">"۱"</string>
+    <string name="two" msgid="6484484778906539494">"۲"</string>
+    <string name="three" msgid="4497718647147083375">"۳"</string>
+    <string name="four" msgid="8381888478587998606">"۴"</string>
+    <string name="five" msgid="5387527073203907044">"۵"</string>
+    <string name="six" msgid="7210728949196465791">"۶"</string>
+    <string name="seven" msgid="1895948161285446624">"۷"</string>
+    <string name="eight" msgid="6906734992705730694">"۸"</string>
+    <string name="nine" msgid="922224265251477502">"۹"</string>
+    <string name="zero" msgid="7366277251077774293">"۰"</string>
     <string name="backspace_key_content_description" msgid="5707074884877799370">"کلید پس‌بَر"</string>
     <string name="confirm_key_content_description" msgid="77460983198509181">"تأیید کردن"</string>
-    <string name="signin_dialog_title" msgid="2602183663691051856">"تغییر دادن پین را آسان‌تر کنید"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"آسان‌تر کردن تغییر دادن پین"</string>
     <string name="signin_dialog_message" msgid="7841819688654397929">"برای اینکه در صورت فراموشی پین بتوانید آن را به‌صورت ایمن تغییر دهید، به «حساب Google» خود وارد شوید"</string>
     <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"نه متشکرم"</string>
     <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"ورود به سیستم"</string>
@@ -66,5 +66,5 @@
     <string name="discovery_notification_message" msgid="4030314197391925718">"برای قفل کردن برنامه‌ها، پین ایجاد کنید"</string>
     <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"شروع به کار"</string>
     <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"حالا نه"</string>
-    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"دیگر نشان داده نشود"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"دیگر نشان ندادن"</string>
 </resources>
