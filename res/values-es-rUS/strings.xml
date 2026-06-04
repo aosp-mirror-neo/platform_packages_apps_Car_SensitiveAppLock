@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Bloqueo de apps sensibles"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Bloqueo de apps"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Bloquea las apps para que nadie más pueda abrirlas"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Usar bloqueo de apps"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Bloquear algunas apps con un PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Mis apps"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"El bloqueo de apps solo inhabilita la interfaz de usuario, y es posible que la app siga ejecutándose en segundo plano, lo que incluye compartir datos (p. ej., fotos o archivos) con otras apps. Además, cualquier persona que instale una app nueva que comparta una cuenta con una app bloqueada podrá acceder de forma automática, lo que podría exponer tus datos en el vehículo."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Ingresa tu PIN"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Crear un PIN para las apps bloqueadas"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"El PIN debe tener al menos 4 dígitos"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Confirma tu PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Vuelve a ingresar tu PIN"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"Se bloqueó %1$s"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Selecciona "<b>"Desbloquear app"</b>" para ingresar tu PIN si aceptas que las personas que están en el auto vean tu información"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Desbloquear app"</string>
+    <string name="pin_error" msgid="4785936746400538934">"PIN incorrecto"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Siguiente"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"¿Olvidaste tu PIN?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Retroceso"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Confirmar"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Simplifica el cambio de PIN"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Accede a tu Cuenta de Google para cambiar tu PIN de forma segura si lo olvidas"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"No, gracias"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Acceder"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"¿Olvidaste tu PIN?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Para cambiar el PIN y proteger tu información, deberás borrar las apps que bloqueaste o los datos que contienen"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Cancelar"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Siguiente"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"¿Quieres borrar los datos de tus apps?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Borrarás datos en %1$s y %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Borrarás datos en %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Borrarás datos en %1$s y %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Cancelar"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Borrar"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"El bloqueo de apps no está disponible en el perfil de invitado."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Protege tu información personal con el bloqueo de apps"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Crear un PIN para bloquear tus apps"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Comenzar"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Ahora no"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"No volver a mostrar"</string>
+</resources>

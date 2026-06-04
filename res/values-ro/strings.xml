@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Sensitive App Lock"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Blocarea aplicației"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Blochează aplicațiile pentru a împiedica alte persoane să le deschidă"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Folosește blocarea aplicației"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Păstrează anumite aplicații blocate cu un PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Aplicațiile mele"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Blocarea aplicației dezactivează numai interfața de utilizare, iar aplicația poate rula în continuare în fundal, inclusiv pentru a trimite date (de exemplu, fotografii sau fișiere) altor aplicații. În plus, oricine instalează o aplicație nouă care folosește în comun un cont cu o aplicație blocată se poate conecta automat, ceea ce îți poate expune datele în vehicul."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Introdu codul PIN"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Creează un PIN pentru aplicațiile blocate"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN-ul trebuie să aibă cel puțin 4 cifre"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Confirmă codul PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Introdu din nou PIN-ul"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s s-a blocat"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Selectează "<b>"Deblochează aplicația"</b>" pentru a introduce PIN-ul dacă ești de acord ca pasagerii din mașină să-ți vadă informațiile"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Deblochează aplicația"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Cod PIN greșit"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Înainte"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Ai uitat PIN-ul?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Confirmă"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Schimbă mai ușor codul PIN"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Conectează-te la Contul Google pentru a schimba în siguranță PIN-ul dacă îl uiți"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Nu, mulțumesc"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Conectează-te"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Ai uitat PIN-ul?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Pentru a schimba PIN-ul și a-ți păstra informațiile în siguranță, va trebui să ștergi aplicațiile pe care le-ai blocat sau datele asociate"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Anulează"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Înainte"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Ștergi datele din aplicații?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Vei șterge datele din %1$s și %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Vei șterge datele din %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Vei șterge datele din %1$s și %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Anulează"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Șterge"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Blocarea aplicației nu este disponibilă în profilul de invitat."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Protejează informațiile cu caracter personal cu blocarea aplicației"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Creează un PIN pentru a bloca aplicațiile"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Începe"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Nu acum"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Nu mai afișa"</string>
+</resources>

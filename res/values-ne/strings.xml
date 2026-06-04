@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"संवेदनशील एप लक गर्ने सुविधा"</string>
+    <string name="setting_title" msgid="7121031924096985436">"एप लक"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"अरू मान्छेले एपहरू खोल्न नसकून् भन्नाका लागि ती एप लक गर्नुहोस्"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"एप लक प्रयोग गर्नुहोस्"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"PIN प्रयोग गरी केही एपहरू लक गरिराख्नुहोस्"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"मेरा एपहरू"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"एप लकले युजर इन्टरफेस मात्र अफ गर्छ र एप अझै पनि ब्याकग्राउन्डमा चल्न सक्छ। एपले अन्य एपहरूसँग डेटा (जस्तै, फोटो वा फाइलहरू) सेयर गर्नेलगायतका कार्यहरू गर्न सक्छ। साथै, लक गरिएको एपसँग खाता सेयर गर्ने नयाँ एप इन्स्टल गरिएका खण्डमा उक्त एपमा स्वतः साइन गरिन सक्छ र यसले गर्दा गाडीमा तपाईंको डेटा देखिन सक्छ।"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"आफ्नो PIN हाल्नुहोस्"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"लक गरिएका एपहरूका लागि PIN बनाउनुहोस्"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN कम्तीमा ४ अङ्कको हुनु पर्छ"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"PIN पुष्टि गर्नुहोस्"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"PIN फेरि हाल्नुहोस्"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s लक गरिएको छ"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"कारमा भएका मान्छेहरूले तपाईंको जानकारी देख्दा तपाईंलाई कुनै फरक पर्दैन भने आफ्नो PIN हाल्न "<b>"एप अनलक गर्नुहोस्"</b>" चयन गर्नुहोस्"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"एप अनलक गर्नुहोस्"</string>
+    <string name="pin_error" msgid="4785936746400538934">"गलत PIN"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"अर्को"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"आफ्नो PIN बिर्सनुभयो?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"ब्याकस्पेस"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"पुष्टि गर्नुहोस्"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"आफ्नो PIN परिवर्तन गर्न अझ सजिलो बनाउनुहोस्"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"तपाईंले आफ्नो PIN बिर्सनुभयो भने सुरक्षित तरिकाले उक्त PIN परिवर्तन गर्न आफ्नो Google खातामा साइन इन गर्नुहोस्"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"पर्दैन, धन्यवाद"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"साइन इन गर्नुहोस्"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"आफ्नो PIN बिर्सनुभयो?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"आफ्नो PIN परिवर्तन गर्न र आफ्नो जानकारी सुरक्षित राख्न सघाउन तपाईंले आफूले लक गरेका एप वा ती एपमा भएको डेटा मेटाउनु पर्ने हुन्छ"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"रद्द गर्नुहोस्"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"अर्को"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"तपाईंका एपहरूमा भएको डेटा मेटाउने हो?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"तपाईं %1$s र %2$s मा भएको डेटा मेटाउनु हुने छ"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"तपाईं %1$s मा भएको डेटा मेटाउनु हुने छ"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"तपाईं %1$s र %2$s मा भएको डेटा मेटाउनु हुने छ"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"रद्द गर्नुहोस्"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"मेटाउनुहोस्"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"अतिथि प्रोफाइलमा एप लक उपलब्ध हुँदैन।"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"एप लक प्रयोग गरी व्यक्तिगत जानकारी सुरक्षित राख्नुहोस्"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"आफ्ना एपहरू लक गर्न PIN बनाउनुहोस्"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"सुरु गर्नुहोस्"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"अहिले होइन"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"फेरि नदेखाउनुहोस्"</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"గోప్యమైన యాప్ లాక్"</string>
+    <string name="setting_title" msgid="7121031924096985436">"యాప్ లాక్"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"ఇతర వ్యక్తులు యాప్‌లను తెరవకుండా ఆపడానికి వాటిని లాక్ చేయండి"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"యాప్ లాక్‌ను ఉపయోగించండి"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"కొన్ని యాప్‌లను PINతో లాక్ చేయండి"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"నా యాప్‌లు"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"యాప్ లాక్ యూజర్ ఇంటర్‌ఫేస్‌ను మాత్రమే డిజేబుల్ చేస్తుంది, ఇతర యాప్‌లతో డేటాను (ఉదా. ఫోటోలు లేదా ఫైల్స్) షేర్ చేయడంతో సహా యాప్ ఇప్పటికీ బ్యాక్‌గ్రౌండ్‌లో రన్ కావచ్చు. అంతే కాకుండా, లాక్ చేసిన యాప్‌తో ఖాతాను షేర్ చేసే కొత్త యాప్‌ను ఇన్‌స్టాల్ చేసే ఎవరైనా ఆటోమేటిక్‌గా సైన్ ఇన్ చేయబడవచ్చు, తద్వారా వాహనంలో మీ డేటా బహిర్గతం కావచ్చు."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"మీ PINను ఎంటర్ చేయండి"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"లాక్ చేసిన యాప్‌ల కోసం PINను క్రియేట్ చేయండి"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN తప్పక కనీసం 4 అంకెలతో ఉండాలి"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"మీ PINను నిర్ధారించండి"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"మీ PINను మళ్లీ ఎంటర్ చేయండి"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s లాక్ అయింది"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"కారులో ఉన్న ఇతరులు మీ సమాచారాన్ని చూడటం మీకు ఇబ్బంది లేకపోతే, మీ PINను ఎంటర్ చేయడానికి "<b>"యాప్‌ను అన్‌లాక్ చేయండి"</b>"ని ఎంచుకోండి"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"యాప్‌ను అన్‌లాక్ చేయండి"</string>
+    <string name="pin_error" msgid="4785936746400538934">"పిన్ తప్పు"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"తర్వాత"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"మీ PINను మర్చిపోయారా?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"బ్యాక్‌స్పేస్"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"నిర్ధారించండి"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"మీ PINను మార్చడాన్ని సులభతరం చేయండి"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"మీ PINను మర్చిపోతే, దాన్ని సురక్షితంగా మార్చడానికి మీ Google ఖాతాకు సైన్ ఇన్ చేయండి"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"వద్దు, ధన్యవాదాలు"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"సైన్ ఇన్ చేయండి"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"మీ PINను మర్చిపోయారా?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"మీ PINను మార్చడానికి, మీ సమాచారాన్ని సురక్షితంగా ఉంచడంలో సహాయపడటానికి, మీరు లాక్ చేసిన యాప్‌లను లేదా వాటిలోని డేటాను తొలగించాల్సి ఉంటుంది"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"రద్దు చేయండి"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"తర్వాత"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"మీ యాప్‌లలో డేటాను తొలగించాలా?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"మీరు %1$sలో, %2$s‌లో డేటాను తొలగిస్తారు"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"మీరు %1$sలో డేటాను తొలగిస్తారు"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"మీరు %1$s, %2$sలోని డేటాను తొలగిస్తారు"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"రద్దు చేయండి"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"తొలగించండి"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"గెస్ట్ ప్రొఫైల్‌లో యాప్ లాక్ అందుబాటులో లేదు."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"యాప్ లాక్‌తో వ్యక్తిగత సమాచారాన్ని సురక్షితం చేసుకోండి"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"మీ యాప్‌లను లాక్ చేయడానికి PINను క్రియేట్ చేయండి"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"ప్రారంభించండి"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"ఇప్పుడు కాదు"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"మళ్లీ చూపవద్దు"</string>
+</resources>

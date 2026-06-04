@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Kyçja e aplikacioneve delikate"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Kyçja e aplikacioneve"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Kyç aplikacionet për t\'i ndaluar të tjerët që të mos i hapin ato"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Përdor kyçjen e aplikacioneve"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Mbaji disa aplikacione të kyçura me një kod PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Aplikacionet e mia"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Kyçja e aplikacionit çaktivizon vetëm ndërfaqen e përdoruesit dhe aplikacioni mund të funksionojë përsëri në sfond, duke përfshirë ndarjen e të dhënave (p.sh. fotografitë ose skedarët) me aplikacionet e tjera. Për më tepër, çdo person që instalon një aplikacion të ri që ndan një llogari me një aplikacion të kyçur mund të identifikohet automatikisht, duke ekspozuar potencialisht të dhënat e tua në automjet."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Fut kodin PIN"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Krijo një kod PIN për aplikacionet e kyçura"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"Kodi PIN duhet të ketë të paktën 4 shifra"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Konfirmo kodin PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Fut përsëri kodin PIN"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s është kyçur"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Zgjidh "<b>"Shkyç aplikacionin"</b>" për të futur kodin PIN nëse nuk ke problem që personat në makinë të shikojnë informacionet e tua"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Shkyç aplikacionin"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Kodi PIN i gabuar"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Para"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Ke harruar kodin PIN?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Tasti Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Konfirmo"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Bëje më të lehtë ndryshimin e kodit PIN"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Identifikohu në \"Llogarinë tënde të Google\" për të ndryshuar në mënyrë të sigurt kodin PIN nëse e harron atë"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Jo, faleminderit"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Identifikohu"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Ke harruar kodin PIN?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Për të ndryshuar kodin PIN dhe për t\'i mbajtur informacionet e tua të sigurta, do të duhet të fshish aplikacionet që ke kyçur ose të dhënat në to"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Anulo"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Para"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Të fshihen të dhënat në aplikacionet e tua?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Do të fshish të dhënat në %1$s dhe %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Do të fshish të dhënat në %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Do të fshish të dhënat në %1$s dhe %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Anulo"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Fshi"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Kyçja e aplikacioneve nuk ofrohet në profilin e vizitorit."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Mbro informacionet personale me kyçjen e aplikacioneve"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Krijo një kod PIN për të kyçur aplikacionet e tua"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Fillo"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Jo tani"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Mos e shfaq më"</string>
+</resources>

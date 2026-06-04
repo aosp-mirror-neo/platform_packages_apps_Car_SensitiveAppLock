@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Sensitive App Lock"</string>
+    <string name="setting_title" msgid="7121031924096985436">"ஆப்ஸ் பூட்டு"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"ஆப்ஸைப் பூட்டுவதன் மூலம் பிறர் அவற்றைத் திறப்பதைத் தடுக்கலாம்"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"ஆப்ஸ் பூட்டைப் பயன்படுத்துதல்"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"சில ஆப்ஸை பின் (PIN) மூலம் பூட்டலாம்"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"எனது ஆப்ஸ்"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"ஆப்ஸ் பூட்டு பயனர் இடைமுகத்தை மட்டுமே முடக்கும் என்பதால், பிற ஆப்ஸுடன் தரவைப் பகிர்வது (எ.கா. படங்கள் அல்லது ஃபைல்கள்) உட்பட பின்புலத்தில் ஆப்ஸ் தொடர்ந்து இயங்கிக் கொண்டிருக்கக்கூடும். அத்துடன், பூட்டப்பட்ட ஆப்ஸின் கணக்கைப் பகிரக்கூடிய புதிய ஆப்ஸை யாரேனும் நிறுவினால் அவர்கள் தானாகவே அந்தக் கணக்கில் உள்நுழையக்கூடும். இதனால் வாகனத்தில் உங்கள் தரவு வெளிப்படக்கூடிய சாத்தியமுள்ளது."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"உங்கள் பின்னை டைப் செய்யுங்கள்"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"பூட்ட விரும்பும் ஆப்ஸுக்கான பின்னை உருவாக்குங்கள்"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"பின்னில் குறைந்தது 4 இலக்கங்கள் இருக்க வேண்டும்"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"உங்கள் பின்னை உறுதிசெய்யுங்கள்"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"உங்கள் பின்னை மீண்டும் டைப் செய்யுங்கள்"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s பூட்டப்பட்டது"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"காரில் உள்ளவர்கள் உங்கள் தகவல்களைப் பார்க்கலாம் என்றால், "<b>"ஆப்ஸை அன்லாக் செய்"</b>" என்பதைத் தேர்ந்தெடுத்து உங்கள் பின்னை டைப் செய்யுங்கள்"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"ஆப்ஸை அன்லாக் செய்"</string>
+    <string name="pin_error" msgid="4785936746400538934">"தவறான பின்"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"அடுத்து"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"பின்னை மறந்துவிட்டீர்களா?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"உறுதிசெய்யும்"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"இன்னும் எளிதாக பின்னை மாற்றுங்கள்"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"பின்னை மறந்துவிட்டால், உங்கள் Google கணக்கில் உள்நுழைந்து பாதுகாப்பாக அதை மாற்றலாம்"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"வேண்டாம்"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"உள்நுழை"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"பின்னை மறந்துவிட்டீர்களா?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"உங்கள் பின்னை மாற்றவும் உங்கள் தகவல்களைப் பாதுகாப்பாக வைத்திருக்கவும், நீங்கள் பூட்டிய ஆப்ஸையோ அவற்றில் உள்ள தரவையோ நீக்க வேண்டும்"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"ரத்துசெய்"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"அடுத்து"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"உங்கள் ஆப்ஸில் உள்ள தரவை நீக்கவா?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"%1$s, %2$s ஆகியவற்றில் உள்ள தரவை நீக்குவீர்கள்"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"%1$s ஆப்ஸில் உள்ள தரவை நீக்குவீர்கள்"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"%1$s, %2$s ஆகியவற்றில் உள்ள தரவை நீக்குவீர்கள்"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"ரத்துசெய்"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"நீக்கு"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"விருந்தினர் சுயவிவரத்தில் ஆப்ஸ் பூட்டைப் பயன்படுத்த முடியாது."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"ஆப்ஸ் பூட்டு மூலம் தனிப்பட்ட தகவலைப் பாதுகாத்திடுங்கள்"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"உங்கள் ஆப்ஸைப் பூட்டுவதற்கான பின்னை உருவாக்கலாம்"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"தொடங்குங்கள்"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"இப்போது வேண்டாம்"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"மீண்டும் காட்டாதே"</string>
+</resources>

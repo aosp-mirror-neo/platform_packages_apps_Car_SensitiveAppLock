@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Заклучување чувствителни апликации"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Заклучување апликација"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Заклучете ги апликациите за да спречите да ги отвораат други луѓе"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Користете „Заклучување на апликација“"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Чувајте некои апликации заклучени со PIN-код"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Мои апликации"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"„Заклучување на апликација“ го оневозможува само корисничкиот интерфејс, а апликацијата може и понатаму да се извршува во заднина, вклучувајќи и споделување податоци (на пр. фотографии или датотеки) со други апликации. Покрај тоа, секој што инсталира нова апликација што споделува сметка со заклучена апликација може автоматски да се најави, што потенцијално ги изложува вашите податоци во возилото."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Внесете го PIN-кодот"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Создајте PIN-код за заклучените апликации"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN-кодот мора да содржи барем 4 цифри"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Потврдете го PIN-кодот"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Внесете го PIN-кодот повторно"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s е заклучена"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Изберете "<b>"Отклучи апликација"</b>" за да го внесете вашиот PIN-код ако не ви пречи луѓето во автомобилот да ги гледаат вашите податоци"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Отклучи апликација"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Погрешен PIN-код"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Следно"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Го заборавивте PIN-кодот?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Бришење наназад"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Потврди"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Олеснете го менувањето на PIN-кодот"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Најавете се на вашата сметка на Google за безбедно да го промените PIN-кодот ако го заборавите"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Не, фала"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Најавете се"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Го заборавивте PIN-кодот?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"За да го промените PIN-кодот и да ги заштитите вашите податоци, ќе треба да ги избришете апликациите што сте ги заклучиле или податоците во нив"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Откажи"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Следно"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Да се избришат податоците во вашите апликации?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Ќе ги избришете податоците во %1$s и %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Ќе избришете податоци во %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Ќе ги избришете податоците во %1$s и %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Откажи"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Избриши"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"„Заклучување на апликацијата“ не е достапно во гостинскиот профил."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Заштитете ги личните податоци со заклучување на апликацијата"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Создајте PIN-код за да ги заклучувате апликациите"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Започнете"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Не сега"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Не прикажувај повторно"</string>
+</resources>

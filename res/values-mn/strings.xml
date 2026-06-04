@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Эмзэг аппын түгжээ"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Аппын түгжээ"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Бусад хүнийг аппуудыг нээхийг зогсоохын тулд тэдгээрийг түгжинэ үү"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Аппын түгжээг ашиглах"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Зарим аппыг ПИН-ээр түгжээтэй байлгаарай"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Миний аппууд"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Аппын түгжээ нь зөвхөн хэрэглэгчийн интерфейсийг идэвхгүй болгох бөгөөд апп бусад апптай өгөгдөл (ж.нь: зураг, файл) хуваалцах зэргээр ард ажилласан хэвээр байж болно. Түүнчлэн түгжээтэй апптай ижил бүртгэл ашигладаг шинэ апп суулгасан ямар ч хэрэглэгч автоматаар нэвтрэх боломжтой бөгөөд энэ нь автомашин дахь таны өгөгдлийг ил болгох эрсдэлтэй."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"ПИН-ээ оруулна уу"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Түгжээтэй аппуудад зориулж ПИН үүсгэх"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"ПИН хамгийн багадаа 4 оронтой байх ёстой"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"ПИН-ээ баталгаажуулна уу"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"ПИН-ээ дахин оруулна уу"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s-г түгжсэн"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Хэрэв та машинд байгаа хүмүүс таны мэдээллийг харахыг зүгээр гэж үзвэл ПИН-ээ оруулахын тулд "<b>"Аппын түгжээг тайлах"</b>" гэснийг сонгоно уу"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Аппын түгжээг тайлах"</string>
+    <string name="pin_error" msgid="4785936746400538934">"ПИН буруу байна"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Дараах"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"ПИН-ээ мартсан уу?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Ухраах"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Баталгаажуулах"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"ПИН-ээ өөрчлөхийг илүү хялбар болгоно уу"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Хэрэв та ПИН-ээ мартвал үүнийг аюулгүй өөрчлөхийн тулд Google Бүртгэлдээ нэвтэрнэ үү"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Үгүй, баярлалаа"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Нэвтрэх"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"ПИН-ээ мартсан уу?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"ПИН-ээ өөрчилж, мэдээллээ аюулгүй байлгахад туслахын тулд та түгжсэн аппууд эсвэл тэдгээрийн өгөгдлийг устгах шаардлагатай болно"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Цуцлах"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Дараах"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Аппуудынхаа өгөгдлийг устгах уу?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Та %1$s, %2$s-н өгөгдлийг устгана"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Та %1$s-н өгөгдлийг устгана"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Та %1$s, %2$s-н өгөгдлийг устгана"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Цуцлах"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Устгах"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Аппын түгжээг зочны профайлд ашиглах боломжгүй."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Аппын түгжээгээр хувийн мэдээллийг хамгаалаарай"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Аппуудаа түгжихийн тулд ПИН үүсгээрэй"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Эхлүүлэх"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Одоо биш"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Дахиж бүү харуул"</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"敏感应用锁"</string>
+    <string name="setting_title" msgid="7121031924096985436">"应用锁"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"锁定应用，防止他人打开"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"使用应用锁"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"使用数字密码保持锁定部分应用"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"我所用的应用"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"应用锁功能只会停用界面，相关应用可能仍会在后台运行，包括与其他应用共享数据（例如照片或文件）。此外，如果有人安装了新应用，且该应用与已锁定的应用共用账号，则系统可能会自动登录该账号，从而导致您的车内数据面临泄露风险。"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"输入数字密码"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"为已锁定的应用创建数字密码"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"数字密码必须至少为 4 位数"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"确认您的数字密码"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"再次输入您的数字密码"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"已锁定“%1$s”"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"如果您不介意车内人员看到您的信息，请选择"<b>"解锁应用"</b>"并输入您的数字密码"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"解锁应用"</string>
+    <string name="pin_error" msgid="4785936746400538934">"数字密码错误"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"继续"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"忘记了数字密码？"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"退格键"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"确认"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"更改数字密码更轻松"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"如果您忘记数字密码，登录您的 Google 账号就能安全地更改数字密码"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"不用了"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"登录"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"忘记了数字密码？"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"若要更改数字密码并确保您的信息安全，您需要删除已锁定的应用或其中的数据"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"取消"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"继续"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"要删除应用中的数据吗？"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"您将删除“%1$s”和“%2$s”中的数据"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"您将删除“%1$s”中的数据"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"您将删除“%1$s”和“%2$s”中的数据"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"取消"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"删除"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"无法通过访客资料使用应用锁。"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"使用应用锁保护个人信息"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"创建数字密码以锁定应用"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"开始设置"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"以后再说"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"不再显示"</string>
+</resources>
