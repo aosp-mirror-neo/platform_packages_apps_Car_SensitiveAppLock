@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Ukukhiya I-app Okuzwelayo"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Khiya i-app"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Khiya ama-app ukuze umise abanye abantu ukuthi bangawavuli"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Sebenzisa ukukhiya i-app"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Gcina amanye ama-app ekhiyiwe Ngephinikhodi"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Ama-app ami"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Ukukhiya i-app kukhubaza kuphela inkundla yomsebenzisi futhi i-app ingase iqhubeke isebenza ngemuva, okuhlanganisa ukwabelana ngedatha (isb. izithombe noma amafayela) namanye ama-app. Ngaphezu kwalokho, noma ubani ofaka i-app entsha eyabelana nge-akhawunti ne-app ekhiyiwe angase angene ngemvume ngokuzenzekelayo, okungase kubeke idatha yakho engcupheni emotweni."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Faka Iphinikhodi yakho"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Sungula Iphinikhodi yama-app akhiyiwe"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"Iphinikhodi kumele okungenani ibe ngamadijithi ama-4"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Qinisekisa Iphinikhodi yakho"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Faka Iphinikhodi yakho futhi"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"I-%1$s ikhiyiwe"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Khetha okuthi "<b>"Vula i-app"</b>" ukuze ufake iphinikhodi yakho, uma ukwamukela ukuthi abantu abasemotweni babone imininingwane yakho"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Vula i-app"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Iphinikhodi engalungile"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Okulandelayo"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Ukhohlwe iphinikhodi yakho?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"I-Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Qinisekisa"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Yenza kube lula ukushintsha Iphinikhodi yakho"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Ngena ngemvume kuGoogle Account yakho ukuze ushintshe ngokuphephile Iphinikhodi yakho, uma uyikhohlwa"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Cha ngiyabonga"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Ngena ngemvume"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Ukhohlwe iphinikhodi yakho?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Ukuze ushintshe Iphinikhodi yakho futhi usize ukugcina ulwazi lwakho luphephile, kuzodingeka usule ama-app owakhiyile noma idatha ekuwo"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Khansela"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Okulandelayo"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Sula idatha kuma-app akho?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Uzosula idatha ku-%1$s, naku-%2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Uzosula idatha ku-%1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Uzosula idatha ku-%1$s naku-%2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Khansela"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Sula"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Ukukhiya i-app akutholakali kuphrofayela yesivakashi."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Vikela ulwazi lomuntu siqu ngokukhiya i-app"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Sungula Iphinikhodi ukuze ukhiye ama-app akho"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Qalisa"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Hhayi manje"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Ungabonisi futhi"</string>
+</resources>

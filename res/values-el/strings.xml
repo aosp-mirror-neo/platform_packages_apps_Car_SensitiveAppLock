@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Κλείδωμα ευαίσθητων εφαρμογών"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Κλείδωμα εφαρμογής"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Κλειδώστε εφαρμογές ώστε να μην μπορούν να τις ανοίξουν άλλα άτομα"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Χρήση κλειδώματος εφαρμογής"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Διατηρήστε ορισμένες εφαρμογές κλειδωμένες με ένα PIN"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Οι εφαρμογές μου"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Το κλείδωμα εφαρμογής απενεργοποιεί μόνο τη διεπαφή χρήστη και η εφαρμογή ενδέχεται να εξακολουθεί να εκτελείται στο παρασκήνιο, συμπεριλαμβανομένης της κοινοποίησης δεδομένων (π.χ. φωτογραφίες ή αρχεία) σε άλλες εφαρμογές. Επιπλέον, οποιοσδήποτε εγκαθιστά μια νέα εφαρμογή που μοιράζεται έναν λογαριασμό με μια κλειδωμένη εφαρμογή μπορεί να συνδεθεί αυτόματα, εκθέτοντας ενδεχομένως τα δεδομένα σας στο όχημα."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Εισαγάγετε το PIN σας"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Δημιουργία PIN για κλειδωμένες εφαρμογές"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"Το PIN πρέπει να έχει τουλάχιστον 4 ψηφία"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Επιβεβαιώστε το PIN σας"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Εισαγάγετε ξανά το PIN σας"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"Η εφαρμογή %1$s κλειδώθηκε"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Επιλέξτε "<b>"Ξεκλείδωμα εφαρμογής"</b>" για να εισαγάγετε το PIN σας, αν δεν σας πειράζει να βλέπουν οι επιβάτες στο αυτοκίνητο τις πληροφορίες σας"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Ξεκλείδωμα εφαρμογής"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Λάθος PIN"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Επόμενο"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Ξεχάσατε το PIN σας;"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Επιβεβαίωση"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Απλοποιήστε την αλλαγή του PIN"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Συνδεθείτε στον Λογαριασμό σας Google για να αλλάξετε με ασφάλεια το PIN σας, σε περίπτωση που το ξεχάσετε"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Όχι, ευχαριστώ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Σύνδεση"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Ξεχάσατε το PIN σας;"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Για να αλλάξετε το PIN και να διατηρήσετε ασφαλείς τις πληροφορίες σας, θα πρέπει να διαγράψετε τις εφαρμογές που κλειδώσατε ή τα δεδομένα σε αυτές"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Ακύρωση"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Επόμενο"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Διαγραφή δεδομένων στις εφαρμογές σας;"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Θα διαγράψετε δεδομένα στις εφαρμογές %1$s και %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Θα διαγράψετε δεδομένα στην εφαρμογή %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Θα διαγράψετε δεδομένα στις εφαρμογές %1$s και %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Ακύρωση"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Διαγραφή"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Το κλείδωμα εφαρμογής δεν είναι διαθέσιμο στο προφίλ επισκέπτη."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Προστατέψτε προσωπικά στοιχεία με το κλείδωμα εφαρμογής"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Δημιουργήστε ένα PIN για να κλειδώσετε τις εφαρμογές σας"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Έναρξη"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Όχι τώρα"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Να μην εμφανιστεί ξανά"</string>
+</resources>

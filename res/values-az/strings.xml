@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Həssas Tətbiq Kilidi"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Tətbiq kilidi"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Başqalarının aça bilməməsi üçün tətbiqləri kilidləyin"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Tətbiq kilidindən istifadə edin"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Bəzi tətbiqləri PIN ilə kilidləyin"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Tətbiqlərim"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Tətbiq kilidi yalnız istifadəçi interfeysini deaktiv edir və tətbiq hələ də fonda işləyə bilər, o cümlədən digər tətbiqlərlə data (məsələn, foto və ya fayllar) paylaşa bilər. Bundan əlavə, kilidlənmiş tətbiqlə eyni hesabdan istifadə edən hər kəs yeni tətbiq quraşdırdıqda avtomatik daxil ola bilər. Bu isə alətdə saxlanılan məlumatlarınızın ifşa olunmasına səbəb ola bilər."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"PIN daxil edin"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Kilidli tətbiqlər üçün PIN yaradın"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN ən az 4 rəqəmdən ibarət olmalıdır"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"PIN-i təsdiq edin"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"PIN-i yenidən daxil edin"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s kilidləndi"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Avtomobildəki insanların məlumatlarınızı görməsinə icazə verirsinizsə, PIN daxil etmək üçün "<b>"Tətbiqi kiliddən çıxarın"</b>" seçimini edin"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Tətbiqi kiliddən çıxarın"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Yanlış PIN"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Növbəti"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"PIN-i unutmusunuz?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Təsdiq edin"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"PIN-i dəyişməyi asanlaşdırın"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"PIN-i unutsanız, onu təhlükəsiz şəkildə dəyişmək üçün Google Hesabınıza daxil olun"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Xeyr, təşəkkürlər"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Daxil olun"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"PIN-i unutmusunuz?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"PIN-i dəyişmək və məlumatlarınızı təhlükəsiz saxlamaq üçün kilidlədiyiniz tətbiqləri və ya həmin tətbiqlərdəki datanı silməlisiniz"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Ləğv edin"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Növbəti"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Tətbiqlərdəki data silinsin?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"%1$s və %2$s tətbiqlərindəki datanı siləcəksiniz"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"%1$s tətbiqindəki datanı siləcəksiniz"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"%1$s və %2$s tətbiqlərindəki datanı siləcəksiniz"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Ləğv edin"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Silin"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Tətbiq kilidi qonaq profilində əlçatan deyil."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Tətbiq kilidi ilə şəxsi məlumatları qoruyun"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Tətbiqlərinizi kilidləmək üçün PIN yaradın"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Başlayın"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"İndi yox"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Bir daha göstərməyin"</string>
+</resources>

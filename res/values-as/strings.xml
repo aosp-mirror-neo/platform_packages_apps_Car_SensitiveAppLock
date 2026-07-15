@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"সংবেদনশীল এপ্‌ লক"</string>
+    <string name="setting_title" msgid="7121031924096985436">"এপ্‌ লক"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"অন্য লোকে এপ্‌সমূহ খোলাটো বন্ধ কৰিবলৈ সেইসমূহ লক কৰক"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"এপ্‌ লক ব্যৱহাৰ কৰক"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"কিছুমান এপ্‌ এটা পিনৰ জৰিয়তে লক কৰি ৰাখক"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"মোৰ এপ্‌সমূহ"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"এপ্‌ লকে কেৱল ব্যৱহাৰকাৰীৰ ইণ্টাৰফে’চ অক্ষম কৰে আৰু এপ্‌টো তথাপিও নেপথ্যত চলি থাকিব পাৰে, য’ত অন্য এপ্‌সমূহৰ সৈতে ডেটা (যেনে- ফট’ বা ফাইল) শ্বেয়াৰ কৰাটোও অন্তৰ্ভুক্ত। তদুপৰি, লক হৈ থকা এপ্‌ এটাৰ সৈতে একাউণ্ট শ্বেয়াৰ কৰা কোনো নতুন এপ্‌ ইনষ্টল কৰা যিকোনো ব্যক্তিক স্বয়ংক্ৰিয়ভাৱে ছাইন ইন কৰোৱা হ’ব পাৰে, যিয়ে বাহনখনত আপোনাৰ ডেটা সদৰী কৰিব পাৰে।"</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"আপোনাৰ পিনটো দিয়ক"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"লক হৈ থকা এপ্‌সমূহৰ বাবে এটা পিন সৃষ্টি কৰক"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"পিনটোত কমেও ৪ টা অংক থাকিব লাগিব"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"আপোনাৰ পিনটো নিশ্চিত কৰক"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"আপোনাৰ পিনটো পুনৰ দিয়ক"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"%1$s লক কৰা হৈছে"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"যদি গাড়ীখনত থকা লোকসকলে আপোনাৰ তথ্য দেখা পোৱাটোত আপোনাৰ কোনো আপত্তি নাই, তেন্তে আপোনাৰ পিনটো দিবলৈ "<b>"এপ্‌ আনলক কৰক"</b>" বাছনি কৰক"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"এপ্‌ আনলক কৰক"</string>
+    <string name="pin_error" msgid="4785936746400538934">"ভুল পিন"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"পৰৱৰ্তী"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"আপোনাৰ পিনটো পাহৰিলে নেকি?"</string>
+    <string name="one" msgid="9097727560590311762">"১"</string>
+    <string name="two" msgid="6484484778906539494">"২"</string>
+    <string name="three" msgid="4497718647147083375">"৩"</string>
+    <string name="four" msgid="8381888478587998606">"৪"</string>
+    <string name="five" msgid="5387527073203907044">"৫"</string>
+    <string name="six" msgid="7210728949196465791">"৬"</string>
+    <string name="seven" msgid="1895948161285446624">"৭"</string>
+    <string name="eight" msgid="6906734992705730694">"৮"</string>
+    <string name="nine" msgid="922224265251477502">"৯"</string>
+    <string name="zero" msgid="7366277251077774293">"০"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"বেকস্পে’চ"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"নিশ্চিত কৰক"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"আপোনাৰ পিন সলনি কৰাটো সহজ কৰক"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"যদি আপুনি আপোনাৰ পিনটো পাহৰি যায়, তেন্তে সেইটো সুৰক্ষিতভাৱে সলনি কৰিবলৈ আপোনাৰ Google একাউণ্টত ছাইন ইন কৰক"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"নালাগে, ধন্যবাদ"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"ছাইন ইন কৰক"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"আপোনাৰ পিনটো পাহৰিলে নেকি?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"আপোনাৰ পিন সলনি কৰিবলৈ আৰু আপোনাৰ তথ্য সুৰক্ষিত কৰি ৰখাত সহায় কৰিবলৈ, আপুনি লক কৰা এপ্‌সমূহ বা সেইবোৰত থকা ডেটা মচি পেলাব লাগিব"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"বাতিল কৰক"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"পৰৱৰ্তী"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"আপোনাৰ এপ্‌সমূহত ডেটা মচিব নেকি?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"আপুনি %1$s আৰু %2$sত ডেটা মচিব"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"আপুনি %1$sত ডেটা মচিব"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"আপুনি %1$s আৰু %2$sত ডেটা মচিব"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"বাতিল কৰক"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"মচক"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"অতিথিৰ প্ৰ’ফাইলত এপ্‌ লক উপলব্ধ নহয়।"</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"এপ্‌ লকৰ জৰিয়তে ব্যক্তিগত তথ্য সুৰক্ষিত কৰক"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"আপোনাৰ এপ্‌সমূহ লক কৰিবলৈ এটা পিন সৃষ্টি কৰক"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"আৰম্ভ কৰক"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"এতিয়াই নহয়"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"পুনৰ নেদেখুৱাব"</string>
+</resources>

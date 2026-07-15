@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Блакіроўка канфідэнцыяльных праграм"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Блакіроўка праграм"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Блакіруйце праграмы, каб іншыя карыстальнікі не маглі іх адкрыць"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Выкарыстоўваць блакіроўку праграм"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Блакіруйце доступ да некаторых праграм з дапамогай PIN-кода"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Мае праграмы"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Блакіроўка праграмы адключае толькі карыстальніцкі інтэрфейс, але праграма можа працягваць працаваць у фонавым рэжыме, у тым ліку абагульваць даныя (напрыклад фота або файлы) з іншымі праграмамі. Акрамя таго, кожны, хто ўсталёўвае новую праграму, якая абагульвае ўліковы запіс з заблакіраванай праграмай, можа аўтаматычна ўвайсці ў сістэму, што патэнцыйна можа раскрыць вашы даныя ў аўтамабілі."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Увядзіце PIN-код"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Стварыце PIN-код для заблакіраваных праграм"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN-код павінен змяшчаць не менш за 4 лічбы"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Пацвердзіце PIN-код"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Увядзіце PIN-код яшчэ раз"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"Праграма \"%1$s\" заблакіравана"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Калі вы не супраць таго, каб людзі ў аўтамабілі бачылі вашу інфармацыю, выберыце "<b>"Разблакіраваць праграму"</b>" і ўвядзіце PIN-код"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Разблакіраваць праграму"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Няправільны PIN-код"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Далей"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Забылі PIN-код?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Пацвердзіць"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Спрасціце змяненне PIN-кода"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Увайдзіце ва Уліковы запіс Google, каб мець магчымасць бяспечна змяніць PIN-код, калі вы забудзеце яго"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Не, дзякуй"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Увайсці"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Забылі PIN-код?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Каб змяніць PIN-код і абараніць сваю інфармацыю, вам трэба выдаліць заблакіраваныя вамі праграмы або даныя ў іх"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Скасаваць"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Далей"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Выдаліць даныя ў праграмах?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Вы выдаліце даныя ў праграмах \"%1$s\" і \"%2$s\""</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Вы выдаліце даныя ў праграме \"%1$s\""</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Вы выдаліце даныя ў праграмах \"%1$s\" і \"%2$s\""</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Скасаваць"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Выдаліць"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Блакіроўка праграм недаступная ў гасцявым профілі."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Абараніце асабістую інфармацыю з дапамогай блакіроўкі праграм"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Стварыце PIN-код для блакіроўкі праграм"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Пачаць"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Не зараз"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Больш не паказваць"</string>
+</resources>

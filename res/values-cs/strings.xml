@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Zámek pro citlivé aplikace"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Zámek aplikací"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Zamkněte aplikace, aby je ostatní nemohli otevřít"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Použít zámek aplikace"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Některé aplikace můžete zamknout pomocí PINu"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Moje aplikace"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Zámek aplikace deaktivuje pouze uživatelské rozhraní a aplikace může dál běžet na pozadí, včetně sdílení dat (např. fotek nebo souborů) s jinými aplikacemi. Kromě toho se každý, kdo si nainstaluje novou aplikaci, která sdílí účet se zamknutou aplikací, může automaticky přihlásit, což může vést k odhalení vašich dat ve vozidle."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Zadejte PIN"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Vytvořit PIN pro zamčené aplikace"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN musí mít alespoň čtyři číslice"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Potvrďte PIN"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Znovu zadejte PIN"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"Aplikace %1$s je zamknutá"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Pokud vám nevadí, že lidé v autě uvidí vaše údaje, vyberte "<b>"Odemknout aplikaci"</b>" a zadejte PIN"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Odemknout aplikaci"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Nesprávný PIN"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Další"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Zapomněli jste PIN?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Potvrdit"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Usnadněte si změnu PINu"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Pokud PIN zapomenete, můžete ho bezpečně změnit po přihlášení k účtu Google"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Ne, díky"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Přihlásit se"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Zapomněli jste PIN?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Pokud chcete změnit PIN a chránit své informace, budete muset smazat aplikace, které jste zamkli, nebo data v nich"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Zrušit"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Další"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Smazat data v aplikacích?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Smažete data v aplikacích %1$s a %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Smažete data v aplikaci %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Smažete data v aplikacích %1$s a %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Zrušit"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Smazat"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"V profilu hosta není zámek aplikací k dispozici."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Chraňte osobní údaje pomocí zámku aplikací"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Vytvořit PIN pro zamčené aplikace"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Začít"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Teď ne"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Už nezobrazovat"</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="3145012753431925035">"Блокування доступу до конфіденційного додатка"</string>
+    <string name="setting_title" msgid="7121031924096985436">"Блокування доступу до додатків"</string>
+    <string name="setting_summary" msgid="6570520942958337147">"Блокуйте додатки, щоб інші користувачі не мали доступу до них"</string>
+    <string name="app_lock_switch" msgid="7624924448599158727">"Використовувати блокування доступу до додатка"</string>
+    <string name="app_lock_switch_summary" msgid="8490918503325573267">"Блокуйте доступ до деяких додатків за допомогою PIN-коду"</string>
+    <string name="protected_apps_category" msgid="1304801071926013713">"Мої додатки"</string>
+    <string name="legal_notice_summary" msgid="964477552334840080">"Блокування доступу до додатка лише вимикає інтерфейс користувача, але додаток може й далі працювати у фоновому режимі, зокрема обмінюватися даними (наприклад, фотографіями або файлами) з іншими додатками. Крім того, якщо хтось установив новий додаток, який має спільний обліковий запис із заблокованим додатком, він може автоматично ввійти в обліковий запис і отримати доступ до ваших даних в автомобілі."</string>
+    <string name="validate_pin_title" msgid="2053218844267207153">"Введіть PIN-код"</string>
+    <string name="create_pin_title" msgid="1990451669307401708">"Створіть PIN-код для заблокованих додатків"</string>
+    <string name="create_pin_subtitle" msgid="345370787765861031">"PIN-код має містити принаймні 4 цифри"</string>
+    <string name="confirm_pin_title" msgid="4009110544654814981">"Підтвердьте PIN-код"</string>
+    <string name="confirm_pin_subtitle" msgid="1153589606464182760">"Введіть PIN-код ще раз"</string>
+    <string name="suspend_dialog_title" msgid="1457226327210092792">"Додаток %1$s заблоковано"</string>
+    <string name="suspend_dialog_message" msgid="5286023807180986910">"Якщо вас не бентежить, що люди в автомобілі бачитимуть вашу інформацію, натисніть "<b>"Розблокувати додаток"</b>" і введіть PIN-код"</string>
+    <string name="suspend_dialog_neutral_button_text" msgid="4271520468647846177">"Розблокувати додаток"</string>
+    <string name="pin_error" msgid="4785936746400538934">"Неправильний PIN-код"</string>
+    <string name="pin_screen_next_button_label" msgid="8204603373847864253">"Далі"</string>
+    <string name="pin_screen_recovery_label" msgid="8499693805435069869">"Забули PIN-код?"</string>
+    <string name="one" msgid="9097727560590311762">"1"</string>
+    <string name="two" msgid="6484484778906539494">"2"</string>
+    <string name="three" msgid="4497718647147083375">"3"</string>
+    <string name="four" msgid="8381888478587998606">"4"</string>
+    <string name="five" msgid="5387527073203907044">"5"</string>
+    <string name="six" msgid="7210728949196465791">"6"</string>
+    <string name="seven" msgid="1895948161285446624">"7"</string>
+    <string name="eight" msgid="6906734992705730694">"8"</string>
+    <string name="nine" msgid="922224265251477502">"9"</string>
+    <string name="zero" msgid="7366277251077774293">"0"</string>
+    <string name="backspace_key_content_description" msgid="5707074884877799370">"Backspace"</string>
+    <string name="confirm_key_content_description" msgid="77460983198509181">"Підтвердити"</string>
+    <string name="signin_dialog_title" msgid="2602183663691051856">"Подбайте про можливість легко змінити свій PIN-код"</string>
+    <string name="signin_dialog_message" msgid="7841819688654397929">"Увійдіть в обліковий запис Google, щоб безпечно змінити PIN-код, якщо ви його забудете"</string>
+    <string name="signin_dialog_neutral_button_text" msgid="347433123745607147">"Ні, дякую"</string>
+    <string name="signin_dialog_positive_button_text" msgid="6467865472033924831">"Увійти"</string>
+    <string name="reset_dialog_title" msgid="3911707407002097606">"Забули PIN-код?"</string>
+    <string name="reset_dialog_message" msgid="737252557931508514">"Щоб змінити PIN-код і захистити свою інформацію, видаліть заблоковані додатки або дані в них"</string>
+    <string name="reset_dialog_neutral_button_text" msgid="2099999558934800022">"Скасувати"</string>
+    <string name="reset_dialog_positive_button_text" msgid="7884281666350454100">"Далі"</string>
+    <string name="clear_data_dialog_title" msgid="5708478317150089703">"Видалити дані в додатках?"</string>
+    <string name="clear_data_dialog_message" msgid="1738299997233056254">"Ви видалите дані в додатках %1$s і %2$s"</string>
+    <string name="clear_data_dialog_single_app_message" msgid="7453891103489248985">"Ви видалите дані в додатку %1$s"</string>
+    <string name="clear_data_dialog_two_app_message" msgid="8982460406527736580">"Ви видалите дані в додатках %1$s і %2$s"</string>
+    <string name="clear_data_dialog_neutral_button_text" msgid="3088238884637577433">"Скасувати"</string>
+    <string name="clear_data_dialog_positive_button_text" msgid="820704257813274744">"Видалити"</string>
+    <string name="guest_user_exit_toast_message" msgid="8248467002280244729">"Блокування доступу до додатка не підтримується в профілі гостя."</string>
+    <string name="discovery_notification_title" msgid="4227530703869287333">"Захистіть особисту інформацію за допомогою блокування доступу до додатка"</string>
+    <string name="discovery_notification_message" msgid="4030314197391925718">"Створіть PIN-код для блокування додатків"</string>
+    <string name="discovery_notification_setup_button_text" msgid="2716048869860256436">"Почати"</string>
+    <string name="discovery_notification_dismiss_button_text" msgid="3677814092685838701">"Не зараз"</string>
+    <string name="discovery_notification_permanent_dismiss_button_text" msgid="833720251414413362">"Більше не показувати"</string>
+</resources>
